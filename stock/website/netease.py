@@ -53,3 +53,35 @@ def get_balance_sheet(code, annual=True):
     balance_sheet = pd.read_csv(StringIO(response.text), index_col=0)
     # pylint: disable=E1101
     return balance_sheet.dropna(axis=1, how='any').T
+
+
+def get_profit_statement(code, annual=True):
+    """
+        获取个股利润表
+    Parameters
+    ------
+        code:string
+                股票代码 e.g. 002356
+        annual:bool, 默认 true
+                报表类型，默认年报
+    return
+    ------
+        DataFrame
+    """
+
+    #http://quotes.money.163.com/service/lrb_002356.html
+    url = r"http://quotes.money.163.com/service/lrb_%s.html" % code
+
+    session = requests.Session()
+    session.headers.update(HEADERS)
+
+    if annual:
+        response = session.get(url, params={"type": "year"}, timeout=5)
+    else:
+        response = session.get(url)
+
+    response.encoding = "gbk"
+
+    profit_statement = pd.read_csv(StringIO(response.text), index_col=0)
+    # pylint: disable=E1101
+    return profit_statement.dropna(axis=1, how='any').T
