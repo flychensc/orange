@@ -2,12 +2,9 @@
 网易财经接口
 """
 
-import logging
 import requests
 import pandas as pd
 from pandas.compat import StringIO
-
-LOGGER = logging.getLogger("stock")
 
 HEADERS = {
     "Accept":
@@ -50,28 +47,9 @@ def get_balance_sheet(code, annual=True):
         response = session.get(url, params={"type": "year"}, timeout=5)
     else:
         response = session.get(url, timeout=5)
-    LOGGER.debug("URL:%s encoding=%s", url, response.encoding)
 
     response.encoding = "gbk"
-    web_content = response.text
 
-    balance_sheet = pd.read_csv(StringIO(web_content), index_col=0)
+    balance_sheet = pd.read_csv(StringIO(response.text), index_col=0)
     # pylint: disable=E1101
     return balance_sheet.dropna(axis=1, how='any').T
-
-if __name__ == '__main__':
-    # 创建logger
-    LOGGER.setLevel(logging.DEBUG)
-
-    # 定义log格式
-    LOG_FORMAT = logging.Formatter('%(asctime)s %(name)s:%(levelname)s %(message)s')
-
-    # 创建控制台handler
-    CONSOLE_HANDLE = logging.StreamHandler()
-    CONSOLE_HANDLE.setLevel(logging.DEBUG)
-    CONSOLE_HANDLE.setFormatter(LOG_FORMAT)
-
-    # 注册handler
-    LOGGER.addHandler(CONSOLE_HANDLE)
-
-    print(get_balance_sheet('002356'))
