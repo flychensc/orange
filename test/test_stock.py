@@ -46,6 +46,9 @@ class TestStock(unittest.TestCase):
             '少数股东权益(万元)', '所有者权益(或股东权益)合计(万元)', '负债和所有者权益(或股东权益)总计(万元)'
         ]
         self.assertEqual(list(balance_sheet.columns.values), columns_name)
+        self.assertEqual(balance_sheet.index.dtype, 'datetime64[ns]')
+        for column_name in columns_name:
+            self.assertEqual(balance_sheet[column_name].dtype, 'float64')
 
     def test_get_profit_statement(self):
         """
@@ -66,3 +69,6 @@ class TestStock(unittest.TestCase):
             '少数股东损益(万元)', '基本每股收益', '稀释每股收益'
         ]
         self.assertEqual(list(profit_statement.columns.values), columns_name)
+        self.assertEqual(profit_statement.index.dtype, 'datetime64[ns]')
+        for column_name in columns_name:
+            self.assertEqual(profit_statement[column_name].dtype, 'float64')
