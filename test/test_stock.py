@@ -7,7 +7,7 @@ import pandas as pd
 
 from stock import get_balance_sheet, get_profit_statement
 
-BALANCE_SHEET_COLUMNS_NAME = [
+BALANCE_SHEET_INDEX = [
     '货币资金(万元)', '结算备付金(万元)', '拆出资金(万元)', '交易性金融资产(万元)', '衍生金融资产(万元)',
     '应收票据(万元)', '应收账款(万元)', '预付款项(万元)', '应收保费(万元)', '应收分保账款(万元)',
     '应收分保合同准备金(万元)', '应收利息(万元)', '应收股利(万元)', '其他应收款(万元)', '应收出口退税(万元)',
@@ -32,7 +32,7 @@ BALANCE_SHEET_COLUMNS_NAME = [
     '所有者权益(或股东权益)合计(万元)', '负债和所有者权益(或股东权益)总计(万元)'
 ]
 
-PROFIT_STATEMENT_COLUMNS_NAME = [
+PROFIT_STATEMENT_INDEX = [
     '营业总收入(万元)', '营业收入(万元)', '利息收入(万元)', '已赚保费(万元)', '手续费及佣金收入(万元)',
     '房地产销售收入(万元)', '其他业务收入(万元)', '营业总成本(万元)', '营业成本(万元)', '利息支出(万元)',
     '手续费及佣金支出(万元)', '房地产销售成本(万元)', '研发费用(万元)', '退保金(万元)', '赔付支出净额(万元)',
@@ -56,10 +56,9 @@ class TestStock(unittest.TestCase):
         """
         balance_sheet = get_balance_sheet('002367')
         self.assertTrue(isinstance(balance_sheet, pd.DataFrame))
-        self.assertEqual(
-            list(balance_sheet.columns.values), BALANCE_SHEET_COLUMNS_NAME)
-        self.assertEqual(balance_sheet.index.dtype, 'datetime64[ns]')
-        for column_name in BALANCE_SHEET_COLUMNS_NAME:
+        self.assertEqual(balance_sheet.index.tolist(), BALANCE_SHEET_INDEX)
+        self.assertEqual(balance_sheet.columns.dtype, 'datetime64[ns]')
+        for column_name in balance_sheet.columns:
             self.assertEqual(balance_sheet[column_name].dtype, 'float64')
 
     def test_get_profit_statement(self):
@@ -68,9 +67,8 @@ class TestStock(unittest.TestCase):
         """
         profit_statement = get_profit_statement('002367')
         self.assertTrue(isinstance(profit_statement, pd.DataFrame))
-        self.assertEqual(
-            list(profit_statement.columns.values),
-            PROFIT_STATEMENT_COLUMNS_NAME)
-        self.assertEqual(profit_statement.index.dtype, 'datetime64[ns]')
-        for column_name in PROFIT_STATEMENT_COLUMNS_NAME:
+        self.assertEqual(profit_statement.index.tolist(),
+                         PROFIT_STATEMENT_INDEX)
+        self.assertEqual(profit_statement.columns.dtype, 'datetime64[ns]')
+        for column_name in profit_statement.columns:
             self.assertEqual(profit_statement[column_name].dtype, 'float64')

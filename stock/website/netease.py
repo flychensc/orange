@@ -56,13 +56,11 @@ def get_balance_sheet(code, annual=True):
         na_values="--",
         skipinitialspace=True)
     # pylint: disable=E1101
-    # drop unnamed column and transpose index and columns
-    balance_sheet = balance_sheet.drop(balance_sheet.columns[-1], axis=1).T
-    # format date type
-    balance_sheet.index = pd.to_datetime(balance_sheet.index)
-    for column in balance_sheet.columns:
-        balance_sheet[column] = balance_sheet[column].astype(float)
-    return balance_sheet
+    # drop unnamed column
+    balance_sheet = balance_sheet.drop(balance_sheet.columns[-1], axis=1)
+    # convert type
+    balance_sheet.columns = pd.to_datetime(balance_sheet.columns)
+    return balance_sheet.astype(float)
 
 
 def get_profit_statement(code, annual=True):
@@ -98,11 +96,9 @@ def get_profit_statement(code, annual=True):
         na_values="--",
         skipinitialspace=True)
     # pylint: disable=E1101
-    # drop unnamed column and transpose index and columns
+    # drop unnamed column
     profit_statement = profit_statement.drop(
-        profit_statement.columns[-1], axis=1).T
-    # format date type
-    profit_statement.index = pd.to_datetime(profit_statement.index)
-    for column in profit_statement.columns:
-        profit_statement[column] = profit_statement[column].astype(float)
-    return profit_statement
+        profit_statement.columns[-1], axis=1)
+    # convert type
+    profit_statement.columns = pd.to_datetime(profit_statement.columns)
+    return profit_statement.astype(float)
