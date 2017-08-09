@@ -12,7 +12,7 @@ REPORT_INDEX = [
 ]
 
 REPORT_PICK_INDEX = [
-    '净利润(万元)', '营业收入(万元)', '货币资金(万元)', '存货(万元)', '流动资产合计(万元)', '流动资产合计(万元)',
+    '净利润(万元)', '营业收入(万元)', '货币资金(万元)', '存货(万元)', '流动资产合计(万元)', '非流动资产合计(万元)',
     '应收账款(万元)', '应付账款(万元)', '流动负债合计(万元)', '非流动负债合计(万元)', '负债合计(万元)'
 ]
 
@@ -44,8 +44,8 @@ def _to_quarter(year, quarter):
     ------
         datetime64[ns]
     """
-    dt = {1: '-03-31', 2: '-06-30', 3: '-09-30', 4: '-12-31'}
-    return pd.to_datetime('%s%s' % (year, dt[quarter]))
+    dict_quarter = {1: '-03-31', 2: '-06-30', 3: '-09-30', 4: '-12-31'}
+    return pd.to_datetime('%s%s' % (year, dict_quarter[quarter]))
 
 
 def _get_growth_rate(this, last):
@@ -147,3 +147,60 @@ def get_quarterly_results(code, year=2016, quarter=4, measure='YoY'):
         [quarterly_results[this_quarter], comparisions], axis=1)
 
     return _trim_report(quarterly_results)
+
+
+def get_level0_report(annual_report):
+    """
+        Level0基本面分析
+    Parameters
+    ------
+        annual_report:DataFrame
+                年报表、季报表
+    return
+    ------
+        DataFrame
+    """
+    data_series = annual_report['本期数(万元)']
+
+    _is_larger_to_str = lambda a, b, msg: msg if a > b else "正常"
+    _calc_ratio_to_str = lambda d, r: str(round(d / r, 2))
+
+    level0_report = pd.DataFrame(
+        [
+            [
+                '现金流量',
+                '存货大于收入',
+                _is_larger_to_str(data_series['存货'], data_series['销售额'],
+                                  '警告信号: 销售量下降'),
+            ],
+            [
+                '营运能力',
+                '应收账款大于销售额',
+                _is_larger_to_str(data_series['应收账款'], data_series['销售额'],
+                                  '出现问题: 货卖了，收不了款'),
+            ],
+            [
+                '营运能力',
+                '应付账款大于收入',
+                _is_larger_to_str(data_series['应付账款'], data_series['销售额'],
+                                  '出现问题: 货卖了，赚不了钱'),
+            ],
+            [
+                '偿债能力',
+                '流动负债大于流动资产',
+                _is_larger_to_str(data_series['流动负债'], data_series['流动资产'],
+                                  '出现麻烦: 无法偿还贷款'),
+            ],
+            [
+                '偿债能力',
+                '利润偿还非流动负债',
+                _calc_ratio_to_str(data_series['非流动负债'], data_series['净利润']),
+            ],
+            [
+                '偿债能力',
+                '利润偿还所有负债',
+                _calc_ratio_to_str(data_series['所有债务'], data_series['净利润']),
+            ],
+        ],
+        columns=['属性', '项目', '结果'])
+    return level0_report.set_index(['属性', '项目'])
