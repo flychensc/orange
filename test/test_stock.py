@@ -5,7 +5,8 @@ stock unittest
 import unittest
 import pandas as pd
 
-from stock import get_balance_sheet, get_profit_statement, get_annual_report, get_quarterly_results
+from stock import get_balance_sheet, get_profit_statement
+from stock import get_annual_report, get_quarterly_results, get_level0_report
 from stock.website import BALANCE_SHEET_INDEX, PROFIT_STATEMENT_INDEX
 from stock.fundamental import REPORT_INDEX, REPORT_COLUMNS
 
@@ -66,3 +67,11 @@ class TestStock(unittest.TestCase):
             self.assertEqual(quarterly_results.index.tolist(), REPORT_INDEX)
             self.assertEqual(quarterly_results.columns.tolist(),
                              REPORT_COLUMNS)
+
+    def test_get_level0_report(self):
+        """
+        测试level0分析
+        """
+        annual_report = get_annual_report('002367')
+        level0_report = get_level0_report(annual_report)
+        self.assertTrue(isinstance(level0_report, pd.DataFrame))

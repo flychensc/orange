@@ -2,6 +2,7 @@
 网易财经接口
 """
 
+import functools
 import requests
 import pandas as pd
 from pandas.compat import StringIO
@@ -23,6 +24,7 @@ HEADERS = {
 }
 
 
+@functools.lru_cache()
 def get_balance_sheet(code, annual=True):
     """
         获取个股资产负债表
@@ -63,6 +65,7 @@ def get_balance_sheet(code, annual=True):
     return balance_sheet.astype(float)
 
 
+@functools.lru_cache()
 def get_profit_statement(code, annual=True):
     """
         获取个股利润表
