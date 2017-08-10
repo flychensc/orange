@@ -10,7 +10,7 @@ from stock import get_annual_report, get_quarterly_results
 from stock import get_basic_info, get_level0_report
 from stock.website import BALANCE_SHEET_INDEX, PROFIT_STATEMENT_INDEX
 from stock.fundamental import ANNUAL_REPORT_INDEX, ANNUAL_REPORT_COLUMNS
-from stock.fundamental import BASIC_REPORT_INDEX
+from stock.fundamental import BASIC_REPORT_INDEX, LEVEL0_REPORT_INDEX
 
 
 class TestStock(unittest.TestCase):
@@ -87,4 +87,5 @@ class TestStock(unittest.TestCase):
         """
         annual_report = get_annual_report('002367')
         level0_report = get_level0_report(annual_report)
-        self.assertTrue(isinstance(level0_report, pd.DataFrame))
+        self.assertTrue(isinstance(level0_report, pd.Series))
+        self.assertEqual(level0_report.index.tolist(), LEVEL0_REPORT_INDEX)

@@ -19,6 +19,18 @@ ANNUAL_REPORT_PICK_INDEX = [
 ]
 
 BASIC_REPORT_INDEX = ['股票代码', '名称', '行业', '最新价', '市值(亿)', '市盈率', '市净率', '每股收益']
+LEVEL0_REPORT_INDEX = [
+    '存货大于收入', '应收账款大于销售额', '应付账款大于收入', '流动负债大于流动资产', '利润偿还非流动负债', '利润偿还所有负债'
+]
+
+LEVEL_REPORT_CLASSIFIER = {
+    '存货大于收入': '现金流量',
+    '应收账款大于销售额': '营运能力',
+    '应付账款大于收入': '营运能力',
+    '流动负债大于流动资产': '偿债能力',
+    '利润偿还非流动负债': '偿债能力',
+    '利润偿还所有负债': '偿债能力',
+}
 
 
 def _to_year(year):
@@ -191,49 +203,31 @@ def get_level0_report(annual_report):
                 年报表、季报表
     return
     ------
-        DataFrame
+        Series
     """
     data_series = annual_report['本期数(万元)']
 
     _is_larger_to_str = lambda a, b, msg: msg if a > b else "正常"
     _calc_ratio_to_str = lambda d, r: str(round(d / r, 2))
 
-    level0_report = pd.DataFrame(
-        [
-            [
-                '现金流量',
-                '存货大于收入',
-                _is_larger_to_str(data_series['存货'], data_series['销售额'],
-                                  '警告信号: 销售量下降'),
-            ],
-            [
-                '营运能力',
-                '应收账款大于销售额',
-                _is_larger_to_str(data_series['应收账款'], data_series['销售额'],
-                                  '出现问题: 货卖了，收不了款'),
-            ],
-            [
-                '营运能力',
-                '应付账款大于收入',
-                _is_larger_to_str(data_series['应付账款'], data_series['销售额'],
-                                  '出现问题: 货卖了，赚不了钱'),
-            ],
-            [
-                '偿债能力',
-                '流动负债大于流动资产',
-                _is_larger_to_str(data_series['流动负债'], data_series['流动资产'],
-                                  '出现麻烦: 无法偿还贷款'),
-            ],
-            [
-                '偿债能力',
-                '利润偿还非流动负债',
-                _calc_ratio_to_str(data_series['非流动负债'], data_series['净利润']),
-            ],
-            [
-                '偿债能力',
-                '利润偿还所有负债',
-                _calc_ratio_to_str(data_series['所有债务'], data_series['净利润']),
-            ],
-        ],
-        columns=['属性', '项目', '结果'])
-    return level0_report.set_index(['属性', '项目'])
+    level0_report = pd.Series(
+        {
+            '存货大于收入':
+            _is_larger_to_str(data_series['存货'], data_series['销售额'],
+                              '警告信号: 销售量下降'),
+            '应收账款大于销售额':
+            _is_larger_to_str(data_series['应收账款'], data_series['销售额'],
+                              '出现问题: 货卖了，收不了款'),
+            '应付账款大于收入':
+            _is_larger_to_str(data_series['应付账款'], data_series['销售额'],
+                              '出现问题: 货卖了，赚不了钱'),
+            '流动负债大于流动资产':
+            _is_larger_to_str(data_series['流动负债'], data_series['流动资产'],
+                              '出现麻烦: 无法偿还贷款'),
+            '利润偿还非流动负债':
+            _calc_ratio_to_str(data_series['非流动负债'], data_series['净利润']),
+            '利润偿还所有负债':
+            _calc_ratio_to_str(data_series['所有债务'], data_series['净利润']),
+        },
+        index=LEVEL0_REPORT_INDEX)
+    return level0_report
