@@ -2,6 +2,7 @@
 基本面
 """
 
+import numpy as np
 import pandas as pd
 import stock.tu_wrap as ts
 
@@ -23,7 +24,7 @@ LEVEL0_REPORT_INDEX = [
     '存货大于收入', '应收账款大于销售额', '应付账款大于收入', '流动负债大于流动资产', '利润偿还非流动负债', '利润偿还所有负债'
 ]
 
-LEVEL_REPORT_CLASSIFIER = {
+LEVEL_REPORT_DICT = {
     '存货大于收入': '现金流量',
     '应收账款大于销售额': '营运能力',
     '应付账款大于收入': '营运能力',
@@ -231,3 +232,22 @@ def get_level0_report(annual_report):
         },
         index=LEVEL0_REPORT_INDEX)
     return level0_report
+
+
+def classifier_level_report(level_report):
+    """
+        Level report分类
+    Parameters
+    ------
+        level_report:Series
+                level report
+    return
+    ------
+        Series
+    """
+    index1 = [LEVEL_REPORT_DICT[name] for name in level_report.index.tolist()]
+    level_report.index = [
+        np.array(index1),
+        np.array(level_report.index.tolist())
+    ]
+    return level_report
