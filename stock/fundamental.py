@@ -3,6 +3,8 @@
 """
 
 import pandas as pd
+import stock.tu_wrap as ts
+
 from stock import get_balance_sheet, get_profit_statement
 
 REPORT_COLUMNS = ['本期数(万元)', '增长率(%)']
@@ -147,6 +149,35 @@ def get_quarterly_results(code, year=2016, quarter=4, measure='YoY'):
         [quarterly_results[this_quarter], comparisions], axis=1)
 
     return _trim_report(quarterly_results)
+
+
+def get_basic_info(code):
+    """
+        上市公司基本信息
+    Parameters
+    ------
+        code:string
+    return
+    ------
+        DataFrame
+    """
+    basic = ts.get_stock_basics().loc[code]
+    history = ts.get_k_data(code)
+    history.set_index(['date'], inplace=True)
+    history.sort_index(inplace=True)
+    basic_report = pd.DataFrame(
+        [
+            ['股票代码', code],
+            ['名称', basic.loc['name']],
+            ['行业', basic.loc['industry']],
+            ['最新价', history['close'][-1]],
+            ['流通股本(亿)', basic.loc['outstanding']],
+            ['市盈率', basic.loc['pe']],
+            ['市净率', basic.loc['pb']],
+            ['每股收益', basic.loc['esp']],
+        ],
+        columns=['项目', '结果'])
+    return basic_report
 
 
 def get_level0_report(annual_report):
