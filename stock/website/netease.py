@@ -4,6 +4,8 @@
 
 import requests
 import pandas as pd
+
+from fastcache import lru_cache
 from pandas.compat import StringIO
 
 HEADERS = {
@@ -23,6 +25,7 @@ HEADERS = {
 }
 
 
+@lru_cache()
 def get_balance_sheet(code, annual=True):
     """
         获取个股资产负债表
@@ -57,12 +60,13 @@ def get_balance_sheet(code, annual=True):
         skipinitialspace=True)
     # pylint: disable=E1101
     # drop unnamed column
-    balance_sheet = balance_sheet.drop(balance_sheet.columns[-1], axis=1)
+    balance_sheet.drop(balance_sheet.columns[-1], axis=1, inplace=True)
     # convert type
     balance_sheet.columns = pd.to_datetime(balance_sheet.columns)
     return balance_sheet.astype(float)
 
 
+@lru_cache()
 def get_profit_statement(code, annual=True):
     """
         获取个股利润表
@@ -97,8 +101,7 @@ def get_profit_statement(code, annual=True):
         skipinitialspace=True)
     # pylint: disable=E1101
     # drop unnamed column
-    profit_statement = profit_statement.drop(
-        profit_statement.columns[-1], axis=1)
+    profit_statement.drop(profit_statement.columns[-1], axis=1, inplace=True)
     # convert type
     profit_statement.columns = pd.to_datetime(profit_statement.columns)
     return profit_statement.astype(float)
