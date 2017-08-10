@@ -7,16 +7,18 @@ import stock.tu_wrap as ts
 
 from stock import get_balance_sheet, get_profit_statement
 
-REPORT_COLUMNS = ['本期数(万元)', '增长率(%)']
-REPORT_INDEX = [
+ANNUAL_REPORT_COLUMNS = ['本期数(万元)', '增长率(%)']
+ANNUAL_REPORT_INDEX = [
     '净利润', '销售额', '现金', '存货', '流动资产', '非流动资产', '应收账款', '应付账款', '流动负债', '非流动负债',
     '所有债务'
 ]
 
-REPORT_PICK_INDEX = [
+ANNUAL_REPORT_PICK_INDEX = [
     '净利润(万元)', '营业收入(万元)', '货币资金(万元)', '存货(万元)', '流动资产合计(万元)', '非流动资产合计(万元)',
     '应收账款(万元)', '应付账款(万元)', '流动负债合计(万元)', '非流动负债合计(万元)', '负债合计(万元)'
 ]
+
+BASIC_REPORT_INDEX = ['股票代码', '名称', '行业', '最新价', '市值(亿)', '市盈率', '市净率', '每股收益']
 
 
 def _to_year(year):
@@ -77,9 +79,9 @@ def _trim_report(full_report):
     ------
         DataFrame
     """
-    full_report.columns = REPORT_COLUMNS
-    full_report = full_report.loc[REPORT_PICK_INDEX]
-    full_report.index = REPORT_INDEX
+    full_report.columns = ANNUAL_REPORT_COLUMNS
+    full_report = full_report.loc[ANNUAL_REPORT_PICK_INDEX]
+    full_report.index = ANNUAL_REPORT_INDEX
     return full_report
 
 
@@ -159,24 +161,24 @@ def get_basic_info(code):
         code:string
     return
     ------
-        DataFrame
+        Series
     """
     basic = ts.get_stock_basics().loc[code]
     history = ts.get_k_data(code)
     history.set_index(['date'], inplace=True)
     history.sort_index(inplace=True)
-    basic_report = pd.DataFrame(
-        [
-            ['股票代码', code],
-            ['名称', basic.loc['name']],
-            ['行业', basic.loc['industry']],
-            ['最新价', history['close'][-1]],
-            ['流通股本(亿)', basic.loc['outstanding']],
-            ['市盈率', basic.loc['pe']],
-            ['市净率', basic.loc['pb']],
-            ['每股收益', basic.loc['esp']],
-        ],
-        columns=['项目', '结果'])
+    basic_report = pd.Series(
+        {
+            '股票代码': code,
+            '名称': basic.loc['name'],
+            '行业': basic.loc['industry'],
+            '最新价': history['close'][-1],
+            '市值(亿)': basic.loc['outstanding'] * history['close'][-1],
+            '市盈率': basic.loc['pe'],
+            '市净率': basic.loc['pb'],
+            '每股收益': basic.loc['esp'],
+        },
+        index=BASIC_REPORT_INDEX)
     return basic_report
 
 
