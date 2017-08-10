@@ -59,6 +59,7 @@ def main(stocks):
         year_yoy.loc['股票代码'] = code
         year_yoy.loc['年报时间'] = "%s-12-31" % year
 
+        year = datetime.date.today().year
         quarter = _to_quarter(datetime.date.today().month)
         try:
             quarter_yoy = get_quarterly_results(
@@ -69,6 +70,19 @@ def main(stocks):
             if quarter is 1:
                 year -= 1
                 quarter = 1
+            else:
+                quarter -= 1
+            try:
+                quarter_yoy = get_quarterly_results(
+                    code, year, quarter, measure='YoY')
+                quarter_qoq = get_quarterly_results(
+                    code, year, quarter, measure='QoQ')
+            except KeyError:
+                if quarter is 1:
+                    year -= 1
+                    quarter = 1
+                else:
+                    quarter -= 1
                 quarter_yoy = get_quarterly_results(
                     code, year, quarter, measure='YoY')
                 quarter_qoq = get_quarterly_results(
@@ -80,20 +94,17 @@ def main(stocks):
 
         year_yoy_list.append(
             pd.concat([
-                year_yoy['增长率(%)'].rename(
-                    columns=lambda x: x + '(%)', inplace=True),
+                year_yoy['增长率(%)'].rename(index=lambda x: x + '(%)'),
                 get_level0_report(year_yoy)
             ]))
         quarter_yoy_list.append(
             pd.concat([
-                quarter_yoy['增长率(%)'].rename(
-                    columns=lambda x: x + '(%)', inplace=True),
+                quarter_yoy['增长率(%)'].rename(index=lambda x: x + '(%)'),
                 get_level0_report(quarter_yoy)
             ]))
         quarter_qoq_list.append(
             pd.concat([
-                quarter_qoq['增长率(%)'].rename(
-                    columns=lambda x: x + '(%)', inplace=True),
+                quarter_qoq['增长率(%)'].rename(index=lambda x: x + '(%)'),
                 get_level0_report(quarter_qoq)
             ]))
 
