@@ -10,8 +10,7 @@ from stock import get_annual_report, get_quarterly_results
 from stock import get_basic_info, get_level0_report
 from stock import classifier_level_report
 from stock.website import BALANCE_SHEET_INDEX, PROFIT_STATEMENT_INDEX
-from stock.fundamental import ANNUAL_REPORT_INDEX, ANNUAL_REPORT_COLUMNS
-from stock.fundamental import BASIC_REPORT_INDEX, LEVEL0_REPORT_INDEX
+from stock.fundamental import ANNUAL_REPORT_INDEX, BASIC_REPORT_INDEX, LEVEL0_REPORT_INDEX
 
 
 class TestStock(unittest.TestCase):
@@ -46,33 +45,33 @@ class TestStock(unittest.TestCase):
         """
         测试年报表
         """
-        for year in range(2014, 2016):
-            annual_report = get_annual_report('002367', year)
-            self.assertTrue(isinstance(annual_report, pd.DataFrame))
-            self.assertEqual(annual_report.index.tolist(), ANNUAL_REPORT_INDEX)
-            self.assertEqual(annual_report.columns.tolist(),
-                             ANNUAL_REPORT_COLUMNS)
+        annual_report = get_annual_report('002367')
+        # YoY
+        #comparisions = annual_report.pct_change(axis=1)
+        self.assertTrue(isinstance(annual_report, pd.DataFrame))
+        self.assertEqual(annual_report.index.tolist(),
+                         ANNUAL_REPORT_INDEX['new'])
+        self.assertEqual(annual_report.columns.dtype, 'datetime64[ns]')
+        columns_list = annual_report.columns.tolist()
+        columns_list.sort()
+        self.assertEqual(annual_report.columns.tolist(), columns_list)
 
     def test_get_quarterly_results(self):
         """
         测试季报表
         """
-        for quarter in range(1, 4):
-            quarterly_results = get_quarterly_results('002367', 2016, quarter,
-                                                      'YoY')
-            self.assertTrue(isinstance(quarterly_results, pd.DataFrame))
-            self.assertEqual(quarterly_results.index.tolist(),
-                             ANNUAL_REPORT_INDEX)
-            self.assertEqual(quarterly_results.columns.tolist(),
-                             ANNUAL_REPORT_COLUMNS)
-
-            quarterly_results = get_quarterly_results('002367', 2016, quarter,
-                                                      'QoQ')
-            self.assertTrue(isinstance(quarterly_results, pd.DataFrame))
-            self.assertEqual(quarterly_results.index.tolist(),
-                             ANNUAL_REPORT_INDEX)
-            self.assertEqual(quarterly_results.columns.tolist(),
-                             ANNUAL_REPORT_COLUMNS)
+        quarterly_results = get_quarterly_results('002367')
+        # YoY
+        #comparisions = quarterly_results.pct_change(axis=1)
+        # QoQ
+        #comparisions = quarterly_results.pct_change(periods=4, axis=1)
+        self.assertTrue(isinstance(quarterly_results, pd.DataFrame))
+        self.assertEqual(quarterly_results.index.tolist(),
+                         ANNUAL_REPORT_INDEX['new'])
+        self.assertEqual(quarterly_results.columns.dtype, 'datetime64[ns]')
+        columns_list = quarterly_results.columns.tolist()
+        columns_list.sort()
+        self.assertEqual(quarterly_results.columns.tolist(), columns_list)
 
     def test_get_basic_info(self):
         """
@@ -87,7 +86,7 @@ class TestStock(unittest.TestCase):
         测试level0分析
         """
         annual_report = get_annual_report('002367')
-        level0_report = get_level0_report(annual_report)
+        level0_report = get_level0_report(annual_report.iloc[:, -1])
         self.assertTrue(isinstance(level0_report, pd.Series))
         self.assertEqual(level0_report.index.tolist(), LEVEL0_REPORT_INDEX)
 
@@ -96,6 +95,6 @@ class TestStock(unittest.TestCase):
         测试level report分类
         """
         annual_report = get_annual_report('002367')
-        level0_report = get_level0_report(annual_report)
+        level0_report = get_level0_report(annual_report.iloc[:, -1])
         level0_report2 = classifier_level_report(level0_report)
         self.assertTrue(isinstance(level0_report2, pd.Series))
