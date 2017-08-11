@@ -13,9 +13,9 @@ from stock import get_basic_info, get_level0_report
 
 @click.command()
 @click.argument('stocks', nargs=-1)
-def main(stocks):
+def simple(stocks):
     """
-    main函数
+    simple report of stocks
     """
     # Get basic info from stocks
     basics = pd.DataFrame([get_basic_info(code) for code in stocks])
@@ -96,8 +96,16 @@ def main(stocks):
 
     writer.save()
 
+@click.group()
+@click.pass_context
+def cli(cxn):
+    """
+    get report of stocks
+    """
+    click.echo("Done")
+
+
+cli.add_command(simple)
 
 if __name__ == "__main__":
-    # pylint: disable=E1120
-    main()
-    # pylint: enable=E1120
+    cli(obj={})
