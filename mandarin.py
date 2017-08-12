@@ -13,9 +13,9 @@ from stock import get_basic_info, get_level0_report
 
 @click.command()
 @click.argument('stocks', nargs=-1)
-def simple(stocks):
+def basic(stocks):
     """
-    simple report of stocks
+    basic report of stocks
     """
     # Get basic info from stocks
     basics = pd.DataFrame([get_basic_info(code) for code in stocks])
@@ -105,7 +105,7 @@ def cli(cxn):
     click.echo("Done")
 
 
-cli.add_command(simple)
+cli.add_command(basic)
 
 if __name__ == "__main__":
     cli(obj={})
