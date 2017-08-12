@@ -96,6 +96,52 @@ def basic(stocks):
 
     writer.save()
 
+
+@click.command()
+@click.argument('code', nargs=1)
+def detail(code):
+    """
+    detail report of stock
+    """
+    # Get basic info from stock
+    basics = pd.DataFrame([get_basic_info(code)])
+    basics.set_index(['股票代码'], inplace=True)
+
+    # get annual report of stock
+    annual_report = get_annual_report(code).loc[['净利润', '销售额', '所有债务']]
+    # YoY
+    year_yoy = annual_report.pct_change(axis=1)
+    # format
+    year_yoy.rename(index=lambda x: x + '(%)', inplace=True)
+    year_yoy = (year_yoy * 100).round(2)
+    # concat
+    year_yoy = pd.concat([annual_report, year_yoy])
+    # format again
+    year_yoy.sort_index(inplace=True)
+    year_yoy.rename(columns=lambda x: str(x)[:10], inplace=True)
+
+    # get quarterly results
+    quarterly_results = get_quarterly_results(code).loc[['净利润', '销售额', '所有债务']]
+    # QoQ
+    quarter_qoq = quarterly_results.pct_change(axis=1)
+    # format
+    quarter_qoq.rename(index=lambda x: x + '(%)', inplace=True)
+    quarter_qoq = (quarter_qoq * 100).round(2)
+    # concat
+    quarter_qoq = pd.concat([quarterly_results, quarter_qoq])
+    # format again
+    quarter_qoq.sort_index(inplace=True)
+    quarter_qoq.rename(columns=lambda x: str(x)[:10], inplace=True)
+
+    writer = ExcelWriter("orange_detail.xls")
+
+    basics.to_excel(writer, "基本信息")
+    year_yoy.to_excel(writer, "年报变化")
+    quarter_qoq.to_excel(writer, "季报变化")
+
+    writer.save()
+
+
 @click.group()
 @click.pass_context
 def cli(cxn):
@@ -106,6 +152,7 @@ def cli(cxn):
 
 
 cli.add_command(basic)
+cli.add_command(detail)
 
 if __name__ == "__main__":
     cli(obj={})
