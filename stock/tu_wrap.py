@@ -61,9 +61,9 @@ def get_k_data(code=None,
       ktype：string
                   数据类型，D=日k线 W=周 M=月 5=5分钟 15=15分钟 30=30分钟 60=60分钟，默认为D
       retry_count : int, 默认 3
-                 如遇网络等问题重复执行的次数 
+                  如遇网络等问题重复执行的次数
       pause : int, 默认 0
-                重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
+                  重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
     return
     -------
       DataFrame
@@ -89,8 +89,8 @@ def get_report_data(year, quarter):
     --------
     year:int 年度 e.g:2014
     quarter:int 季度 :1、2、3、4，只能输入这4个季度
-       说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
-       
+        说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
+
     Return
     --------
     DataFrame
@@ -117,8 +117,8 @@ def get_profit_data(year, quarter):
     --------
     year:int 年度 e.g:2014
     quarter:int 季度 :1、2、3、4，只能输入这4个季度
-       说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
-       
+        说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
+
     Return
     --------
     DataFrame
@@ -143,8 +143,8 @@ def get_operation_data(year, quarter):
     --------
     year:int 年度 e.g:2014
     quarter:int 季度 :1、2、3、4，只能输入这4个季度
-       说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
-       
+        说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
+
     Return
     --------
     DataFrame
@@ -168,8 +168,8 @@ def get_growth_data(year, quarter):
     --------
     year:int 年度 e.g:2014
     quarter:int 季度 :1、2、3、4，只能输入这4个季度
-       说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
-       
+        说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
+
     Return
     --------
     DataFrame
@@ -193,8 +193,8 @@ def get_debtpaying_data(year, quarter):
     --------
     year:int 年度 e.g:2014
     quarter:int 季度 :1、2、3、4，只能输入这4个季度
-       说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
-       
+        说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
+
     Return
     --------
     DataFrame
@@ -218,8 +218,8 @@ def get_cashflow_data(year, quarter):
     --------
     year:int 年度 e.g:2014
     quarter:int 季度 :1、2、3、4，只能输入这4个季度
-       说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
-       
+        说明：由于是从网站获取的数据，需要一页页抓取，速度取决于您当前网络速度
+
     Return
     --------
     DataFrame
