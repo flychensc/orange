@@ -24,6 +24,12 @@ BASIC_REPORT_INDEX = ['股票代码', '名称', '行业', '最新价', '市值(�
 LEVEL0_REPORT_INDEX = [
     '存货大于收入', '应收账款大于销售额', '应付账款大于收入', '流动负债大于流动资产', '利润偿还非流动负债', '利润偿还所有负债'
 ]
+LEVEL1_REPORT_INDEX = [
+    '净资产收益率(%)', '净利率(%)', '每股主营业务收入(元)', '应收账款周转率(次)', '存货周转率(次)',
+    '流动资产周转率(次)', '主营业务收入增长率(%)', '净利润增长率(%)', '每股收益增长率', '流动比率', '速动比率',
+    '现金比率', '利息支付倍数', '资产的经营现金流量回报率', '经营现金净流量与净利润的比率', '经营现金净流量对负债比率',
+    '现金流量比率'
+]
 
 LEVEL_REPORT_DICT = {
     '存货大于收入': '现金流量',
@@ -32,6 +38,24 @@ LEVEL_REPORT_DICT = {
     '流动负债大于流动资产': '偿债能力',
     '利润偿还非流动负债': '偿债能力',
     '利润偿还所有负债': '偿债能力',
+    #'分配方案': '业绩报告',
+    '净资产收益率(%)': '盈利能力',
+    '净利率(%)': '盈利能力',
+    '每股主营业务收入(元)': '盈利能力',
+    '应收账款周转率(次)': '营运能力',
+    '存货周转率(次)': '营运能力',
+    '流动资产周转率(次)': '营运能力',
+    '主营业务收入增长率(%)': '成长能力',
+    '净利润增长率(%)': '成长能力',
+    '每股收益增长率': '成长能力',
+    '流动比率': '偿债能力',
+    '速动比率': '偿债能力',
+    '现金比率': '偿债能力',
+    '利息支付倍数': '偿债能力',
+    '资产的经营现金流量回报率': '现金流量',
+    '经营现金净流量与净利润的比率': '现金流量',
+    '经营现金净流量对负债比率': '现金流量',
+    '现金流量比率': '现金流量',
 }
 
 
@@ -144,6 +168,55 @@ def get_level0_report(annual_report):
     return level0_report
 
 
+def get_level1_report(code, year, quarter):
+    """
+        Level1基本面分析
+    Parameters
+    ------
+        code:string
+        year:int
+        quarter:int
+    return
+    ------
+        Series
+    """
+    #report_data = ts.get_report_data(year, quarter).set_index(['code'])
+    profit_data = ts.get_profit_data(year, quarter).set_index(['code'])
+    operation_data = ts.get_operation_data(year, quarter).set_index(['code'])
+    growth_data = ts.get_growth_data(year, quarter).set_index(['code'])
+    debtpaying_data = ts.get_debtpaying_data(year, quarter).set_index(['code'])
+    cashflow_data = ts.get_cashflow_data(year, quarter).set_index(['code'])
+
+    #report_data[['name', 'distrib']]
+    level1_report = profit_data[['roe', 'net_profit_ratio', 'bips']].merge(
+        operation_data[[
+            'arturnover', 'inventory_turnover', 'currentasset_turnover'
+        ]],
+        left_index=True,
+        right_index=True).merge(
+            growth_data[['mbrg', 'nprg', 'epsg']],
+            left_index=True,
+            right_index=True).merge(
+                debtpaying_data[[
+                    'currentratio', 'quickratio', 'cashratio', 'icratio'
+                ]],
+                left_index=True,
+                right_index=True).merge(
+                    cashflow_data[[
+                        'rateofreturn', 'cf_nm', 'cf_liabilities',
+                        'cashflowratio'
+                    ]],
+                    left_index=True,
+                    right_index=True)
+
+    level1_report.drop_duplicates(keep='last', inplace=True)
+    level1_report.columns = LEVEL1_REPORT_INDEX
+
+    return level1_report.loc[
+        code] if code in level1_report.index else pd.Series(
+            index=LEVEL1_REPORT_INDEX)
+
+
 def classifier_level_report(level_report):
     """
         Level report分类
@@ -161,3 +234,23 @@ def classifier_level_report(level_report):
         np.array(level_report.index.tolist())
     ]
     return level_report
+
+
+def pct_change(data_report, periods=1, axis=0):
+    """
+        财务数据增速
+    Parameters
+    ------
+        data_frame:DataFrame
+                annual report
+        periods:int
+                计算周期
+        axis:int
+                0:行, 1:列
+    return
+    ------
+        DataFrame
+    """
+    return data_report.diff(
+        periods=periods, axis=axis) / data_report.shift(
+            periods=periods, axis=axis).abs()

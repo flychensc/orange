@@ -4,13 +4,14 @@ stock unittest
 
 import unittest
 import pandas as pd
+import numpy as np
 
 from stock import get_balance_sheet, get_profit_statement
 from stock import get_annual_report, get_quarterly_results
-from stock import get_basic_info, get_level0_report
-from stock import classifier_level_report
+from stock import get_basic_info, get_level0_report, get_level1_report
+from stock import classifier_level_report, pct_change
 from stock.website import BALANCE_SHEET_INDEX, PROFIT_STATEMENT_INDEX
-from stock.fundamental import ANNUAL_REPORT_INDEX, BASIC_REPORT_INDEX, LEVEL0_REPORT_INDEX
+from stock.fundamental import ANNUAL_REPORT_INDEX, BASIC_REPORT_INDEX, LEVEL0_REPORT_INDEX, LEVEL1_REPORT_INDEX
 
 
 class TestStock(unittest.TestCase):
@@ -90,6 +91,14 @@ class TestStock(unittest.TestCase):
         self.assertTrue(isinstance(level0_report, pd.Series))
         self.assertEqual(level0_report.index.tolist(), LEVEL0_REPORT_INDEX)
 
+    def test_get_level1_report(self):
+        """
+        测试level1分析
+        """
+        level1_report = get_level1_report('002367', 2016, 4)
+        self.assertTrue(isinstance(level1_report, pd.Series))
+        self.assertEqual(level1_report.index.tolist(), LEVEL1_REPORT_INDEX)
+
     def test_classifier_level_report(self):
         """
         测试level report分类
@@ -98,3 +107,18 @@ class TestStock(unittest.TestCase):
         level0_report = get_level0_report(annual_report.iloc[:, -1])
         level0_report2 = classifier_level_report(level0_report)
         self.assertTrue(isinstance(level0_report2, pd.Series))
+
+    def test_pct_change(self):
+        """
+        测试财务增速接口
+        """
+        quarterly_results = get_quarterly_results('002367')
+        quarterly_results.dropna(axis=1, how='any', inplace=True)
+        pct_change1 = quarterly_results.pct_change(axis=1)
+        pct_change2 = pct_change(quarterly_results, axis=1)
+        self.assertTrue(isinstance(pct_change1, pd.DataFrame))
+        self.assertTrue(isinstance(pct_change2, pd.DataFrame))
+        d1 = pct_change1.abs().round(4)
+        d2 = pct_change2.abs().round(4)
+        self.assertTrue(d1.equals(d2))
+        self.assertFalse(d1.empty)

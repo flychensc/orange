@@ -9,6 +9,7 @@ from pandas import ExcelWriter
 
 from stock import get_annual_report, get_quarterly_results
 from stock import get_basic_info, get_level0_report
+from stock import pct_change
 
 
 @click.command()
@@ -28,7 +29,7 @@ def basic(stocks):
         # get annual report of stock
         annual_report = get_annual_report(code)
         # YoY
-        year_yoy = annual_report.pct_change(axis=1).iloc[:, -1]
+        year_yoy = pct_change(annual_report, axis=1).iloc[:, -1]
         # format
         year_yoy.rename(index=lambda x: x + '(%)', inplace=True)
         year_yoy = (year_yoy * 100).round(2)
@@ -44,8 +45,8 @@ def basic(stocks):
 
         if str(quarterly_results.columns[-1])[4:10] != '-12-31':
             # measure='YoY'
-            quarter_yoy = quarterly_results.pct_change(
-                periods=4, axis=1).iloc[:, -1]
+            quarter_yoy = pct_change(
+                quarterly_results, periods=4, axis=1).iloc[:, -1]
 
             # YoY
             quarter_yoy.rename(index=lambda x: x + '(%)', inplace=True)
@@ -61,8 +62,8 @@ def basic(stocks):
 
         if str(quarterly_results.columns[-1])[4:10] != '-03-31':
             # measure='QoQ'
-            quarter_qoq = quarterly_results.pct_change(
-                periods=1, axis=1).iloc[:, -1]
+            quarter_qoq = pct_change(
+                quarterly_results, periods=1, axis=1).iloc[:, -1]
 
             # QoQ
             quarter_qoq.rename(index=lambda x: x + '(%)', inplace=True)
@@ -110,7 +111,7 @@ def detail(code):
     # get annual report of stock
     annual_report = get_annual_report(code).loc[['净利润', '销售额', '所有债务']]
     # YoY
-    year_yoy = annual_report.pct_change(axis=1)
+    year_yoy = pct_change(annual_report, axis=1)
     # format
     year_yoy.rename(index=lambda x: x + '(%)', inplace=True)
     year_yoy = (year_yoy * 100).round(2)
@@ -123,7 +124,7 @@ def detail(code):
     # get quarterly results
     quarterly_results = get_quarterly_results(code).loc[['净利润', '销售额', '所有债务']]
     # QoQ
-    quarter_qoq = quarterly_results.pct_change(axis=1)
+    quarter_qoq = pct_change(quarterly_results, axis=1)
     # format
     quarter_qoq.rename(index=lambda x: x + '(%)', inplace=True)
     quarter_qoq = (quarter_qoq * 100).round(2)
