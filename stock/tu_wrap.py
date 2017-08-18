@@ -1,5 +1,7 @@
 """
 对tushare的再封装，用cache提高速度
+
+*注意：这里用到了cache, 返回的数据请勿使用inplace等操作
 """
 
 from fastcache import lru_cache
