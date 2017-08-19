@@ -13,6 +13,18 @@ MARGIN_COLUMNS = ['融资余额(元)', '融资买入额(元)', '融券余量', '
 
 
 def _get_sz_margin_details(date, output_list):
+    """
+    获取某天的融资融券明细列表
+    Parameters
+    --------
+    date:string
+                日期 format：YYYY-MM-DD
+    output_list:list
+                存放结果
+    Return
+    ------
+    None
+    """
     output_list.append(ts.sz_margin_details(date=date))
 
 
@@ -24,17 +36,12 @@ def get_margin_details(code, start, end):
     code：string
                 股票代码, e.g.600728
     start:string
-                开始日期 format：YYYY-MM-DD 默认为空''
+                开始日期 format：YYYY-MM-DD
     end:string
-                结束日期 format：YYYY-MM-DD 默认为空''
+                结束日期 format：YYYY-MM-DD
     Return
     ------
     DataFrame
-    opDate:信用交易日期
-    rzye:本日融资余额(元)
-    rzmre: 本日融资买入额(元)
-    rqyl: 本日融券余量
-    rqmcl: 本日融券卖出量
     """
     sh_details = ts.sh_margin_details(start=start, end=end)
 
@@ -50,7 +57,7 @@ def get_margin_details(code, start, end):
         sz_details[['opDate', 'stockCode', 'rzye', 'rzmre', 'rqyl', 'rqmcl']]
     ])
 
-    detail = details.where(details['stockCode'] == code).dropna()
-    detail.drop(['stockCode'], axis=1).set_index('opDate')
+    detail = details.where(details['stockCode'] == code).dropna().drop(
+        ['stockCode'], axis=1).set_index('opDate')
     detail.columns = MARGIN_COLUMNS
     return detail
