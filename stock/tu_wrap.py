@@ -234,3 +234,72 @@ def get_cashflow_data(year, quarter):
         cashflowratio,现金流量比率
     """
     return ts.get_cashflow_data(year, quarter)
+
+
+@lru_cache()
+def sh_margin_details(date='',
+                      symbol='',
+                      start='',
+                      end='',
+                      retry_count=3,
+                      pause=0.001):
+    """
+    获取沪市融资融券明细列表
+    Parameters
+    --------
+    date:string
+                明细数据日期 format：YYYY-MM-DD 默认为空''
+    symbol：string
+                标的代码，6位数字e.g.600848，默认为空
+    start:string
+                  开始日期 format：YYYY-MM-DD 默认为空''
+    end:string
+                  结束日期 format：YYYY-MM-DD 默认为空''
+    retry_count : int, 默认 3
+                 如遇网络等问题重复执行的次数
+    pause : int, 默认 0
+                重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
+
+    Return
+    ------
+    DataFrame
+    opDate:信用交易日期
+    stockCode:标的证券代码
+    securityAbbr:标的证券简称
+    rzye:本日融资余额(元)
+    rzmre: 本日融资买入额(元)
+    rzche:本日融资偿还额(元)
+    rqyl: 本日融券余量
+    rqmcl: 本日融券卖出量
+    rqchl: 本日融券偿还量
+    """
+    return ts.sh_margin_details(date, symbol, start, end, retry_count, pause)
+
+
+@lru_cache()
+def sz_margin_details(date='', retry_count=3, pause=0.001):
+    """
+    获取深市融资融券明细列表
+    Parameters
+    --------
+    date:string
+                明细数据日期 format：YYYY-MM-DD 默认为空''
+    retry_count : int, 默认 3
+                 如遇网络等问题重复执行的次数
+    pause : int, 默认 0
+                重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
+
+    Return
+    ------
+    DataFrame
+    opDate:信用交易日期
+    stockCode:标的证券代码
+    securityAbbr:标的证券简称
+    rzmre: 融资买入额(元)
+    rzye:融资余额(元)
+    rqmcl: 融券卖出量
+    rqyl: 融券余量
+    rqye: 融券余量(元)
+    rzrqye:融资融券余额(元)
+    """
+    return ts.sz_margin_details(date, retry_count, pause)
