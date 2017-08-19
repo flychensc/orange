@@ -10,8 +10,11 @@ from stock import get_balance_sheet, get_profit_statement
 from stock import get_annual_report, get_quarterly_results
 from stock import get_basic_info, get_level0_report, get_level1_report
 from stock import classifier_level_report, pct_change
+from stock import get_margin_details
 from stock.website import BALANCE_SHEET_INDEX, PROFIT_STATEMENT_INDEX
-from stock.fundamental import ANNUAL_REPORT_INDEX, BASIC_REPORT_INDEX, LEVEL0_REPORT_INDEX, LEVEL1_REPORT_INDEX
+from stock.fundamental import ANNUAL_REPORT_INDEX, BASIC_REPORT_INDEX
+from stock.fundamental import LEVEL0_REPORT_INDEX, LEVEL1_REPORT_INDEX
+from stock.technical import MARGIN_COLUMNS
 
 
 class TestStock(unittest.TestCase):
@@ -122,3 +125,12 @@ class TestStock(unittest.TestCase):
         d2 = pct_change2.abs().round(4)
         self.assertTrue(d1.equals(d2))
         self.assertFalse(d1.empty)
+
+    def test_get_margin_details(self):
+        """
+        测试融资融券
+        """
+        margin_details = get_margin_details('002367', "2017-08-01",
+                                            "2017-08-15")
+        self.assertTrue(isinstance(margin_details, pd.DataFrame))
+        self.assertEqual(level1_report.columns.tolist(), MARGIN_COLUMNS)

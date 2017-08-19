@@ -61,3 +61,43 @@ def get_margin_details(code, start, end):
         ['stockCode'], axis=1).set_index('opDate')
     detail.columns = MARGIN_COLUMNS
     return detail
+
+
+def _get_one_tick_data(code, date, output_list):
+    """
+    获取某天的分笔数据
+    Parameters
+    --------
+    code：string
+                股票代码, e.g.600728
+    date:string
+                日期 format：YYYY-MM-DD
+    output_list:list
+                存放结果
+    Return
+    ------
+    None
+    """
+    output_list.append(ts.get_tick_data(code, date))
+
+def get_tick_data(code, start, end):
+    """
+    获取分笔数据
+    Parameters
+    --------
+    code：string
+                股票代码, e.g.600728
+    start:string
+                开始日期 format：YYYY-MM-DD
+    end:string
+                结束日期 format：YYYY-MM-DD
+    Return
+    ------
+    DataFrame
+    """
+    data_list = list()
+    group = Group()
+    for date in pd.date_range(start, end):
+        group.add(gevent.spawn(_get_one_tick_data, code, str(date)[:10], data_list))
+    group.join()
+    tick_data = pd.concat(data_list)
