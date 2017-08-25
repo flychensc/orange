@@ -303,3 +303,59 @@ def sz_margin_details(date='', retry_count=3, pause=0.001):
     rzrqye:融资融券余额(元)
     """
     return ts.sz_margin_details(date, retry_count, pause)
+
+
+@lru_cache()
+def get_tick_data(code=None, date=None, retry_count=3, pause=0.001, src='sn'):
+    """
+        获取分笔数据
+    Parameters
+    ------
+        code:string
+                  股票代码 e.g. 600848
+        date:string
+                  日期 format: YYYY-MM-DD
+        retry_count : int, 默认 3
+                  如遇网络等问题重复执行的次数
+        pause : int, 默认 0
+                 重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
+        src : 数据源选择，可输入sn(新浪)、tt(腾讯)、nt(网易)，默认sn
+     return
+     -------
+        DataFrame 当日所有股票交易数据(DataFrame)
+              属性:成交时间、成交价格、价格变动，成交手、成交金额(元)，买卖类型
+    """
+    return ts.get_tick_data(code, date, retry_count, pause, src)
+
+
+#不使用cache
+def get_notices(code=None, date=None):
+    '''
+        获取个股信息
+    Parameters
+    --------
+        code:股票代码
+        date:信息公布日期
+    Return
+    --------
+        DataFrame，属性列表：
+        title:信息标题
+        type:信息类型
+        date:公告日期
+        url:信息内容URL
+    '''
+    return ts.get_notices(code, date)
+
+
+#不使用cache
+def notice_content(url):
+    '''
+        获取信息地雷内容
+    Parameter
+    --------
+        url:内容链接
+    Return
+    --------
+        string:信息内容
+    '''
+    return ts.notice_content(url)
