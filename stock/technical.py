@@ -11,6 +11,8 @@ from gevent.pool import Group
 
 MARGIN_COLUMNS = ['融资余额(元)', '融资买入额(元)', '融券余量', '融券卖出量']
 
+TICK_COLUMNS = ['日期', '时间', '成交价', '成交手', '成交额', '买卖类型']
+
 
 def _get_sz_margin_details(date, output_list):
     """
@@ -78,7 +80,12 @@ def _get_one_tick_data(code, date, output_list):
     ------
     None
     """
-    output_list.append(ts.get_tick_data(code, date))
+    tick_data = ts.get_tick_data(code, date)
+    tick_data['date'] = date
+    output_list.append(
+        tick_data.drop(['change'], axis=1).reindex(
+            columns=['date', 'time', 'price', 'volume', 'amount', 'type']))
+
 
 def get_tick_data(code, start, end):
     """
@@ -98,6 +105,11 @@ def get_tick_data(code, start, end):
     data_list = list()
     group = Group()
     for date in pd.date_range(start, end):
-        group.add(gevent.spawn(_get_one_tick_data, code, str(date)[:10], data_list))
+        group.add(
+            gevent.spawn(_get_one_tick_data, code, str(date)[:10], data_list))
     group.join()
     tick_data = pd.concat(data_list)
+    tick_data.sort_values(['date', 'time'], ascending=True, inplace=True)
+    tick_data.columns = TICK_COLUMNS
+    tick_data.index = range(len(tick_data))
+    return tick_data
