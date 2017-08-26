@@ -5,36 +5,197 @@
     <title>ECharts</title>
     <!-- 引入 echarts.js -->
     <script src="/static/js/echarts.min.js"></script>
+    <!-- 引入 jquery.js -->
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
 </head>
 <body>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div id="main" style="width: 600px;height:400px;"></div>
+    <div id="main" style="width: 800px;height:600px;"></div>
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'));
 
         // 指定图表的配置项和数据
         var option = {
-            title: {
-                text: 'ECharts 入门示例'
+            title : {
+                text: '分笔数据明细',
+                subtext: '时间范围'
             },
-            tooltip: {},
+            grid: {
+                left: '3%',
+                right: '7%',
+                bottom: '3%',
+                containLabel: true
+            },
+            tooltip : {
+                // trigger: 'axis',
+                showDelay : 0,
+                formatter : function (params) {
+                    if (params.value.length > 1) {
+                        return params.seriesName + ' :<br/>'
+                        + params.value[0] + '时间 '
+                        + params.value[1] + '元 ';
+                    }
+                    else {
+                        return params.seriesName + ' :<br/>'
+                        + params.name + ' : '
+                        + params.value + '元 ';
+                    }
+                },
+                axisPointer:{
+                    show: true,
+                    type : 'cross',
+                    lineStyle: {
+                        type : 'dashed',
+                        width : 1
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {},
+                    brush: {
+                        type: ['rect', 'polygon', 'clear']
+                    }
+                }
+            },
+            brush: {
+            },
             legend: {
-                data:['销量']
+                data: ['买盘','卖盘'],
+                left: 'center'
             },
-            xAxis: {
-                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-            },
-            yAxis: {},
-            series: [{
-                name: '销量',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-            }]
-        };
+            xAxis : [
+                {
+                    type : 'time',
+                    scale:true,
+                    axisLabel : {
+                        formatter: '{value} 时间'
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    scale:true,
+                    axisLabel : {
+                        formatter: '{value} 元'
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'买盘',
+                    type:'scatter',
+                    data: [],
+                    markArea: {
+                        silent: true,
+                        itemStyle: {
+                            normal: {
+                                color: 'transparent',
+                                borderWidth: 1,
+                                borderType: 'dashed'
+                            }
+                        },
+                        data: [[{
+                            name: '买盘分布区间',
+                            xAxis: 'min',
+                            yAxis: 'min'
+                        }, {
+                            xAxis: 'max',
+                            yAxis: 'max'
+                        }]]
+                    },
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        lineStyle: {
+                            normal: {
+                                type: 'solid'
+                            }
+                        },
+                        data : [
+                            {type : 'average', name: '平均值'},
+                            { xAxis: 160 }
+                        ]
+                    }
+                },
+                {
+                    name:'卖盘',
+                    type:'scatter',
+                    data: [],
+                    markArea: {
+                        silent: true,
+                        itemStyle: {
+                            normal: {
+                                color: 'transparent',
+                                borderWidth: 1,
+                                borderType: 'dashed'
+                            }
+                        },
+                        data: [[{
+                            name: '卖盘分布区间',
+                            xAxis: 'min',
+                            yAxis: 'min'
+                        }, {
+                            xAxis: 'max',
+                            yAxis: 'max'
+                        }]]
+                    },
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'},
+                            {type : 'min', name: '最小值'}
+                        ]
+                    },
+                    markLine : {
+                        lineStyle: {
+                            normal: {
+                                type: 'solid'
+                            }
+                        },
+                        data : [
+                            {type : 'average', name: '平均值'},
+                            { xAxis: 170 }
+                        ]
+                    }
+                }
+            ]
+        };        
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
+
+        myChart.showLoading();
+
+        // 异步加载数据
+        $.get('/backend/600728/tick_data?start=2017-08-25&end=2017-08-25').done(function (data) {
+            myChart.hideLoading();
+            // 填入数据
+            myChart.setOption({
+                series: [{
+                    // 根据名字对应到相应的系列
+                    name: '买盘',
+                    data: data.buy
+                },
+                {
+                    // 根据名字对应到相应的系列
+                    name: '卖盘',
+                    data: data.sell
+                }]
+            });
+        });
+
     </script>
 </body>
 </html>
