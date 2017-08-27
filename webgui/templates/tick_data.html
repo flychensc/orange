@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>ECharts</title>
+    <title>{{name}}({{code}})</title>
     <!-- 引入 echarts.js -->
     <script src="/static/js/echarts.min.js"></script>
     <!-- 引入 jquery.js -->
@@ -19,7 +19,7 @@
         var option = {
             title : {
                 text: '分笔数据明细',
-                subtext: '时间范围'
+                subtext: '最新市值: {{outstanding}}(亿)'
             },
             grid: {
                 left: '3%',
@@ -33,8 +33,8 @@
                 formatter : function (params) {
                     if (params.value.length > 1) {
                         return params.seriesName + ' :<br/>'
-                        + params.value[0] + '时间 '
-                        + params.value[1] + '元 ';
+                        + '交易时间 '+ params.value[0]
+                        + ' 成交额 '+ params.value[1];
                     }
                     else {
                         return params.seriesName + ' :<br/>'
@@ -70,7 +70,7 @@
                     type : 'time',
                     scale:true,
                     axisLabel : {
-                        formatter: '{value} 时间'
+                        formatter: '{value}'
                     },
                     splitLine: {
                         show: false
