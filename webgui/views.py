@@ -6,6 +6,7 @@ from stock import get_basic_info
 
 
 def annual_report(request, code):
+    recent = request.GET.get('recent')
     basic = get_basic_info(code)
     name = basic['名称']
     return render(request, 'annual_report.html', locals())

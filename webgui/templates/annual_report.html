@@ -105,7 +105,12 @@
         myChart.showLoading();
 
         // 异步加载数据
-        $.get('/backend/{{code}}/annual_report').done(function (data) {
+        {% if recent %}
+        var json_url = '/backend/{{code}}/annual_report?recent={{recent}}'
+        {% else %}
+        var json_url = '/backend/{{code}}/annual_report'
+        {% endif %}
+        $.get(json_url).done(function (data) {
             myChart.hideLoading();
             // 填入数据
             myChart.setOption({

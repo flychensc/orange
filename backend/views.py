@@ -8,21 +8,30 @@ from stock import get_annual_report, get_tick_data, pct_change
 
 
 def annual_report(request, code):
+    recent = request.GET.get('recent')
+
     annual_report = get_annual_report(code)
+    if recent:
+        annual_report = annual_report[annual_report.columns.tolist()[-int(recent):]]
+
     annual_report.rename(columns=lambda x: str(x)[:10], inplace=True)
+
     year_yoy = pct_change(annual_report, axis=1)
     year_yoy = (year_yoy * 100).round(2)
 
+    annual_report.fillna(0, inplace=True)
+    year_yoy.fillna(0, inplace=True)
+
     data_dict = dict()
-    data_dict['date'] = annual_report.columns.tolist()[-5:]
+    data_dict['date'] = annual_report.columns.tolist()
 
-    data_dict['income'] = annual_report.loc['销售额'].values.tolist()[-5:]
-    data_dict['profit'] = annual_report.loc['净利润'].values.tolist()[-5:]
-    data_dict['liability'] = annual_report.loc['所有债务'].values.tolist()[-5:]
+    data_dict['income'] = annual_report.loc['销售额'].values.tolist()
+    data_dict['profit'] = annual_report.loc['净利润'].values.tolist()
+    data_dict['liability'] = annual_report.loc['所有债务'].values.tolist()
 
-    data_dict['income_yoy'] = year_yoy.loc['销售额'].values.tolist()[-5:]
-    data_dict['profit_yoy'] = year_yoy.loc['净利润'].values.tolist()[-5:]
-    data_dict['liability_yoy'] = year_yoy.loc['所有债务'].values.tolist()[-5:]
+    data_dict['income_yoy'] = year_yoy.loc['销售额'].values.tolist()
+    data_dict['profit_yoy'] = year_yoy.loc['净利润'].values.tolist()
+    data_dict['liability_yoy'] = year_yoy.loc['所有债务'].values.tolist()
 
     return JsonResponse(data_dict)
 
