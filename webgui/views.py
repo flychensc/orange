@@ -4,6 +4,13 @@ from stock import get_basic_info
 
 # Create your views here.
 
+
+def annual_report(request, code):
+    basic = get_basic_info(code)
+    name = basic['名称']
+    return render(request, 'annual_report.html', locals())
+
+
 def tick_data(request, code):
     start = request.GET.get('start')
     end = request.GET.get('end')
