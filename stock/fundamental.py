@@ -111,9 +111,7 @@ def get_basic_info(code):
         Series
     """
     basic = ts.get_stock_basics().loc[code]
-    history = ts.get_k_data(code)
-    history.set_index(['date'], inplace=True)
-    history.sort_index(inplace=True)
+    history = ts.get_k_data(code).set_index(['date']).sort_index()
     basic_report = pd.Series(
         {
             '股票代码': code,
