@@ -5,6 +5,10 @@ from stock import get_basic_info
 # Create your views here.
 
 
+def detail(request):
+    return render(request, 'detail.html', locals())
+
+
 def annual_report(request, code):
     recent = request.GET.get('recent')
     basic = get_basic_info(code)
