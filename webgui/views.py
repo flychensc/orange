@@ -5,6 +5,10 @@ from stock import get_basic_info
 # Create your views here.
 
 
+def home(request):
+    return render(request, 'home.html', locals())
+
+
 def detail(request):
     return render(request, 'detail.html', locals())
 

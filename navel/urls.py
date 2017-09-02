@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+import webgui.views
 
 urlpatterns = [
-    url(r'^web/', include('webgui.urls')),
+    url(r'^$', webgui.views.home, name='home'),
+    url(r'^stock/', include('webgui.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^backend/', include('backend.urls')),
+    url(r'^data/', include('backend.urls')),
 ]
