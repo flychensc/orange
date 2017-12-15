@@ -177,7 +177,7 @@
         myChart.showLoading();
 
         // 异步加载数据
-        $.get('/backend/{{code}}/tick_data?start={{start}}&end={{end}}').done(function (data) {
+        $.get('/data/{{code}}/tick_data?start={{start}}&end={{end}}').done(function (data) {
             myChart.hideLoading();
             // 填入数据
             myChart.setOption({

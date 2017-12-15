@@ -106,9 +106,9 @@
 
         // 异步加载数据
         {% if recent %}
-        var json_url = '/backend/{{code}}/annual_report?recent={{recent}}'
+        var json_url = '/data/{{code}}/annual_report?recent={{recent}}'
         {% else %}
-        var json_url = '/backend/{{code}}/annual_report'
+        var json_url = '/data/{{code}}/annual_report'
         {% endif %}
         $.get(json_url).done(function (data) {
             myChart.hideLoading();
