@@ -33,7 +33,7 @@ Done
 orange>
 ```
 
-![basic](./sample/v1_01_basic.png)
+![basic](./sample/v1_01_basic.PNG)
 
 ### detail
 
@@ -46,7 +46,7 @@ Done
 orange>
 ```
 
-![detail](./sample/v1_02_detail.png)
+![detail](./sample/v1_02_detail.PNG)
 
 ## Navel
 
@@ -66,11 +66,11 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CTRL-BREAK.
 ```
 
-![index](./sample/v2_01_index.png)
+![index](./sample/v2_01_index.PNG)
 
-![annual_report](./sample/v2_02_annual_report.png)
+![annual_report](./sample/v2_02_annual_report.PNG)
 
-![tick_data](./sample/v2_03_tick_data.png)
+![tick_data](./sample/v2_03_tick_data.PNG)
 
 ## Test
 
