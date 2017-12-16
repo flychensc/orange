@@ -8,6 +8,9 @@ from fastcache import lru_cache
 
 import tushare as ts
 
+#获取连接备用
+CONS = ts.get_apis()
+
 
 @lru_cache()
 def get_stock_basics(date=None):
@@ -40,47 +43,41 @@ def get_stock_basics(date=None):
 
 
 @lru_cache()
-def get_k_data(code=None,
-               start='',
-               end='',
-               ktype='D',
-               autype='qfq',
-               index=False,
-               retry_count=3,
-               pause=0.001):
+def get_k_data(code,
+               start=None,
+               end=None):
     """
-    获取k线数据
-    ---------
+    BAR数据
     Parameters:
-      code:string
-                  股票代码 e.g. 600848
-      start:string
-                  开始日期 format：YYYY-MM-DD 为空时取上市首日
-      end:string
-                  结束日期 format：YYYY-MM-DD 为空时取最近一个交易日
-      autype:string
-                  复权类型，qfq-前复权 hfq-后复权 None-不复权，默认为qfq
-      ktype：string
-                  数据类型，D=日k线 W=周 M=月 5=5分钟 15=15分钟 30=30分钟 60=60分钟，默认为D
-      retry_count : int, 默认 3
-                  如遇网络等问题重复执行的次数
-      pause : int, 默认 0
-                  重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
-    return
-    -------
-      DataFrame
-          date 交易日期 (index)
-          open 开盘价
-          high  最高价
-          close 收盘价
-          low 最低价
-          volume 成交量
-          amount 成交额
-          turnoverratio 换手率
-          code 股票代码
+    ------------
+    code:证券代码，支持股票,ETF/LOF,期货/期权,港股
+    con:服务器连接 ，通过ts.api()或者ts.xpi()获得
+    start_date:开始日期  YYYY-MM-DD/YYYYMMDD
+    end_date:结束日期 YYYY-MM-DD/YYYYMMDD
+    freq:支持1/5/15/30/60分钟,周/月/季/年
+    asset:证券类型 E:股票和交易所基金，INDEX:沪深指数,X:期货/期权/港股/中概美国/中证指数/国际指数
+    market:市场代码，通过ts.get_markets()获取
+    adj:复权类型,None不复权,qfq:前复权,hfq:后复权
+    ma:均线,支持自定义均线频度，如：ma5/ma10/ma20/ma60/maN
+    factors因子数据，目前支持以下两种：
+        vr:量比,默认不返回，返回需指定：factor=['vr']
+        tor:换手率，默认不返回，返回需指定：factor=['tor']
+                    以上两种都需要：factor=['vr', 'tor']
+    retry_count:网络重试次数
+
+    Return
+    ----------
+    DataFrame
+    code:代码
+    open：开盘close/high/low/vol成交量/amount成交额/maN均价/vr量比/tor换手率
+
+         期货(asset='X')
+    code/open/close/high/low/avg_price：均价  position：持仓量  vol：成交总量
     """
-    return ts.get_k_data(code, start, end, ktype, autype, index, retry_count,
-                         pause)
+    # 替换为新API
+    # return ts.get_k_data(code, start, end, ktype, autype, index, retry_count,
+    #                      pause)
+    return ts.bar(code, conn=CONS, adj='qfq', start_date=start, end_date=end)
 
 
 @lru_cache()
@@ -240,9 +237,7 @@ def get_cashflow_data(year, quarter):
 def sh_margin_details(date='',
                       symbol='',
                       start='',
-                      end='',
-                      retry_count=3,
-                      pause=0.001):
+                      end=''):
     """
     获取沪市融资融券明细列表
     Parameters
@@ -273,11 +268,11 @@ def sh_margin_details(date='',
     rqmcl: 本日融券卖出量
     rqchl: 本日融券偿还量
     """
-    return ts.sh_margin_details(date, symbol, start, end, retry_count, pause)
+    return ts.sh_margin_details(date, symbol, start, end)
 
 
 @lru_cache()
-def sz_margin_details(date='', retry_count=3, pause=0.001):
+def sz_margin_details(date=''):
     """
     获取深市融资融券明细列表
     Parameters
@@ -302,30 +297,36 @@ def sz_margin_details(date='', retry_count=3, pause=0.001):
     rqye: 融券余量(元)
     rzrqye:融资融券余额(元)
     """
-    return ts.sz_margin_details(date, retry_count, pause)
+    return ts.sz_margin_details(date)
 
 
 @lru_cache()
-def get_tick_data(code=None, date=None, retry_count=3, pause=0.001, src='sn'):
+def get_tick_data(code, date=''):
     """
-        获取分笔数据
-    Parameters
-    ------
-        code:string
-                  股票代码 e.g. 600848
-        date:string
-                  日期 format: YYYY-MM-DD
-        retry_count : int, 默认 3
-                  如遇网络等问题重复执行的次数
-        pause : int, 默认 0
-                 重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
-        src : 数据源选择，可输入sn(新浪)、tt(腾讯)、nt(网易)，默认sn
-     return
-     -------
-        DataFrame 当日所有股票交易数据(DataFrame)
-              属性:成交时间、成交价格、价格变动，成交手、成交金额(元)，买卖类型
+    tick数据
+    Parameters:
+    ------------
+    code:证券代码，支持股票,ETF/LOF,期货/期权,港股
+    conn:服务器连接 ，通过ts.api()或者ts.xpi()获得
+    date:日期
+    asset:证券品种，E:沪深交易所股票和基金, INDEX:沪深交易所指数， X:其他证券品种
+    market:市场代码，通过ts.get_markets()获取
+
+    Return
+    ----------
+    DataFrame
+    date:日期
+    time:时间
+    price:成交价
+    vol:成交量
+    type:买卖方向，0-买入 1-卖出 2-集合竞价成交
+            期货  0:开仓  1:多开   -1:空开
+         期货多一列数据oi_change:增仓数据
+
     """
-    return ts.get_tick_data(code, date, retry_count, pause, src)
+    # 替换为新API
+    # return ts.get_tick_data(code, date, retry_count, pause, src)
+    return ts.tick(code=code, conn=CONS, date=date)
 
 
 #不使用cache

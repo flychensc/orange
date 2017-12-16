@@ -53,12 +53,12 @@ def tick_data(request, code):
 
     data_dict = dict()
     data_dict['buy'] = [[
-        row[1]['日期'] + ' ' + row[1]['时间'],
+        row[1]['时间'],
         row[1]['成交额'],
-    ] for row in tick_data[tick_data['买卖类型'] == '买盘'].iterrows()]
+    ] for row in tick_data[tick_data['买卖类型'] == 0].iterrows()]
     data_dict['sell'] = [[
-        row[1]['日期'] + ' ' + row[1]['时间'],
+        row[1]['时间'],
         row[1]['成交额'],
-    ] for row in tick_data[tick_data['买卖类型'] == '卖盘'].iterrows()]
+    ] for row in tick_data[tick_data['买卖类型'] == 1].iterrows()]
 
     return JsonResponse(data_dict)

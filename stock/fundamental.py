@@ -111,14 +111,14 @@ def get_basic_info(code):
         Series
     """
     basic = ts.get_stock_basics().loc[code]
-    history = ts.get_k_data(code).set_index(['date']).sort_index()
+    history = ts.get_k_data(code)
     basic_report = pd.Series(
         {
             '股票代码': code,
             '名称': basic.loc['name'],
             '行业': basic.loc['industry'],
-            '最新价': history['close'][-1],
-            '市值(亿)': basic.loc['outstanding'] * history['close'][-1],
+            '最新价': history['close'][0],
+            '市值(亿)': basic.loc['outstanding'] * history['close'][0],
             '市盈率': basic.loc['pe'],
             '市净率': basic.loc['pb'],
             '每股收益': basic.loc['esp'],
