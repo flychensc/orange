@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="Navel Orange">
+    <meta name="author" content="Shawn Chen">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>个股详情</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">小橙子基金</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right" action="." method="GET">
+            <input type="text" class="form-control" placeholder="Search..." name="code" id="textsearch" autocomplete="off" data-provide="typeahead">
+            <input type="submit" value="Search" hidden="hidden"/>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">概览<span class="sr-only">(current)</span></a></li>
+            <li><a href="#">基本面</a></li>
+            <li><a href="#">技术面</a></li>
+            <li><a href="#">消息面</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+          <h2 class="sub-header">基本信息</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>股票代码</th>
+                  <th>股票名称</th>
+                  <th>行业</th>
+                  <th>最新价格</th>
+                  <th>流通市值(亿)</th>
+                  <th>市盈率</th>
+                  <th>市净率</th>
+                  <th>每股收益</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>600728</td>
+                  <td>佳都科技</td>
+                  <td>软件服务</td>
+                  <td>11.19</td>
+                  <td>148.7151</td>
+                  <td>272.8</td>
+                  <td>5.91</td>
+                  <td>0.021</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <h2 class="sub-header">Level 0 报告</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>存货大于收入</th>
+                  <th>应收账款大于销售额</th>
+                  <th>应付账款大于收入</th>
+                  <th>流动负债大于流动资产</th>
+                  <th>利润偿还非流动负债</th>
+                  <th>利润偿还所有负债</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>正常</td>
+                  <td>正常</td>
+                  <td>正常</td>
+                  <td>正常</td>
+                  <td>0.56</td>
+                  <td>17.36</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          
+          <h2 class="sub-header">Level 1 报告</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <!--thead>
+                <tr>
+                  <th>类别</th>
+                  <th>项目</th>
+                  <th>数值</th>
+                </tr>
+              </thead-->
+              <tbody>
+                <tr>
+                  <td rowspan="3">盈利能力</td>
+                  <td>净资产收益率(%)</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>盈利能力</td-->
+                  <td>净利率(%)</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>盈利能力</td-->
+                  <td>每股主营业务收入(元)</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <td rowspan="3">营运能力</td>
+                  <td>应收账款周转率(次)</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>营运能力</td-->
+                  <td>存货周转率(次)</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>营运能力</td-->
+                  <td>流动资产周转率(次)</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <td rowspan="3">成长能力</td>
+                  <td>主营业务收入增长率(%)</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>成长能力</td-->
+                  <td>净利润增长率(%)</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>成长能力</td-->
+                  <td>每股收益增长率</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <td rowspan="4">偿债能力</td>
+                  <td>流动比率</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>偿债能力</td-->
+                  <td>速动比率</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>偿债能力</td-->
+                  <td>现金比率</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>偿债能力</td-->
+                  <td>利息支付倍数</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <td rowspan="4">现金流量</td>
+                  <td>资产的经营现金流量回报率</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>现金流量</td-->
+                  <td>经营现金净流量与净利润的比率</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>现金流量</td-->
+                  <td>经营现金净流量对负债比率</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <!--td>现金流量</td-->
+                  <td>现金流量比率</td>
+                  <td>100</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap3-typeahead.min.js"></script>
+
+    <script type="text/javascript">
+
+    $(document).ready(function() {
+      $.get("/data/stock_list", function(data){
+        $("#textsearch").typeahead({ source:data['stocks'] });
+      },'json');      
+    })
+
+    </script>
+  </body>
+</html>
