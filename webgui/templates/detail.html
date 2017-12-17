@@ -13,6 +13,8 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
 
     <!-- Custom styles for this template -->
     <link href="/static/css/dashboard.css" rel="stylesheet">
@@ -60,7 +62,8 @@
 
           <h2 class="sub-header">基本信息</h2>
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" id="table_basic_info"></table>>
+              <!--
               <thead>
                 <tr>
                   <th>股票代码</th>
@@ -85,6 +88,7 @@
                   <td>0.021</td>
                 </tr>
               </tbody>
+              -->
             </table>
           </div>
           
@@ -225,6 +229,9 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/bootstrap3-typeahead.min.js"></script>
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <!-- put your locale files after bootstrap-table.js -->    
+    <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
 
     <script type="text/javascript">
 
@@ -233,6 +240,36 @@
         $("#textsearch").typeahead({ source:data['stocks'] });
       },'json');      
     })
+
+    $('#table_basic_info').bootstrapTable({
+      url: "/data/{{code}}/basic_info",
+      columns: [{
+          field: 'code',
+          title: '股票代码'
+      }, {
+          field: 'name',
+          title: '股票名称'
+      }, {
+          field: 'industry',
+          title: '行业'
+      }, {
+          field: 'close',
+          title: '最新价格'
+      }, {
+          field: 'nmc',
+          title: '流通市值(亿)'
+      }, {
+          field: 'pe',
+          title: '市盈率'
+      }, {
+          field: 'pb',
+          title: '市净率'
+      }, {
+          field: 'esp',
+          title: '每股收益'
+      }, ]
+
+    });
 
     </script>
   </body>

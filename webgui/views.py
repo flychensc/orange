@@ -10,6 +10,7 @@ def home(request):
 
 
 def detail(request):
+    code = request.GET.get('code')
     return render(request, 'detail.html', locals())
 
 
