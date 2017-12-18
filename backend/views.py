@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 import json
-from stock import get_annual_report, get_tick_data, pct_change, get_basic_info
+from stock import get_annual_report, get_tick_data, pct_change, get_basic_info, get_level0_report
 from stock.tu_wrap import get_stock_basics
 
 # Create your views here.
@@ -76,6 +76,23 @@ def basic_info(request, code):
     data_dict['pe'] = basic_info['市盈率']
     data_dict['pb'] = basic_info['市净率']
     data_dict['esp'] = basic_info['每股收益']
+
+    data_array = list()
+    data_array.append(data_dict)
+    return JsonResponse(data_array, safe=False)
+
+
+def level_0(request, code):
+    annual_report = get_annual_report(code)
+    level_report = get_level0_report(annual_report.iloc[:, -1])
+
+    data_dict = dict()
+    data_dict['Inv'] = level_report['存货大于收入']
+    data_dict['AccRec'] = level_report['应收账款大于销售额']
+    data_dict['AccPay'] = level_report['应付账款大于收入']
+    data_dict['CurLia'] = level_report['流动负债大于流动资产']
+    data_dict['ProNon'] = level_report['利润偿还非流动负债']
+    data_dict['ProAll'] = level_report['利润偿还所有负债']
 
     data_array = list()
     data_array.append(data_dict)

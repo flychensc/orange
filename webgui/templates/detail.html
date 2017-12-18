@@ -62,7 +62,7 @@
 
           <h2 class="sub-header">基本信息</h2>
           <div class="table-responsive">
-            <table class="table table-striped" id="table_basic_info"></table>>
+            <table class="table table-striped" id="table_basic_info"/>
               <!--
               <thead>
                 <tr>
@@ -94,7 +94,8 @@
           
           <h2 class="sub-header">Level 0 报告</h2>
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" id="table_level_0">
+              <!--
               <thead>
                 <tr>
                   <th>存货大于收入</th>
@@ -115,6 +116,7 @@
                   <td>17.36</td>
                 </tr>
               </tbody>
+              -->
             </table>
           </div>
           
@@ -267,6 +269,30 @@
       }, {
           field: 'esp',
           title: '每股收益'
+      }, ]
+
+    });
+
+    $('#table_level_0').bootstrapTable({
+      url: "/data/{{code}}/level_0",
+      columns: [{
+          field: 'Inv',
+          title: '存货大于收入'
+      }, {
+          field: 'AccRec',
+          title: '应收账款大于销售额'
+      }, {
+          field: 'AccPay',
+          title: '应付账款大于收入'
+      }, {
+          field: 'CurLia',
+          title: '流动负债大于流动资产'
+      }, {
+          field: 'ProNon',
+          title: '利润偿还非流动负债'
+      }, {
+          field: 'ProAll',
+          title: '利润偿还所有负债'
       }, ]
 
     });
