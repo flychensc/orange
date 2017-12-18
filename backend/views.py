@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 import json
-from stock import get_annual_report, get_tick_data, pct_change, get_basic_info, get_level0_report
+from stock import get_annual_report, get_tick_data, pct_change, get_basic_info, get_level0_report, get_level1_report
+from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
 from stock.tu_wrap import get_stock_basics
 
 # Create your views here.
@@ -96,4 +97,20 @@ def level_0(request, code):
 
     data_array = list()
     data_array.append(data_dict)
+    return JsonResponse(data_array, safe=False)
+
+
+def level_1(request, code):
+    level_report = get_level1_report(code, 2016, 4)
+
+    data_array = list()
+    for idx in LEVEL1_REPORT_INDEX:
+        data_dict = dict()
+
+        data_dict['class'] = LEVEL_REPORT_DICT[idx]
+        data_dict['item'] = idx
+        data_dict['value'] = level_report[idx]
+
+        data_array.append(data_dict)
+
     return JsonResponse(data_array, safe=False)
