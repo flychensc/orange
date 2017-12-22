@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from stock import get_basic_info
@@ -11,6 +12,8 @@ def home(request):
 
 def detail(request):
     code = request.GET.get('code')
+    if len(code) > 6:
+        return HttpResponseRedirect(f"/stock/detail?code={code:{6}.{6}}")
     return render(request, 'detail.html', locals())
 
 
