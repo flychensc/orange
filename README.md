@@ -68,6 +68,8 @@ Quit the server with CTRL-BREAK.
 
 ![index](./sample/v2_01_index.PNG)
 
+![detail_overview](./sample/v2_04_detail_overview.PNG)
+
 ![annual_report](./sample/v2_02_annual_report.PNG)
 
 ![tick_data](./sample/v2_03_tick_data.PNG)
@@ -97,3 +99,8 @@ OK
 
 orange>
 ```
+
+## git开发注意
+
+1. 尽量不要在**master**上直接修改，通过`git merge develop`合并**delelop**上的改动。
+2. **feature**分支可以使用`git rebase develop`合并**develop**的改动，反之，**develop**分支可以使用`git rebase feature`合并**feature**的改动。

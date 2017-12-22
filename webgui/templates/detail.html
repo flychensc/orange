@@ -13,6 +13,8 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
 
     <!-- Custom styles for this template -->
     <link href="/static/css/dashboard.css" rel="stylesheet">
@@ -60,7 +62,8 @@
 
           <h2 class="sub-header">基本信息</h2>
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" id="table_basic_info"/>
+              <!--
               <thead>
                 <tr>
                   <th>股票代码</th>
@@ -85,12 +88,14 @@
                   <td>0.021</td>
                 </tr>
               </tbody>
+              -->
             </table>
           </div>
           
           <h2 class="sub-header">Level 0 报告</h2>
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" id="table_level_0">
+              <!--
               <thead>
                 <tr>
                   <th>存货大于收入</th>
@@ -111,13 +116,14 @@
                   <td>17.36</td>
                 </tr>
               </tbody>
+              -->
             </table>
           </div>
           
           
           <h2 class="sub-header">Level 1 报告</h2>
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" id="table_level_1">
               <!--thead>
                 <tr>
                   <th>类别</th>
@@ -125,6 +131,7 @@
                   <th>数值</th>
                 </tr>
               </thead-->
+              <!--
               <tbody>
                 <tr>
                   <td rowspan="3">盈利能力</td>
@@ -132,12 +139,10 @@
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>盈利能力</td-->
                   <td>净利率(%)</td>
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>盈利能力</td-->
                   <td>每股主营业务收入(元)</td>
                   <td>100</td>
                 </tr>
@@ -147,12 +152,10 @@
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>营运能力</td-->
                   <td>存货周转率(次)</td>
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>营运能力</td-->
                   <td>流动资产周转率(次)</td>
                   <td>100</td>
                 </tr>
@@ -162,12 +165,10 @@
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>成长能力</td-->
                   <td>净利润增长率(%)</td>
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>成长能力</td-->
                   <td>每股收益增长率</td>
                   <td>100</td>
                 </tr>
@@ -177,17 +178,14 @@
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>偿债能力</td-->
                   <td>速动比率</td>
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>偿债能力</td-->
                   <td>现金比率</td>
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>偿债能力</td-->
                   <td>利息支付倍数</td>
                   <td>100</td>
                 </tr>
@@ -197,21 +195,19 @@
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>现金流量</td-->
                   <td>经营现金净流量与净利润的比率</td>
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>现金流量</td-->
                   <td>经营现金净流量对负债比率</td>
                   <td>100</td>
                 </tr>
                 <tr>
-                  <!--td>现金流量</td-->
                   <td>现金流量比率</td>
                   <td>100</td>
                 </tr>
               </tbody>
+              -->
             </table>
           </div>
 
@@ -225,6 +221,9 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/bootstrap3-typeahead.min.js"></script>
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <!-- put your locale files after bootstrap-table.js -->    
+    <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
 
     <script type="text/javascript">
 
@@ -234,6 +233,112 @@
       },'json');      
     })
 
+    $('#table_basic_info').bootstrapTable({
+      url: "/data/{{code}}/basic_info",
+      columns: [{
+          field: 'code',
+          title: '股票代码'
+      }, {
+          field: 'name',
+          title: '股票名称'
+      }, {
+          field: 'industry',
+          title: '行业'
+      }, {
+          field: 'close',
+          title: '最新价格'
+      }, {
+          field: 'nmc',
+          title: '流通市值(亿)'
+      }, {
+          field: 'pe',
+          title: '市盈率'
+      }, {
+          field: 'pb',
+          title: '市净率'
+      }, {
+          field: 'esp',
+          title: '每股收益'
+      }, ]
+
+    });
+
+    $('#table_level_0').bootstrapTable({
+      url: "/data/{{code}}/level_0",
+      columns: [{
+          field: 'Inv',
+          title: '存货大于收入'
+      }, {
+          field: 'AccRec',
+          title: '应收账款大于销售额'
+      }, {
+          field: 'AccPay',
+          title: '应付账款大于收入'
+      }, {
+          field: 'CurLia',
+          title: '流动负债大于流动资产'
+      }, {
+          field: 'ProNon',
+          title: '利润偿还非流动负债'
+      }, {
+          field: 'ProAll',
+          title: '利润偿还所有负债'
+      }, ]
+
+    });
+
+    $('#table_level_1').bootstrapTable({
+      showHeader: false,
+      url: "/data/{{code}}/level_1",
+      columns: [{
+          field: 'class',
+          title: '类别'
+      }, {
+          field: 'item',
+          title: '项目'
+      }, {
+          field: 'value',
+          title: '数值'
+      }, ]
+
+    });
+    
+    /*Refer to 
+    http://bootstrap-table.wenzhixin.net.cn/zh-cn/faq/
+    */
+    $('#table_level_1').on('load-success.bs.table column-switch.bs.table page-change.bs.table search.bs.table', function () {
+      $('#table_level_1').bootstrapTable('mergeCells', {
+          index: 0, 
+          field: 'class',
+          colspan: 1,
+          rowspan: 3
+      });
+      $('#table_level_1').bootstrapTable('mergeCells', {
+          index: 3, 
+          field: 'class',
+          colspan: 1,
+          rowspan: 3
+      });
+      $('#table_level_1').bootstrapTable('mergeCells', {
+          index: 6, 
+          field: 'class',
+          colspan: 1,
+          rowspan: 3
+      });
+      $('#table_level_1').bootstrapTable('mergeCells', {
+          index: 9, 
+          field: 'class',
+          colspan: 1,
+          rowspan: 4
+      });
+      $('#table_level_1').bootstrapTable('mergeCells', {
+          index: 13, 
+          field: 'class',
+          colspan: 1,
+          rowspan: 4
+      });
+    });    
+    
     </script>
   </body>
 </html>

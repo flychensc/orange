@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 import json
-from stock import get_annual_report, get_tick_data, pct_change
+from stock import get_annual_report, get_tick_data, pct_change, get_basic_info, get_level0_report, get_level1_report
+from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
 from stock.tu_wrap import get_stock_basics
 
 # Create your views here.
@@ -53,12 +54,63 @@ def tick_data(request, code):
 
     data_dict = dict()
     data_dict['buy'] = [[
-        row[1]['日期'] + ' ' + row[1]['时间'],
+        row[1]['时间'],
         row[1]['成交额'],
-    ] for row in tick_data[tick_data['买卖类型'] == '买盘'].iterrows()]
+    ] for row in tick_data[tick_data['买卖类型'] == 0].iterrows()]
     data_dict['sell'] = [[
-        row[1]['日期'] + ' ' + row[1]['时间'],
+        row[1]['时间'],
         row[1]['成交额'],
-    ] for row in tick_data[tick_data['买卖类型'] == '卖盘'].iterrows()]
+    ] for row in tick_data[tick_data['买卖类型'] == 1].iterrows()]
 
     return JsonResponse(data_dict)
+
+
+def basic_info(request, code):
+    basic_info = get_basic_info(code)
+
+    data_dict = dict()
+    data_dict['code'] = basic_info['股票代码']
+    data_dict['name'] = basic_info['名称']
+    data_dict['industry'] = basic_info['行业']
+    data_dict['close'] = basic_info['最新价']
+    data_dict['nmc'] = basic_info['市值(亿)']
+    data_dict['pe'] = basic_info['市盈率']
+    data_dict['pb'] = basic_info['市净率']
+    data_dict['esp'] = basic_info['每股收益']
+
+    data_array = list()
+    data_array.append(data_dict)
+    return JsonResponse(data_array, safe=False)
+
+
+def level_0(request, code):
+    annual_report = get_annual_report(code)
+    level_report = get_level0_report(annual_report.iloc[:, -1])
+
+    data_dict = dict()
+    data_dict['Inv'] = level_report['存货大于收入']
+    data_dict['AccRec'] = level_report['应收账款大于销售额']
+    data_dict['AccPay'] = level_report['应付账款大于收入']
+    data_dict['CurLia'] = level_report['流动负债大于流动资产']
+    data_dict['ProNon'] = level_report['利润偿还非流动负债']
+    data_dict['ProAll'] = level_report['利润偿还所有负债']
+
+    data_array = list()
+    data_array.append(data_dict)
+    return JsonResponse(data_array, safe=False)
+
+
+def level_1(request, code):
+    level_report = get_level1_report(code, 2016, 4)
+
+    data_array = list()
+    for idx in LEVEL1_REPORT_INDEX:
+        data_dict = dict()
+
+        data_dict['class'] = LEVEL_REPORT_DICT[idx]
+        data_dict['item'] = idx
+        data_dict['value'] = level_report[idx]
+
+        data_array.append(data_dict)
+
+    return JsonResponse(data_array, safe=False)
