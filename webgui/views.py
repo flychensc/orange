@@ -12,9 +12,13 @@ def home(request):
 
 def detail(request):
     code = request.GET.get('code')
-    if len(code) > 6:
+    if code and len(code) > 6:
         return HttpResponseRedirect(f"/stock/detail?code={code:{6}.{6}}")
     return render(request, 'detail.html', locals())
+
+
+def database(request):
+    return render(request, 'database.html', locals())
 
 
 def annual_report(request, code):

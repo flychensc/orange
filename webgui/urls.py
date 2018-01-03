@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     url(r'^detail$', views.detail, name='detail'),
+    url(r'^database$', views.database, name='database'),
     url(r'^(?P<code>[0-9]+)/annual_report$', views.annual_report, name='annual_report'),
     url(r'^(?P<code>[0-9]+)/tick_data$', views.tick_data, name='tick_data'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

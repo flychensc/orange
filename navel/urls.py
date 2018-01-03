@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^stock/', include('webgui.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^data/', include('backend.urls')),
+    url(r'^database/', include('storage.urls')),
 ]
