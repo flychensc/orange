@@ -130,10 +130,10 @@
         //Ajax调用处理
         $.ajax({
           type: "POST",
+          async: false,
           url: "/database/update/stock_info",
-          data: "name=garfield&age=18",
-          success: function(data){
-            $("#myDiv").html('<h2>'+data+'</h2>');
+          success: function(resp){
+            alert("更新" + resp.status);
           }
         });
       })
