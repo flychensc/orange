@@ -34,9 +34,9 @@ def _stock_basics():
     # change sql type
     stock_basics['timeToMarket'] = stock_basics['timeToMarket'].apply(lambda x:datetime.datetime.strptime(str(x), "%Y%m%d").date())
     # END
-    def _save_one(data):
-        basic = StockBasics(
-            code = data.name,
+
+    stock_basics_list = [StockBasics(
+            code = code,
             name = data['name'],
             industry = data['industry'],
             area = data['area'],
@@ -52,7 +52,6 @@ def _stock_basics():
             bvps = data['bvps'],
             pb = data['pb'],
             timeToMarket = str(data['timeToMarket']),
-        )
-        basic.save()
-    stock_basics.apply(lambda x:_save_one(x), axis=1)
+        ) for code, data in stock_basics.iterrows()]
+    StockBasics.objects.bulk_create(stock_basics_list)
 
