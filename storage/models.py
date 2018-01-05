@@ -52,8 +52,8 @@ class History(models.Model):
         vol:成交量
         amount:成交额
     """
-    code = models.CharField(max_length=6, primary_key=True, db_index=True)
-    day = models.DateField(primary_key=True, db_index=True)
+    code = models.CharField(max_length=6)
+    day = models.DateField()
     open = models.FloatField()
     close = models.FloatField()
     high = models.FloatField()
@@ -61,4 +61,5 @@ class History(models.Model):
     vol = models.FloatField()
     amount = models.FloatField()
 
-    unique_together = ("code", "day") 
+    class Meta:
+        unique_together = ("code", "day") 
