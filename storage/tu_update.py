@@ -53,5 +53,7 @@ def _stock_basics():
             pb = data['pb'],
             timeToMarket = str(data['timeToMarket']),
         ) for code, data in stock_basics.iterrows()]
+    # 先清空
+    StockBasics.objects.all().delete()
+    # 再保存
     StockBasics.objects.bulk_create(stock_basics_list)
-
