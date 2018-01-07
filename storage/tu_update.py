@@ -61,6 +61,7 @@ def _stock_basics():
 
 def _report_data(year, quarter):
     report_data = ts.get_report_data(year, quarter)
+    report_data.drop_duplicates(inplace=True)
 
     report_data_list = [ReportData(
             code = data['code'],
