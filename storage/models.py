@@ -63,3 +63,31 @@ class History(models.Model):
 
     class Meta:
         unique_together = ("code", "day") 
+
+
+class ReportData(models.Model):
+    """
+        业绩报表数据
+        code,代码
+        name,名称
+        eps,每股收益
+        eps_yoy,每股收益同比(%)
+        bvps,每股净资产
+        roe,净资产收益率(%)
+        epcf,每股现金流量(元)
+        net_profits,净利润(万元)
+        profits_yoy,净利润同比(%)
+        distrib,分配方案
+        report_date,发布日期
+    """
+    code = models.CharField(max_length=6, primary_key=True, db_index=True)
+    name = models.CharField(max_length=8) 
+    eps = models.FloatField(null=True)
+    eps_yoy = models.FloatField(null=True)   
+    bvps = models.FloatField(null=True)
+    roe = models.FloatField(null=True)
+    epcf = models.FloatField(null=True)
+    net_profits = models.FloatField(null=True)
+    profits_yoy = models.FloatField(null=True)
+    distrib = models.CharField(max_length=16, null=True)
+    report_date = models.CharField(max_length=6)

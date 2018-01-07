@@ -48,54 +48,70 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">基础信息<span class="sr-only">(current)</span></a></li>
-            <li><a href="#">历史数据</a></li>
-            <li><a href="#">财务数据</a></li>
+            <li class="active"><a href="#basic_info">基础信息<span class="sr-only">(current)</span></a></li>
+            <li><a href="#history">历史数据</a></li>
+            <li><a href="#fundamental">财务数据</a></li>
             <li><a href="#">TICK数据</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          {% csrf_token %}
 
-          <h2 class="sub-header">基础信息</h2>
-          <h3>
-            <span class="label label-info">离线日期</span>
-          </h3>
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"><span class="sr-only">60% Complete</span></div>
+          <div class="bs-docs-section" id="basic_info">
+            <h2 class="sub-header">基础信息</h2>
+            <p>
+              <button class="btn btn-primary" type="button" id=basic_info_update>更新数据</button>
+            </p>
           </div>
-          <p>
-            {% csrf_token %}
-            <button class="btn btn-primary" type="button" id=basic_info_update>更新数据</button>
-          </p>
-          <p>
-            <button class="btn btn-danger" type="button">清除数据</button>
-          </p>
           
-          <h2 class="sub-header">历史数据</h2>
-          <div class="table-responsive">
-            <table class="table table-striped" id="table_level_0">
-              <!--
-              <thead>
-                <tr>
-                  <th>存货大于收入</th>
-                  <th>应收账款大于销售额</th>
-                  <th>应付账款大于收入</th>
-                  <th>流动负债大于流动资产</th>
-                  <th>利润偿还非流动负债</th>
-                  <th>利润偿还所有负债</th>
-                </tr>
-              </thead>
+          <div class="bs-docs-section" id="history">
+            <h2 class="sub-header">历史数据</h2>
+            <p>
+              <button class="btn btn-primary" type="button" id=history_update>更新数据</button>
+            </p>
+          </div>
+
+          <div class="bs-docs-section" id="fundamental">
+            <h2 class="sub-header">财务数据</h2>
+            <table class="table table-striped"/>
               <tbody>
                 <tr>
-                  <td>正常</td>
-                  <td>正常</td>
-                  <td>正常</td>
-                  <td>正常</td>
-                  <td>0.56</td>
-                  <td>17.36</td>
+                  <td>业绩报表</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=report_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>盈利能力</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=profit_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>营运能力</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=operation_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>成长能力</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=growth_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>偿债能力</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=debtpaying_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>现金流量</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=cashflow_data_update>更新数据</button>
+                  </td>
                 </tr>
               </tbody>
-              -->
             </table>
           </div>
 
@@ -133,6 +149,18 @@
           type: "POST",
           async: false,
           url: "/database/update/stock_info",
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#report_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/report_data",
           success: function(resp){
             alert("更新" + resp.status);
           }

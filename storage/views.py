@@ -14,3 +14,13 @@ def update_stock_info(request):
     else:
         resp_dict['status'] = '失败'
     return JsonResponse(resp_dict)
+
+
+def update_report_data(request):
+    resp_dict = {}
+    if request.method == 'POST' and request.is_ajax():
+        resp_dict['status'] = '成功'
+        tu_update._report_data(2017, 3)
+    else:
+        resp_dict['status'] = '失败'
+    return JsonResponse(resp_dict)

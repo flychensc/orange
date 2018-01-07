@@ -2,7 +2,7 @@ import logging
 import datetime
 import tushare as ts
 import numpy as np
-from .models import StockBasics
+from .models import *
 
 #获取连接备用
 CONS = ts.get_apis()
@@ -57,3 +57,25 @@ def _stock_basics():
     StockBasics.objects.all().delete()
     # 再保存
     StockBasics.objects.bulk_create(stock_basics_list)
+
+
+def _report_data(year, quarter):
+    report_data = ts.get_report_data(year, quarter)
+
+    report_data_list = [ReportData(
+            code = data['code'],
+            name = data['name'],
+            eps = data['eps'],
+            eps_yoy = data['eps_yoy'],
+            bvps = data['bvps'],
+            roe = data['roe'],
+            epcf = data['epcf'],
+            net_profits = data['net_profits'],
+            profits_yoy = data['profits_yoy'],
+            distrib = data['distrib'],
+            report_date = data['report_date'],
+        ) for index, data in report_data.iterrows()]
+    # 先清空
+    ReportData.objects.all().delete()
+    # 再保存
+    ReportData.objects.bulk_create(report_data_list)
