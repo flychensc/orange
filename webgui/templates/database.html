@@ -73,7 +73,7 @@
 
           <div class="bs-docs-section" id="fundamental">
             <h2 class="sub-header">财务数据</h2>
-            <table class="table table-striped"/>
+            <table class="table table-striped">
               <tbody>
                 <tr>
                   <td>业绩报表</td>
@@ -160,7 +160,73 @@
         $.ajax({
           type: "POST",
           async: false,
-          url: "/database/update/report_data",
+          url: "/database/update/fundamental",
+          data: {db:"report_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#profit_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"profit_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#operation_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"operation_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#growth_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"growth_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#debtpaying_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"debtpaying_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#cashflow_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"cashflow_data", year:2017, quarter:3},
           success: function(resp){
             alert("更新" + resp.status);
           }

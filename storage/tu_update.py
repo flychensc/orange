@@ -146,6 +146,7 @@ def growth_data(year, quarter):
 def debtpaying_data(year, quarter):
     debtpaying_data = ts.get_debtpaying_data(year, quarter)
     debtpaying_data.drop_duplicates(inplace=True)
+    debtpaying_data.replace({"--":np.NAN}, inplace=True)
 
     debtpaying_data_list = [DebtpayingData(
             code = data['code'],

@@ -16,7 +16,7 @@ def update_stock_info(request):
     return JsonResponse(resp_dict)
 
 
-def update_report_data(request):
+def update_fundamental(request):
     _tu_update_handle = {
         'report_data': tu_update.report_data,
         'profit_data': tu_update.profit_data,
@@ -28,8 +28,8 @@ def update_report_data(request):
     resp_dict = {}
     if request.method == 'POST' and request.is_ajax():
         db = request.POST.get('db')
-        year = request.POST.get('year')
-        quarter = request.POST.get('quarter')
+        year = int(request.POST.get('year'))
+        quarter = int(request.POST.get('quarter'))
         resp_dict['status'] = '成功'
         _tu_update_handle[db](year, quarter)
     else:
