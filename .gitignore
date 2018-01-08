@@ -99,3 +99,8 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# User-Define
+.vscode/
+run_*.bat
+*.sqlite3
