@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="Navel Orange">
+    <meta name="author" content="Shawn Chen">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>数据库</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">小橙子基金</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="database">数据库</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#basic_info">基础信息<span class="sr-only">(current)</span></a></li>
+            <li><a href="#history">历史数据</a></li>
+            <li><a href="#fundamental">财务数据</a></li>
+            <li><a href="#">TICK数据</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          {% csrf_token %}
+
+          <div class="bs-docs-section" id="basic_info">
+            <h2 class="sub-header">基础信息</h2>
+            <p>
+              <button class="btn btn-primary" type="button" id=basic_info_update>更新数据</button>
+            </p>
+          </div>
+          
+          <div class="bs-docs-section" id="history">
+            <h2 class="sub-header">历史数据</h2>
+            <p>
+              <button class="btn btn-primary" type="button" id=history_update>更新数据</button>
+            </p>
+          </div>
+
+          <div class="bs-docs-section" id="fundamental">
+            <h2 class="sub-header">财务数据</h2>
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <td>业绩报表</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=report_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>盈利能力</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=profit_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>营运能力</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=operation_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>成长能力</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=growth_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>偿债能力</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=debtpaying_data_update>更新数据</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>现金流量</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" type="button" id=cashflow_data_update>更新数据</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/js.cookie.js"></script>
+
+    <script type="text/javascript">
+
+      // https://docs.djangoproject.com/en/2.0/ref/csrf/
+      var csrftoken = Cookies.get('csrftoken');
+
+      function csrfSafeMethod(method) {
+          // these HTTP methods do not require CSRF protection
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+      
+      $("#basic_info_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/stock_info",
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#report_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"report_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#profit_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"profit_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#operation_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"operation_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#growth_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"growth_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#debtpaying_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"debtpaying_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+      
+      $("#cashflow_data_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/fundamental",
+          data: {db:"cashflow_data", year:2017, quarter:3},
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+    </script>
+  </body>
+</html>

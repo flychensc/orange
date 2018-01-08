@@ -5,6 +5,7 @@
 import numpy as np
 import pandas as pd
 import stock.tu_wrap as ts
+import stock.db_wrap as tu
 
 from stock import get_balance_sheet, get_profit_statement
 
@@ -110,7 +111,7 @@ def get_basic_info(code):
     ------
         Series
     """
-    basic = ts.get_stock_basics().loc[code]
+    basic = tu.get_stock_basics().loc[code]
     history = ts.get_k_data(code)
     basic_report = pd.Series(
         {
@@ -178,12 +179,12 @@ def get_level1_report(code, year, quarter):
     ------
         Series
     """
-    #report_data = ts.get_report_data(year, quarter).set_index(['code'])
-    profit_data = ts.get_profit_data(year, quarter).set_index(['code'])
-    operation_data = ts.get_operation_data(year, quarter).set_index(['code'])
-    growth_data = ts.get_growth_data(year, quarter).set_index(['code'])
-    debtpaying_data = ts.get_debtpaying_data(year, quarter).set_index(['code'])
-    cashflow_data = ts.get_cashflow_data(year, quarter).set_index(['code'])
+    #report_data = tu.get_report_data(year, quarter).set_index(['code'])
+    profit_data = tu.get_profit_data(year, quarter).set_index(['code'])
+    operation_data = tu.get_operation_data(year, quarter).set_index(['code'])
+    growth_data = tu.get_growth_data(year, quarter).set_index(['code'])
+    debtpaying_data = tu.get_debtpaying_data(year, quarter).set_index(['code'])
+    cashflow_data = tu.get_cashflow_data(year, quarter).set_index(['code'])
 
     #report_data[['name', 'distrib']]
     level1_report = profit_data[['roe', 'net_profit_ratio', 'bips']].merge(
