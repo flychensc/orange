@@ -337,6 +337,41 @@
       $('#cashflow_data_datepicker').datetimepicker({
         pickTime: false
       });
+      
+      $(document).ready(function() {
+        var today = new Date()
+        var yearNow = today.getFullYear()
+        var MonthNow = today.getMonth()
+
+        var to_last_month = {
+          1:12, 2:12, 3:12, 
+          4:3, 5:3, 6:3, 
+          7:6, 8:6, 9:6, 
+          10:9, 11:9, 12:9, 
+        }
+        var get_day = {
+          3:31, 
+          6:30, 
+          9:30, 
+          12:31, 
+        }
+
+        var year = yearNow
+        if (MonthNow < 4)
+        {
+          year -= 1;
+        }
+        var month = to_last_month[MonthNow+1];
+        var day = get_day[month];
+        var lastDate = new Date(year, month-1, day);
+
+        $("#report_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#profit_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#operation_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#growth_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#debtpaying_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#cashflow_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+      });
     </script>
   </body>
 </html>
