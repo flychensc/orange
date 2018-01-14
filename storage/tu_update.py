@@ -66,6 +66,7 @@ def _get_history_worker(todo_q, result_q):
     while not todo_q.empty():
         try:
             (retry_count, stock_id) = todo_q.get(timeout=3)
+            print("%(stock_id)s try %(retry_count)d times" % locals())
             # 获取历史数据
             his_data = ts.bar(stock_id, conn=cons, adj='qfq')
             result_q.put(his_data)
@@ -75,6 +76,7 @@ def _get_history_worker(todo_q, result_q):
             todo_q.put((retry_count+1, stock_id))
         except Exception as e:
             todo_q.put((retry_count+1, stock_id))
+            print(e)
         gevent.sleep(0)
 
 
