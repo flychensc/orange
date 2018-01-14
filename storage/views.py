@@ -16,6 +16,16 @@ def update_stock_info(request):
     return JsonResponse(resp_dict)
 
 
+def update_history(request):
+    resp_dict = {}
+    if request.method == 'POST' and request.is_ajax():
+        resp_dict['status'] = '成功'
+        tu_update.history()
+    else:
+        resp_dict['status'] = '失败'
+    return JsonResponse(resp_dict)
+
+
 def update_fundamental(request):
     _tu_update_handle = {
         'report_data': tu_update.report_data,

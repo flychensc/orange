@@ -211,6 +211,18 @@
           }
         });
       })
+
+      $("#history_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/history",
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
       
       $("#report_data_update").click(function() {
         var picker = $("#report_data_datepicker").data('datetimepicker');
