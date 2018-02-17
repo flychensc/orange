@@ -63,13 +63,13 @@ def stock_basics():
 
 def _get_history_worker(todo_q, result_q):
     start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
-    cons = ts.get_apis()
     while not todo_q.empty():
         try:
             (retry_count, stock_id) = todo_q.get(timeout=3)
             print("%(stock_id)s try %(retry_count)d times" % locals())
             # 获取历史数据
-            his_data = ts.bar(stock_id, conn=cons, start_date=start_date, adj='qfq')
+            his_data = ts.get_k_data(stock_id, start=start_date)
+            his_data.set_index(["date"], inplace=True)
             result_q.put(his_data)
         except gevent.queue.Empty:
             return
@@ -110,13 +110,12 @@ def history():
         for day, data in history.iterrows():
             history_list.append(History(
                 code = data['code'],
-                day = day.strftime("%Y-%m-%d"),
+                day = str(day),
                 open = data['open'],
                 close = data['close'],
                 high = data['high'],
                 low = data['low'],
-                vol = data['vol'],
-                amount = data['amount'],
+                vol = data['volume'],
             ))
     # 先清空
     History.objects.all().delete()
