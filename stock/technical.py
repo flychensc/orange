@@ -11,7 +11,7 @@ from gevent.pool import Group
 
 MARGIN_COLUMNS = ['融资余额(元)', '融资买入额(元)', '融券余量', '融券卖出量']
 
-TICK_COLUMNS = ['时间', '成交价', '成交额', '买卖类型']
+TICK_COLUMNS = ['时间', '成交价', '成交量', '买卖类型']
 
 
 def _get_sz_margin_details(date, output_list):
