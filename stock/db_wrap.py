@@ -60,6 +60,55 @@ def get_stock_basics(date=None):
     return tu_data
 
 
+def get_k_data(code,
+               start=None,
+               end=None):
+    """
+    BAR数据
+    Parameters:
+    ------------
+    code:证券代码，支持股票,ETF/LOF,期货/期权,港股
+    con:服务器连接 ，通过ts.api()或者ts.xpi()获得
+    start_date:开始日期  YYYY-MM-DD/YYYYMMDD
+    end_date:结束日期 YYYY-MM-DD/YYYYMMDD
+    freq:支持1/5/15/30/60分钟,周/月/季/年
+    asset:证券类型 E:股票和交易所基金，INDEX:沪深指数,X:期货/期权/港股/中概美国/中证指数/国际指数
+    market:市场代码，通过ts.get_markets()获取
+    adj:复权类型,None不复权,qfq:前复权,hfq:后复权
+    ma:均线,支持自定义均线频度，如：ma5/ma10/ma20/ma60/maN
+    factors因子数据，目前支持以下两种：
+        vr:量比,默认不返回，返回需指定：factor=['vr']
+        tor:换手率，默认不返回，返回需指定：factor=['tor']
+                    以上两种都需要：factor=['vr', 'tor']
+    retry_count:网络重试次数
+
+    Return
+    ----------
+    DataFrame
+    code:代码
+    open：开盘close/high/low/vol成交量/amount成交额/maN均价/vr量比/tor换手率
+
+         期货(asset='X')
+    code/open/close/high/low/avg_price：均价  position：持仓量  vol：成交总量
+    """
+    datas = [[
+        data.day,
+        data.open,
+        data.high,
+        data.close,
+        data.low,
+        data.vol,
+    ] for data in History.objects.filter(code=code)]
+    tu_data = pd.DataFrame(
+        datas,
+        columns=[
+            'date', 'open', 'close', 'high', 'low', 'vol'
+        ])
+    tu_data.set_index('date', inplace=True)
+    tu_data.sort_index(ascending=False, inplace=True)
+    return tu_data
+    
+
 def get_report_data(year, quarter):
     """
         获取业绩报表数据
