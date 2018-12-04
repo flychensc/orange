@@ -100,7 +100,6 @@ OK
 orange>
 ```
 
-## git开发注意
+## wiki
 
-1. 尽量不要在**master**上直接修改，通过`git merge develop`合并**delelop**上的改动。
-2. **feature**分支可以使用`git rebase develop`合并**develop**的改动，反之，**develop**分支可以使用`git rebase feature`合并**feature**的改动。
+更多详情可移步[wiki](https://github.com/flychensc/orange/wiki)页面
