@@ -53,8 +53,8 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="active"><a href="#">概览<span class="sr-only">(current)</span></a></li>
-            <li><a href="#">基本面</a></li>
-            <li><a href="#">技术面</a></li>
+            <li><a href="/stock/{{code}}/annual_report?recent=3">基本面</a></li>
+            <li><a href="/stock/{{code}}/tick_data?start=2018-11-15&end=2018-11-29">技术面</a></li>
             <li><a href="#">消息面</a></li>
           </ul>
         </div>
@@ -91,7 +91,7 @@
               -->
             </table>
           </div>
-          
+
           <h2 class="sub-header">Level 0 报告</h2>
           <div class="table-responsive">
             <table class="table table-striped" id="table_level_0">
@@ -119,8 +119,8 @@
               -->
             </table>
           </div>
-          
-          
+
+
           <h2 class="sub-header">Level 1 报告</h2>
           <div class="table-responsive">
             <table class="table table-striped" id="table_level_1">
@@ -222,7 +222,7 @@
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/bootstrap3-typeahead.min.js"></script>
     <script src="/static/js/bootstrap-table.min.js"></script>
-    <!-- put your locale files after bootstrap-table.js -->    
+    <!-- put your locale files after bootstrap-table.js -->
     <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
 
     <script type="text/javascript">
@@ -230,7 +230,7 @@
     $(document).ready(function() {
       $.get("/data/stock_list", function(data){
         $("#textsearch").typeahead({ source:data['stocks'] });
-      },'json');      
+      },'json');
     })
 
     $('#table_basic_info').bootstrapTable({
@@ -302,43 +302,43 @@
       }, ]
 
     });
-    
-    /*Refer to 
+
+    /*Refer to
     http://bootstrap-table.wenzhixin.net.cn/zh-cn/faq/
     */
     $('#table_level_1').on('load-success.bs.table column-switch.bs.table page-change.bs.table search.bs.table', function () {
       $('#table_level_1').bootstrapTable('mergeCells', {
-          index: 0, 
+          index: 0,
           field: 'class',
           colspan: 1,
           rowspan: 3
       });
       $('#table_level_1').bootstrapTable('mergeCells', {
-          index: 3, 
+          index: 3,
           field: 'class',
           colspan: 1,
           rowspan: 3
       });
       $('#table_level_1').bootstrapTable('mergeCells', {
-          index: 6, 
+          index: 6,
           field: 'class',
           colspan: 1,
           rowspan: 3
       });
       $('#table_level_1').bootstrapTable('mergeCells', {
-          index: 9, 
+          index: 9,
           field: 'class',
           colspan: 1,
           rowspan: 4
       });
       $('#table_level_1').bootstrapTable('mergeCells', {
-          index: 13, 
+          index: 13,
           field: 'class',
           colspan: 1,
           rowspan: 4
       });
-    });    
-    
+    });
+
     </script>
   </body>
 </html>

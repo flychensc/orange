@@ -15,6 +15,8 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Table CSS -->
     <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <!-- Bootstrap Datetime Picker-->
+    <link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css">
 
     <!-- Custom styles for this template -->
     <link href="/static/css/dashboard.css" rel="stylesheet">
@@ -63,7 +65,7 @@
               <button class="btn btn-primary" type="button" id=basic_info_update>更新数据</button>
             </p>
           </div>
-          
+
           <div class="bs-docs-section" id="history">
             <h2 class="sub-header">历史数据</h2>
             <p>
@@ -78,11 +80,29 @@
                 <tr>
                   <td>业绩报表</td>
                   <td>
+                      <div id="report_data_datepicker" class="input-append">
+                        <input data-format="yyyy-MM" type="text"></input>
+                        <span class="add-on">
+                          <span class="glyphicon glyphicon-calendar">
+                          </span>
+                        </span>
+                      </div>
+                  </td>
+                  <td>
                     <button class="btn btn-sm btn-primary" type="button" id=report_data_update>更新数据</button>
                   </td>
                 </tr>
                 <tr>
                   <td>盈利能力</td>
+                  <td>
+                      <div id="profit_data_datepicker" class="input-append">
+                        <input data-format="yyyy-MM" type="text"></input>
+                        <span class="add-on">
+                          <span class="glyphicon glyphicon-calendar">
+                          </span>
+                        </span>
+                      </div>
+                  </td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=profit_data_update>更新数据</button>
                   </td>
@@ -90,11 +110,29 @@
                 <tr>
                   <td>营运能力</td>
                   <td>
+                      <div id="operation_data_datepicker" class="input-append">
+                        <input data-format="yyyy-MM" type="text"></input>
+                        <span class="add-on">
+                          <span class="glyphicon glyphicon-calendar">
+                          </span>
+                        </span>
+                      </div>
+                  </td>
+                  <td>
                     <button class="btn btn-sm btn-primary" type="button" id=operation_data_update>更新数据</button>
                   </td>
                 </tr>
                 <tr>
                   <td>成长能力</td>
+                  <td>
+                      <div id="growth_data_datepicker" class="input-append">
+                        <input data-format="yyyy-MM" type="text"></input>
+                        <span class="add-on">
+                          <span class="glyphicon glyphicon-calendar">
+                          </span>
+                        </span>
+                      </div>
+                  </td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=growth_data_update>更新数据</button>
                   </td>
@@ -102,11 +140,29 @@
                 <tr>
                   <td>偿债能力</td>
                   <td>
+                      <div id="debtpaying_data_datepicker" class="input-append">
+                        <input data-format="yyyy-MM" type="text"></input>
+                        <span class="add-on">
+                          <span class="glyphicon glyphicon-calendar">
+                          </span>
+                        </span>
+                      </div>
+                  </td>
+                  <td>
                     <button class="btn btn-sm btn-primary" type="button" id=debtpaying_data_update>更新数据</button>
                   </td>
                 </tr>
                 <tr>
                   <td>现金流量</td>
+                  <td>
+                      <div id="cashflow_data_datepicker" class="input-append">
+                        <input data-format="yyyy-MM" type="text"></input>
+                        <span class="add-on">
+                          <span class="glyphicon glyphicon-calendar">
+                          </span>
+                        </span>
+                      </div>
+                  </td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=cashflow_data_update>更新数据</button>
                   </td>
@@ -125,6 +181,7 @@
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/js.cookie.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
 
     <script type="text/javascript">
 
@@ -154,14 +211,30 @@
           }
         });
       })
+
+      $("#history_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/history",
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
       
       $("#report_data_update").click(function() {
+        var picker = $("#report_data_datepicker").data('datetimepicker');
+        var localDate = picker.getLocalDate();
+        var year = localDate.getFullYear();
+        var month = localDate.getMonth()+1;
         //Ajax调用处理
         $.ajax({
           type: "POST",
           async: false,
           url: "/database/update/fundamental",
-          data: {db:"report_data", year:2017, quarter:3},
+          data: {db:"report_data", year:year, month:month},
           success: function(resp){
             alert("更新" + resp.status);
           }
@@ -169,12 +242,16 @@
       })
       
       $("#profit_data_update").click(function() {
+        var picker = $("#profit_data_datepicker").data('datetimepicker');
+        var localDate = picker.getLocalDate();
+        var year = localDate.getFullYear();
+        var month = localDate.getMonth()+1;
         //Ajax调用处理
         $.ajax({
           type: "POST",
           async: false,
           url: "/database/update/fundamental",
-          data: {db:"profit_data", year:2017, quarter:3},
+          data: {db:"profit_data", year:year, month:month},
           success: function(resp){
             alert("更新" + resp.status);
           }
@@ -182,12 +259,16 @@
       })
       
       $("#operation_data_update").click(function() {
+        var picker = $("#operation_data_datepicker").data('datetimepicker');
+        var localDate = picker.getLocalDate();
+        var year = localDate.getFullYear();
+        var month = localDate.getMonth()+1;
         //Ajax调用处理
         $.ajax({
           type: "POST",
           async: false,
           url: "/database/update/fundamental",
-          data: {db:"operation_data", year:2017, quarter:3},
+          data: {db:"operation_data", year:year, month:month},
           success: function(resp){
             alert("更新" + resp.status);
           }
@@ -195,12 +276,16 @@
       })
       
       $("#growth_data_update").click(function() {
+        var picker = $("#growth_data_datepicker").data('datetimepicker');
+        var localDate = picker.getLocalDate();
+        var year = localDate.getFullYear();
+        var month = localDate.getMonth()+1;
         //Ajax调用处理
         $.ajax({
           type: "POST",
           async: false,
           url: "/database/update/fundamental",
-          data: {db:"growth_data", year:2017, quarter:3},
+          data: {db:"growth_data", year:year, month:month},
           success: function(resp){
             alert("更新" + resp.status);
           }
@@ -208,12 +293,16 @@
       })
       
       $("#debtpaying_data_update").click(function() {
+        var picker = $("#debtpaying_data_datepicker").data('datetimepicker');
+        var localDate = picker.getLocalDate();
+        var year = localDate.getFullYear();
+        var month = localDate.getMonth()+1;
         //Ajax调用处理
         $.ajax({
           type: "POST",
           async: false,
           url: "/database/update/fundamental",
-          data: {db:"debtpaying_data", year:2017, quarter:3},
+          data: {db:"debtpaying_data", year:year, month:month},
           success: function(resp){
             alert("更新" + resp.status);
           }
@@ -221,17 +310,80 @@
       })
       
       $("#cashflow_data_update").click(function() {
+        var picker = $("#cashflow_data_datepicker").data('datetimepicker');
+        var localDate = picker.getLocalDate();
+        var year = localDate.getFullYear();
+        var month = localDate.getMonth()+1;
         //Ajax调用处理
         $.ajax({
           type: "POST",
           async: false,
           url: "/database/update/fundamental",
-          data: {db:"cashflow_data", year:2017, quarter:3},
+          data: {db:"cashflow_data", year:year, month:month},
           success: function(resp){
             alert("更新" + resp.status);
           }
         });
       })
+      
+      $('#report_data_datepicker').datetimepicker({
+        pickTime: false
+      });
+      
+      $('#profit_data_datepicker').datetimepicker({
+        pickTime: false
+      });
+      
+      $('#operation_data_datepicker').datetimepicker({
+        pickTime: false
+      });
+      
+      $('#growth_data_datepicker').datetimepicker({
+        pickTime: false
+      });
+      
+      $('#debtpaying_data_datepicker').datetimepicker({
+        pickTime: false
+      });
+      
+      $('#cashflow_data_datepicker').datetimepicker({
+        pickTime: false
+      });
+      
+      $(document).ready(function() {
+        var today = new Date()
+        var yearNow = today.getFullYear()
+        var MonthNow = today.getMonth()
+
+        var to_last_month = {
+          1:12, 2:12, 3:12, 
+          4:3, 5:3, 6:3, 
+          7:6, 8:6, 9:6, 
+          10:9, 11:9, 12:9, 
+        }
+        var get_day = {
+          3:31, 
+          6:30, 
+          9:30, 
+          12:31, 
+        }
+
+        var year = yearNow
+        if (MonthNow < 4)
+        {
+          year -= 1;
+        }
+        var month = to_last_month[MonthNow+1];
+        var day = get_day[month];
+        var lastDate = new Date(year, month-1, day);
+
+        $("#report_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#profit_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#operation_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#growth_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#debtpaying_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+        $("#cashflow_data_datepicker").data('datetimepicker').setLocalDate(lastDate);
+      });
     </script>
   </body>
 </html>

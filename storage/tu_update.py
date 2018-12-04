@@ -1,11 +1,13 @@
+import gevent
 import logging
 import datetime
+import socket
+import stock.db_wrap as tu
 import tushare as ts
 import numpy as np
 from .models import *
-
-#获取连接备用
-CONS = ts.get_apis()
+from gevent.queue import Queue
+from gevent.pool import Group
 
 logger = logging.getLogger("orange.storage")
 
@@ -57,6 +59,68 @@ def stock_basics():
     StockBasics.objects.all().delete()
     # 再保存
     StockBasics.objects.bulk_create(stock_basics_list)
+
+
+def _get_history_worker(todo_q, result_q):
+    start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
+    while not todo_q.empty():
+        try:
+            (retry_count, stock_id) = todo_q.get(timeout=3)
+            print("%(stock_id)s try %(retry_count)d times" % locals())
+            # 获取历史数据
+            his_data = ts.get_k_data(stock_id, start=start_date)
+            his_data.set_index(["date"], inplace=True)
+            result_q.put(his_data)
+        except gevent.queue.Empty:
+            return
+        except socket.timeout:
+            print("%(stock_id)s as socket.timeout" % locals())
+            todo_q.put((retry_count+1, stock_id))
+        except Exception as e:
+            print("%(stock_id)s exception as %(e)s" % locals())
+        gevent.sleep(0)
+
+
+def _get_history():
+    todo_q = Queue()
+    # put all stocks' code
+    for code in tu.get_stock_basics().index:
+        todo_q.put((0, code))
+   
+    result_q = Queue()
+    group = Group()
+    # workers
+    for i in range(10):
+        group.add(gevent.spawn(_get_history_worker,
+                               todo_q=todo_q, result_q=result_q))
+    group.join()
+
+    # collect history
+    his_list = []
+    while not result_q.empty():
+        his_list.append(result_q.get())
+    return his_list
+
+    
+def history():
+    historys = _get_history()
+
+    history_list = []
+    for history in historys:
+        for day, data in history.iterrows():
+            history_list.append(History(
+                code = data['code'],
+                day = str(day),
+                open = data['open'],
+                close = data['close'],
+                high = data['high'],
+                low = data['low'],
+                vol = data['volume'],
+            ))
+    # 先清空
+    History.objects.all().delete()
+    # 再保存
+    History.objects.bulk_create(history_list)
 
 
 def report_data(year, quarter):

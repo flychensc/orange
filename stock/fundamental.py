@@ -112,7 +112,7 @@ def get_basic_info(code):
         Series
     """
     basic = tu.get_stock_basics().loc[code]
-    history = ts.get_k_data(code)
+    history = tu.get_k_data(code)
     basic_report = pd.Series(
         {
             '股票代码': code,
