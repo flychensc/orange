@@ -4,10 +4,13 @@
 
 import gevent
 
-import stock.tu_wrap as ts
+import tushare as ts
 import pandas as pd
 
 from gevent.pool import Group
+
+#获取连接备用
+CONS = ts.get_apis()
 
 MARGIN_COLUMNS = ['融资余额(元)', '融资买入额(元)', '融券余量', '融券卖出量']
 
@@ -80,7 +83,7 @@ def _get_one_tick_data(code, date, output_list):
     ------
     None
     """
-    tick_data = ts.get_tick_data(code, date)
+    tick_data = ts.tick(code=code, conn=CONS, date=date)
     output_list.append(tick_data)
 
 
