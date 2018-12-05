@@ -4,15 +4,12 @@
 *注意：这里用到了cache, 返回的数据请勿使用inplace等操作
 """
 
-from fastcache import lru_cache
-
 import tushare as ts
 
 #获取连接备用
 CONS = ts.get_apis()
 
 
-@lru_cache()
 def get_stock_basics(date=None):
     """
         获取沪深上市公司基本情况
@@ -42,7 +39,6 @@ def get_stock_basics(date=None):
     return ts.get_stock_basics(date)
 
 
-@lru_cache()
 def get_k_data(code,
                start=None,
                end=None):
@@ -80,7 +76,6 @@ def get_k_data(code,
     return ts.bar(code, conn=CONS, adj='qfq', start_date=start, end_date=end)
 
 
-@lru_cache()
 def get_report_data(year, quarter):
     """
         获取业绩报表数据
@@ -108,7 +103,6 @@ def get_report_data(year, quarter):
     return ts.get_report_data(year, quarter)
 
 
-@lru_cache()
 def get_profit_data(year, quarter):
     """
         获取盈利能力数据
@@ -134,7 +128,6 @@ def get_profit_data(year, quarter):
     return ts.get_profit_data(year, quarter)
 
 
-@lru_cache()
 def get_operation_data(year, quarter):
     """
         获取营运能力数据
@@ -159,7 +152,6 @@ def get_operation_data(year, quarter):
     return ts.get_operation_data(year, quarter)
 
 
-@lru_cache()
 def get_growth_data(year, quarter):
     """
         获取成长能力数据
@@ -184,7 +176,6 @@ def get_growth_data(year, quarter):
     return ts.get_growth_data(year, quarter)
 
 
-@lru_cache()
 def get_debtpaying_data(year, quarter):
     """
         获取偿债能力数据
@@ -209,7 +200,6 @@ def get_debtpaying_data(year, quarter):
     return ts.get_debtpaying_data(year, quarter)
 
 
-@lru_cache()
 def get_cashflow_data(year, quarter):
     """
         获取现金流量数据
@@ -233,7 +223,6 @@ def get_cashflow_data(year, quarter):
     return ts.get_cashflow_data(year, quarter)
 
 
-@lru_cache()
 def sh_margin_details(date='',
                       symbol='',
                       start='',
@@ -271,7 +260,6 @@ def sh_margin_details(date='',
     return ts.sh_margin_details(date, symbol, start, end)
 
 
-@lru_cache()
 def sz_margin_details(date=''):
     """
     获取深市融资融券明细列表
@@ -300,7 +288,6 @@ def sz_margin_details(date=''):
     return ts.sz_margin_details(date)
 
 
-@lru_cache()
 def get_tick_data(code, date=''):
     """
     tick数据

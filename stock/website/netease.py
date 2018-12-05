@@ -5,7 +5,6 @@
 import requests
 import pandas as pd
 
-from fastcache import lru_cache
 from pandas.compat import StringIO
 
 HEADERS = {
@@ -25,7 +24,6 @@ HEADERS = {
 }
 
 
-@lru_cache()
 def get_balance_sheet(code, annual=True):
     """
         获取个股资产负债表
@@ -66,7 +64,6 @@ def get_balance_sheet(code, annual=True):
     return balance_sheet.astype(float)
 
 
-@lru_cache()
 def get_profit_statement(code, annual=True):
     """
         获取个股利润表
