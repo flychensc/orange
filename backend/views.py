@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
+import datetime
 import json
 from stock import get_annual_report, get_tick_data, pct_change, get_basic_info, get_level0_report, get_level1_report
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
@@ -101,7 +102,9 @@ def level_0(request, code):
 
 
 def level_1(request, code):
-    level_report = get_level1_report(code, 2016, 4)
+    today = datetime.date.today()
+    year = today.year if today.month > 4 else today.year - 1
+    level_report = get_level1_report(code, year, 4)
 
     data_array = list()
     for idx in LEVEL1_REPORT_INDEX:
