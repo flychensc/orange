@@ -13,29 +13,7 @@ logger = logging.getLogger("orange.storage")
 
 
 def stock_basics():
-    stock_basics = ts.get_stock_basics()
-    # START
-    if stock_basics['esp'].dtype == np.dtype('float64'):
-        # rename 'eps' to 'esp'
-        stock_basics["eps"] = stock_basics["esp"]
-    else:
-        # convert 'eps'
-        # as I found 'esp' field was '0.147㈡' at Feb.26.2016
-        # It cause SQL server error.
-        logger.warn(u"'esp'非浮点类型")
-        def _atof(str):
-            try:
-                return float(str)
-            except ValueError:
-                # I found 'esp' field was '0.000㈣' at Nov.8.2016
-                return float(str[:-1])
-        stock_basics["eps"] = stock_basics["esp"].apply(_atof)
-    stock_basics = stock_basics.drop("esp", axis=1)
-    # drop timeToMarket is zero
-    stock_basics = stock_basics[stock_basics['timeToMarket']!=0]
-    # change sql type
-    stock_basics['timeToMarket'] = stock_basics['timeToMarket'].apply(lambda x:datetime.datetime.strptime(str(x), "%Y%m%d").date())
-    # END
+    stock_basics = get_stock_basics()
 
     stock_basics_list = [StockBasics(
             code = code,
@@ -124,8 +102,7 @@ def history():
 
 
 def report_data(year, quarter):
-    report_data = ts.get_report_data(year, quarter)
-    report_data.drop_duplicates(inplace=True)
+    report_data = get_report_data(year, quarter)
 
     report_data_list = [ReportData(
             code = data['code'],
@@ -147,8 +124,7 @@ def report_data(year, quarter):
 
 
 def profit_data(year, quarter):
-    profit_data = ts.get_profit_data(year, quarter)
-    profit_data.drop_duplicates(inplace=True)
+    profit_data = get_profit_data(year, quarter)
 
     profit_data_list = [ProfitData(
             code = data['code'],
@@ -168,8 +144,7 @@ def profit_data(year, quarter):
 
 
 def operation_data(year, quarter):
-    operation_data = ts.get_operation_data(year, quarter)
-    operation_data.drop_duplicates(inplace=True)
+    operation_data = get_operation_data(year, quarter)
 
     operation_data_list = [OperationData(
             code = data['code'],
@@ -188,8 +163,7 @@ def operation_data(year, quarter):
 
 
 def growth_data(year, quarter):
-    growth_data = ts.get_growth_data(year, quarter)
-    growth_data.drop_duplicates(inplace=True)
+    growth_data = get_growth_data(year, quarter)
 
     growth_data_list = [GrowthData(
             code = data['code'],
@@ -208,9 +182,7 @@ def growth_data(year, quarter):
 
 
 def debtpaying_data(year, quarter):
-    debtpaying_data = ts.get_debtpaying_data(year, quarter)
-    debtpaying_data.drop_duplicates(inplace=True)
-    debtpaying_data.replace({"--":np.NAN}, inplace=True)
+    debtpaying_data = get_debtpaying_data(year, quarter)
 
     debtpaying_data_list = [DebtpayingData(
             code = data['code'],
@@ -229,8 +201,7 @@ def debtpaying_data(year, quarter):
 
 
 def cashflow_data(year, quarter):
-    cashflow_data = ts.get_cashflow_data(year, quarter)
-    cashflow_data.drop_duplicates(inplace=True)
+    cashflow_data = get_cashflow_data(year, quarter)
 
     cashflow_data_list = [CashflowData(
             code = data['code'],
