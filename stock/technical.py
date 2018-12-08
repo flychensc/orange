@@ -76,3 +76,13 @@ def get_tick_data(code, date):
         return pd.DataFrame(columns=TICK_COLUMNS)
     tick_data.columns = TICK_COLUMNS
     return tick_data
+
+
+def get_k_data(code, start=None, end=None):
+    #获取连接备用
+    cons = ts.get_apis()
+    # ts.get_k_data(code, start=start)
+    his_data = ts.bar(code, conn=cons, adj='qfq', start_date=start, end_date=end)
+    #释放，否则python无法正常退出
+    ts.close_apis(cons)
+    return his_data
