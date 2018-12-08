@@ -7,6 +7,8 @@ import gevent
 
 from gevent.pool import Group
 
+import pandas as pd
+
 from stock.technical import get_sh_margin_details, get_sz_margin_details, get_tick_data
 
 
@@ -45,17 +47,17 @@ def load_margin_details(code, start, end):
 
     sz_list = list()
     group = Group()
-    for date in sh_details['opDate'].drop_duplicates():
-        group.add(gevent.spawn(_get_sz_margin_details, date, sz_list))
+    for date in sh_details['日期'].drop_duplicates():
+        group.add(gevent.spawn(_load_sz_margin_details, date, sz_list))
     group.join()
+
+    if len(sz_list) == 0:
+        return sh_details
+
     sz_details = pd.concat(sz_list)
+    details = pd.concat([sh_details, sz_details])
 
-    details = pd.concat([
-        sh_details[['opDate', 'stockCode', 'rzye', 'rzmre', 'rqyl', 'rqmcl']],
-        sz_details[['opDate', 'stockCode', 'rzye', 'rzmre', 'rqyl', 'rqmcl']]
-    ])
-
-    return detail
+    return details
 
 
 def _load_one_tick_data(code, date, output_list):
@@ -73,7 +75,7 @@ def _load_one_tick_data(code, date, output_list):
     ------
     None
     """
-    tick_data = get_tick_data(code=code, conn=CONS, date=date)
+    tick_data = get_tick_data(code=code, date=date)
     output_list.append(tick_data)
 
 
@@ -96,7 +98,7 @@ def load_tick_data(code, start, end):
     group = Group()
     for date in pd.date_range(start, end):
         group.add(
-            gevent.spawn(_get_one_tick_data, code, str(date)[:10], data_list))
+            gevent.spawn(_load_one_tick_data, code, str(date)[:10], data_list))
     group.join()
     tick_data = pd.concat(data_list)
     tick_data.sort_values(['时间'], ascending=True, inplace=True)

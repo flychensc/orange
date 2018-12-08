@@ -24,6 +24,8 @@ def get_sh_margin_details(start, end):
     DataFrame
     """
     sh_details = ts.sh_margin_details(start=start, end=end)
+    if sh_details.empty:
+        return pd.DataFrame(columns=MARGIN_COLUMNS)
     details = sh_details[['opDate', 'stockCode', 'rzye', 'rzmre', 'rqyl', 'rqmcl']]
 
     details.columns = MARGIN_COLUMNS
@@ -44,6 +46,8 @@ def get_sz_margin_details(date):
     DataFrame
     """
     sz_details = ts.sz_margin_details(date=date)
+    if sz_details.empty:
+        return pd.DataFrame(columns=MARGIN_COLUMNS)
     details = sz_details[['opDate', 'stockCode', 'rzye', 'rzmre', 'rqyl', 'rqmcl']]
 
     details.columns = MARGIN_COLUMNS
@@ -68,5 +72,7 @@ def get_tick_data(code, date):
     tick_data = ts.tick(code=code, conn=cons, date=date)
     #释放，否则python无法正常退出
     ts.close_apis(cons)
+    if tick_data is None:
+        return pd.DataFrame(columns=TICK_COLUMNS)
     tick_data.columns = TICK_COLUMNS
     return tick_data
