@@ -1,3 +1,7 @@
+"""
+从stock里获取网络数据，存放在数据库里
+"""
+
 import datetime
 from stock import (get_stock_basics,
                     get_report_data, get_profit_data,
