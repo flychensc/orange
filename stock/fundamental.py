@@ -2,6 +2,7 @@
 基本面
 """
 
+import datetime
 import numpy as np
 import pandas as pd
 import tushare as ts
@@ -100,6 +101,33 @@ def get_quarterly_results(code):
     return quarterly_results.sort_index(axis=1)
 
 
+def get_stock_basics():
+    stock_basics = ts.get_stock_basics()
+    # START
+    if stock_basics['esp'].dtype == np.dtype('float64'):
+        # rename 'eps' to 'esp'
+        stock_basics["eps"] = stock_basics["esp"]
+    else:
+        # convert 'eps'
+        # as I found 'esp' field was '0.147㈡' at Feb.26.2016
+        # It cause SQL server error.
+        # logger.warn(u"'esp'非浮点类型")
+        def _atof(str):
+            try:
+                return float(str)
+            except ValueError:
+                # I found 'esp' field was '0.000㈣' at Nov.8.2016
+                return float(str[:-1])
+        stock_basics["eps"] = stock_basics["esp"].apply(_atof)
+    stock_basics = stock_basics.drop("esp", axis=1)
+    # drop timeToMarket is zero
+    stock_basics = stock_basics[stock_basics['timeToMarket']!=0]
+    # change sql type
+    stock_basics['timeToMarket'] = stock_basics['timeToMarket'].apply(lambda x:datetime.datetime.strptime(str(x), "%Y%m%d").date())
+    # END
+    return stock_basics
+
+
 def get_basic_info(code):
     """
         上市公司基本信息
@@ -110,7 +138,7 @@ def get_basic_info(code):
     ------
         Series
     """
-    basic = ts.get_stock_basics().loc[code]
+    basic = get_stock_basics().loc[code]
     #获取连接备用
     cons = ts.get_apis()
     history = ts.bar(code, conn=cons, adj='qfq')
@@ -125,7 +153,7 @@ def get_basic_info(code):
             '市值(亿)': basic.loc['outstanding'] * history['close'][0],
             '市盈率': basic.loc['pe'],
             '市净率': basic.loc['pb'],
-            '每股收益': basic.loc['esp'],
+            '每股收益': basic.loc['eps'],
         },
         index=BASIC_REPORT_INDEX)
     return basic_report
@@ -258,38 +286,38 @@ def pct_change(data_report, periods=1, axis=0):
             periods=periods, axis=axis).abs()
 
 
-def report_data(year, quarter):
+def get_report_data(year, quarter):
     report_data = ts.get_report_data(year, quarter)
     report_data.drop_duplicates(inplace=True)
     return report_data
 
 
-def profit_data(year, quarter):
+def get_profit_data(year, quarter):
     profit_data = ts.get_profit_data(year, quarter)
     profit_data.drop_duplicates(inplace=True)
     return profit_data
 
 
-def operation_data(year, quarter):
+def get_operation_data(year, quarter):
     operation_data = ts.get_operation_data(year, quarter)
     operation_data.drop_duplicates(inplace=True)
     return operation_data
 
 
-def growth_data(year, quarter):
+def get_growth_data(year, quarter):
     growth_data = ts.get_growth_data(year, quarter)
     growth_data.drop_duplicates(inplace=True)
     return growth_data
 
 
-def debtpaying_data(year, quarter):
+def get_debtpaying_data(year, quarter):
     debtpaying_data = ts.get_debtpaying_data(year, quarter)
     debtpaying_data.drop_duplicates(inplace=True)
     debtpaying_data.replace({"--":np.NAN}, inplace=True)
     return debtpaying_data
 
 
-def cashflow_data(year, quarter):
+def get_cashflow_data(year, quarter):
     cashflow_data = ts.get_cashflow_data(year, quarter)
     cashflow_data.drop_duplicates(inplace=True)
     return cashflow_data
