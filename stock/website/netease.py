@@ -50,6 +50,7 @@ def get_balance_sheet(code, annual=True):
         response = session.get(url, timeout=5)
 
     response.encoding = "gbk"
+    session.close()
 
     balance_sheet = pd.read_csv(
         StringIO(response.text),
@@ -90,6 +91,7 @@ def get_profit_statement(code, annual=True):
         response = session.get(url)
 
     response.encoding = "gbk"
+    session.close()
 
     profit_statement = pd.read_csv(
         StringIO(response.text),
