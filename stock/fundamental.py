@@ -256,3 +256,40 @@ def pct_change(data_report, periods=1, axis=0):
     return data_report.diff(
         periods=periods, axis=axis) / data_report.shift(
             periods=periods, axis=axis).abs()
+
+
+def report_data(year, quarter):
+    report_data = ts.get_report_data(year, quarter)
+    report_data.drop_duplicates(inplace=True)
+    return report_data
+
+
+def profit_data(year, quarter):
+    profit_data = ts.get_profit_data(year, quarter)
+    profit_data.drop_duplicates(inplace=True)
+    return profit_data
+
+
+def operation_data(year, quarter):
+    operation_data = ts.get_operation_data(year, quarter)
+    operation_data.drop_duplicates(inplace=True)
+    return operation_data
+
+
+def growth_data(year, quarter):
+    growth_data = ts.get_growth_data(year, quarter)
+    growth_data.drop_duplicates(inplace=True)
+    return growth_data
+
+
+def debtpaying_data(year, quarter):
+    debtpaying_data = ts.get_debtpaying_data(year, quarter)
+    debtpaying_data.drop_duplicates(inplace=True)
+    debtpaying_data.replace({"--":np.NAN}, inplace=True)
+    return debtpaying_data
+
+
+def cashflow_data(year, quarter):
+    cashflow_data = ts.get_cashflow_data(year, quarter)
+    cashflow_data.drop_duplicates(inplace=True)
+    return cashflow_data
