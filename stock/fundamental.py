@@ -8,9 +8,6 @@ import tushare as ts
 
 from stock import get_balance_sheet, get_profit_statement
 
-#获取连接备用
-CONS = ts.get_apis()
-
 ANNUAL_REPORT_INDEX = {
     "raw": [
         '净利润(万元)', '营业收入(万元)', '货币资金(万元)', '存货(万元)', '流动资产合计(万元)',
@@ -114,7 +111,11 @@ def get_basic_info(code):
         Series
     """
     basic = ts.get_stock_basics().loc[code]
-    history = ts.bar(code, conn=CONS, adj='qfq')
+    #获取连接备用
+    cons = ts.get_apis()
+    history = ts.bar(code, conn=cons, adj='qfq')
+    #释放，否则python无法正常退出
+    ts.close_apis(cons)
     basic_report = pd.Series(
         {
             '股票代码': code,

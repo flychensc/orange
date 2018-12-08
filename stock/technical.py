@@ -5,9 +5,6 @@
 import tushare as ts
 import pandas as pd
 
-#获取连接备用
-CONS = ts.get_apis()
-
 MARGIN_COLUMNS = ['融资余额(元)', '融资买入额(元)', '融券余量', '融券卖出量']
 
 TICK_COLUMNS = ['时间', '成交价', '成交量', '买卖类型']
@@ -70,5 +67,9 @@ def get_tick_data(code, date):
     ------
     Series
     """
-    tick_data = ts.tick(code=code, conn=CONS, date=date)
+    #获取连接备用
+    cons = ts.get_apis()
+    tick_data = ts.tick(code=code, conn=cons, date=date)
+    #释放，否则python无法正常退出
+    ts.close_apis(cons)
     return pd.Series(tick_data, TICK_COLUMNS)
