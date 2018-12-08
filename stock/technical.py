@@ -5,7 +5,7 @@
 import tushare as ts
 import pandas as pd
 
-MARGIN_COLUMNS = ['融资余额(元)', '融资买入额(元)', '融券余量', '融券卖出量']
+MARGIN_COLUMNS = ['日期', '股票代码', '融资余额(元)', '融资买入额(元)', '融券余量', '融券卖出量']
 
 TICK_COLUMNS = ['时间', '成交价', '成交量', '买卖类型']
 
@@ -26,10 +26,8 @@ def get_sh_margin_details(start, end):
     sh_details = ts.sh_margin_details(start=start, end=end)
     details = sh_details[['opDate', 'stockCode', 'rzye', 'rzmre', 'rqyl', 'rqmcl']]
 
-    detail = details.where(details['stockCode'] == code).dropna().drop(
-        ['stockCode'], axis=1).set_index('opDate')
-    detail.columns = MARGIN_COLUMNS
-    return detail 
+    details.columns = MARGIN_COLUMNS
+    return details 
 
 
 def get_sz_margin_details(date):
@@ -43,15 +41,13 @@ def get_sz_margin_details(date):
                 存放结果
     Return
     ------
-    Series
+    DataFrame
     """
     sz_details = ts.sz_margin_details(date=date)
     details = sz_details[['opDate', 'stockCode', 'rzye', 'rzmre', 'rqyl', 'rqmcl']]
 
-    detail = details.where(details['stockCode'] == code).dropna().drop(
-        ['stockCode'], axis=1).set_index('opDate')
-    detail.columns = MARGIN_COLUMNS
-    return detail
+    details.columns = MARGIN_COLUMNS
+    return details
 
 
 def get_tick_data(code, date):
@@ -65,11 +61,12 @@ def get_tick_data(code, date):
                 日期 format：YYYY-MM-DD
     Return
     ------
-    Series
+    DataFrame
     """
     #获取连接备用
     cons = ts.get_apis()
     tick_data = ts.tick(code=code, conn=cons, date=date)
     #释放，否则python无法正常退出
     ts.close_apis(cons)
-    return pd.Series(tick_data, TICK_COLUMNS)
+    tick_data.columns = TICK_COLUMNS
+    return tick_data

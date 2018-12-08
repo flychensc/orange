@@ -10,7 +10,7 @@ from stock import get_balance_sheet, get_profit_statement
 from stock import get_annual_report, get_quarterly_results
 from stock import get_basic_info, get_level0_report, get_level1_report
 from stock import classifier_level_report, pct_change
-from stock import get_margin_details, get_tick_data
+from stock import get_sh_margin_details, get_sz_margin_details, get_tick_data
 from stock.website import BALANCE_SHEET_INDEX, PROFIT_STATEMENT_INDEX
 from stock.fundamental import ANNUAL_REPORT_INDEX, BASIC_REPORT_INDEX
 from stock.fundamental import LEVEL0_REPORT_INDEX, LEVEL1_REPORT_INDEX
@@ -126,12 +126,20 @@ class TestStock(unittest.TestCase):
         self.assertTrue(d1.equals(d2))
         self.assertFalse(d1.empty)
 
-    def test_get_margin_details(self):
+    def test_get_sh_margin_details(self):
         """
-        测试融资融券
+        测试沪市融资融券
         """
-        margin_details = get_margin_details('002367', "2017-08-01",
-                                            "2017-08-15")
+        margin_details = get_sh_margin_details("2018-12-01",
+                                            "2018-12-07")
+        self.assertTrue(isinstance(margin_details, pd.DataFrame))
+        self.assertEqual(margin_details.columns.tolist(), MARGIN_COLUMNS)
+
+    def test_get_sz_margin_details(self):
+        """
+        测试深市融资融券
+        """
+        margin_details = get_sz_margin_details("2018-11-07")
         self.assertTrue(isinstance(margin_details, pd.DataFrame))
         self.assertEqual(margin_details.columns.tolist(), MARGIN_COLUMNS)
 
@@ -139,10 +147,10 @@ class TestStock(unittest.TestCase):
         """
         测试分笔数据
         """
-        tick_datas = get_tick_data('002367', "2017-08-21", "2017-08-25")
+        tick_datas = get_tick_data('002367', "2018-12-07")
         self.assertTrue(isinstance(tick_datas, pd.DataFrame))
         self.assertEqual(tick_datas.columns.tolist(), TICK_COLUMNS)
         # self.assertEqual(tick_datas.iloc[0]['日期'], "2017-08-21")
-        self.assertLessEqual(tick_datas.iloc[0]['时间'], "2017-08-21 09:30")
+        self.assertLessEqual(tick_datas.iloc[0]['时间'], "2018-12-07 09:30")
         # self.assertEqual(tick_datas.iloc[-1]['日期'], "2017-08-25")
-        self.assertGreaterEqual(tick_datas.iloc[-1]['时间'], "2017-08-25 14:59")
+        self.assertGreaterEqual(tick_datas.iloc[-1]['时间'], "2018-12-07 14:59")
