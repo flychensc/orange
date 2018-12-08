@@ -5,7 +5,7 @@ import datetime
 import json
 from stock import get_annual_report, get_tick_data, pct_change, get_basic_info, get_level0_report, get_level1_report
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
-from stock.tu_wrap import get_stock_basics
+from storage.stock import get_stock_basics
 
 # Create your views here.
 
