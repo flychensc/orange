@@ -3,6 +3,7 @@
 """
 import pandas as pd
 from storage.models import *
+from stock.fundamental import BASIC_REPORT_INDEX, LEVEL1_REPORT_INDEX
 
 
 def get_stock_basics(date=None):
