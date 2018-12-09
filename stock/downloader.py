@@ -110,14 +110,14 @@ def load_tick_data(code, start, end):
     return tick_data
 
 
-def _load_history_worker(todo_q, result_q, start, end):
+def _load_history_worker(todo_q, result_q, start):
     while not todo_q.empty():
         try:
             (retry_count, stock_id) = todo_q.get(timeout=3)
             print("%(stock_id)s try %(retry_count)d times" % locals())
             # 获取历史数据
-            his_data = get_k_data(stock_id, start, end)
-            # his_data.set_index(["date"], inplace=True)
+            his_data = get_k_data(stock_id, start)
+            his_data.set_index(["date"], inplace=True)
             result_q.put(his_data)
         except gevent.queue.Empty:
             return
@@ -129,7 +129,7 @@ def _load_history_worker(todo_q, result_q, start, end):
         gevent.sleep(0)
 
 
-def load_historys(start_day, end_day):
+def load_historys(start_day):
     todo_q = Queue()
     # put all stocks' code
     for code in get_stock_basics().index:
@@ -141,7 +141,7 @@ def load_historys(start_day, end_day):
     for i in range(10):
         group.add(gevent.spawn(_load_history_worker,
                                todo_q=todo_q, result_q=result_q,
-                               start=start_day, end=end_day))
+                               start=start_day))
     group.join()
 
     # collect history
