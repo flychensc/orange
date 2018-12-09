@@ -54,7 +54,7 @@ def get_stock_basics(date=None):
         columns=[
             'code', 'name', 'industry', 'area', 'pe', 'outstanding', 'totals',
             'totalAssets', 'liquidAssets', 'fixedAssets', 'reserved',
-            'reservedPerShare', 'esp', 'bvps', 'pb', 'timeToMarket'
+            'reservedPerShare', 'eps', 'bvps', 'pb', 'timeToMarket'
         ])
     tu_data.set_index('code', inplace=True)
     return tu_data

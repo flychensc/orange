@@ -109,13 +109,13 @@ def get_stock_basics():
     stock_basics = ts.get_stock_basics()
     # START
     if stock_basics['esp'].dtype == np.dtype('float64'):
-        # rename 'eps' to 'esp'
+        # rename 'esp' to 'eps'
         stock_basics["eps"] = stock_basics["esp"]
     else:
         # convert 'eps'
         # as I found 'esp' field was '0.147㈡' at Feb.26.2016
         # It cause SQL server error.
-        logger.warn(u"'esp'非浮点类型")
+        logger.warn(u"'eps'非浮点类型")
         def _atof(str):
             try:
                 return float(str)

@@ -78,7 +78,7 @@ def basic_info(request, code):
     data_dict['nmc'] = basic_info['市值(亿)']
     data_dict['pe'] = basic_info['市盈率']
     data_dict['pb'] = basic_info['市净率']
-    data_dict['esp'] = basic_info['每股收益']
+    data_dict['eps'] = basic_info['每股收益']
 
     data_array = list()
     data_array.append(data_dict)
