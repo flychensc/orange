@@ -3,9 +3,10 @@ from django.http import JsonResponse
 
 import datetime
 import json
-from stock import get_annual_report, get_tick_data, pct_change, get_basic_info, get_level0_report, get_level1_report
+from stock import get_annual_report, get_tick_data, pct_change, get_level0_report
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
-from storage.stock import get_stock_basics
+from storage.stock import get_stock_basics, get_basic_info, get_level1_report
+from stock.downloader import load_tick_data
 
 # Create your views here.
 
@@ -51,7 +52,7 @@ def stock_list(request):
 def tick_data(request, code):
     start = request.GET.get('start')
     end = request.GET.get('end')
-    tick_data = get_tick_data(code, start, end)
+    tick_data = load_tick_data(code, start, end)
 
     data_dict = dict()
     data_dict['buy'] = [[

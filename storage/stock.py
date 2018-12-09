@@ -278,3 +278,79 @@ def get_cashflow_data(year, quarter):
             'cf_liabilities', 'cashflowratio'
         ])
     return tu_data
+
+
+def get_basic_info(code):
+    """
+        上市公司基本信息
+    Parameters
+    ------
+        code:string
+    return
+    ------
+        Series
+    """
+    basic = get_stock_basics().loc[code]
+    history = get_k_data(code)
+    basic_report = pd.Series(
+        {
+            '股票代码': code,
+            '名称': basic.loc['name'],
+            '行业': basic.loc['industry'],
+            '最新价': history['close'][0],
+            '市值(亿)': basic.loc['outstanding'] * history['close'][0],
+            '市盈率': basic.loc['pe'],
+            '市净率': basic.loc['pb'],
+            '每股收益': basic.loc['eps'],
+        },
+        index=BASIC_REPORT_INDEX)
+    return basic_report
+
+
+def get_level1_report(code, year, quarter):
+    """
+        Level1基本面分析
+    Parameters
+    ------
+        code:string
+        year:int
+        quarter:int
+    return
+    ------
+        Series
+    """
+    #report_data = get_report_data(year, quarter).set_index(['code'])
+    profit_data = get_profit_data(year, quarter).set_index(['code'])
+    operation_data = get_operation_data(year, quarter).set_index(['code'])
+    growth_data = get_growth_data(year, quarter).set_index(['code'])
+    debtpaying_data = get_debtpaying_data(year, quarter).set_index(['code'])
+    cashflow_data = get_cashflow_data(year, quarter).set_index(['code'])
+
+    #report_data[['name', 'distrib']]
+    level1_report = profit_data[['roe', 'net_profit_ratio', 'bips']].merge(
+        operation_data[[
+            'arturnover', 'inventory_turnover', 'currentasset_turnover'
+        ]],
+        left_index=True,
+        right_index=True).merge(
+            growth_data[['mbrg', 'nprg', 'epsg']],
+            left_index=True,
+            right_index=True).merge(
+                debtpaying_data[[
+                    'currentratio', 'quickratio', 'cashratio', 'icratio'
+                ]],
+                left_index=True,
+                right_index=True).merge(
+                    cashflow_data[[
+                        'rateofreturn', 'cf_nm', 'cf_liabilities',
+                        'cashflowratio'
+                    ]],
+                    left_index=True,
+                    right_index=True)
+
+    level1_report.drop_duplicates(keep='last', inplace=True)
+    level1_report.columns = LEVEL1_REPORT_INDEX
+
+    return level1_report.loc[
+        code] if code in level1_report.index else pd.Series(
+            index=LEVEL1_REPORT_INDEX)
