@@ -82,7 +82,7 @@ def update_one_history(code, start):
                 vol = data['volume'],
             ) for day, data in history.iterrows()]
         # 先清空
-        History.objects.filter(code=code).delete()
+        # History.objects.filter(code=code).delete()
         # 再保存
         History.objects.bulk_create(history_list)
     except socket.timeout:
@@ -96,7 +96,8 @@ def update_one_history(code, start):
 @app.task
 def update_all_history():
     start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
-    
+    # 先清空
+    History.objects.all().delete()
     # all stocks' code
     for code in get_local_stock_basics().index:
         update_one_history.delay(code, start_date)
