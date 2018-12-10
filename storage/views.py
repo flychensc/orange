@@ -20,7 +20,7 @@ def update_history(request):
     resp_dict = {}
     if request.method == 'POST' and request.is_ajax():
         resp_dict['status'] = '成功'
-        tasks.update_history.delay()
+        tasks.update_all_history.delay()
     else:
         resp_dict['status'] = '失败'
     return JsonResponse(resp_dict)

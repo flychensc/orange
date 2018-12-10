@@ -3,13 +3,15 @@
 """
 
 import datetime
-from stock import (get_stock_basics,
+import socket
+from stock import (get_stock_basics, get_k_data,
                     get_report_data, get_profit_data,
                     get_operation_data, get_growth_data,
                     get_debtpaying_data, get_cashflow_data)
 from stock.downloader import load_historys
 from navel.celery import app
 from .models import *
+from .stock import get_stock_basics as get_local_stock_basics
 
 @app.task
 def update_stock_basics():
@@ -37,8 +39,8 @@ def update_stock_basics():
     StockBasics.objects.all().delete()
     # 再保存
     StockBasics.objects.bulk_create(stock_basics_list)
-    
-    
+
+ 
 @app.task
 def update_history():
     start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
@@ -60,6 +62,44 @@ def update_history():
     History.objects.all().delete()
     # 再保存
     History.objects.bulk_create(history_list)
+
+ 
+@app.task
+def update_one_history(code, start):
+    try:
+        print("Get %(code)s history data" % locals())
+        # 获取历史数据
+        history = get_k_data(code, start)
+        history.set_index(["date"], inplace=True)
+    
+        history_list = [History(
+                code = data['code'],
+                day = str(day),
+                open = data['open'],
+                close = data['close'],
+                high = data['high'],
+                low = data['low'],
+                vol = data['volume'],
+            ) for day, data in history.iterrows()]
+        # 先清空
+        History.objects.filter(code=code).delete()
+        # 再保存
+        History.objects.bulk_create(history_list)
+    except socket.timeout:
+        print("%(code)s as socket.timeout" % locals())
+        self.retry(countdown=5, max_retries=3, exc=e)
+    except Exception as e:
+        print("%(code)s exception as %(e)s" % locals())
+        return
+
+ 
+@app.task
+def update_all_history():
+    start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
+    
+    # all stocks' code
+    for code in get_local_stock_basics().index:
+        update_one_history.delay(code, start_date)
 
 
 @app.task
