@@ -74,6 +74,64 @@ Quit the server with CTRL-BREAK.
 
 ![tick_data](./sample/v2_03_tick_data.PNG)
 
+### celery
+
+启动celery后台任务
+
+```cmd
+~/source/orange$ celery -A navel worker -l info --concurrency=10 -P gevent
+/home/flychensc/anaconda3/lib/python3.6/site-packages/celery/__init__.py:113: MonkeyPatchWarning: Monkey-patching ssl after ssl has already been imported may lead to errors, including RecursionError on Python 3.6. Please monkey-patch earlier. See https://github.com/gevent/gevent/issues/1016
+  monkey.patch_all()
+ 
+ -------------- celery@flychensc-VirtualBox v4.2.1 (windowlicker)
+---- **** ----- 
+--- * ***  * -- Linux-4.15.0-42-generic-x86_64-with-debian-buster-sid 2018-12-10 15:10:07
+-- * - **** --- 
+- ** ---------- [config]
+- ** ---------- .> app:         navel:0x7fcd617855c0
+- ** ---------- .> transport:   redis://localhost:6379//
+- ** ---------- .> results:     redis://localhost/
+- *** --- * --- .> concurrency: 10 (gevent)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** ----- 
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+                
+
+[tasks]
+  . navel.celery.debug_task
+  . storage.tasks.update_all_history
+  . storage.tasks.update_cashflow_data
+  . storage.tasks.update_debtpaying_data
+  . storage.tasks.update_growth_data
+  . storage.tasks.update_history
+  . storage.tasks.update_one_history
+  . storage.tasks.update_operation_data
+  . storage.tasks.update_profit_data
+  . storage.tasks.update_report_data
+  . storage.tasks.update_stock_basics
+
+[2018-12-10 15:10:07,365: INFO/MainProcess] Connected to redis://localhost:6379//
+[2018-12-10 15:10:07,383: INFO/MainProcess] mingle: searching for neighbors
+[2018-12-10 15:10:08,463: INFO/MainProcess] mingle: all alone
+[2018-12-10 15:10:08,500: INFO/MainProcess] pidbox: Connected to redis://localhost:6379//.
+[2018-12-10 15:10:08,504: WARNING/MainProcess] /home/flychensc/anaconda3/lib/python3.6/site-packages/celery/fixups/django.py:200: UserWarning: Using settings.DEBUG leads to a memory leak, never use this setting in production environments!
+  warnings.warn('Using settings.DEBUG leads to a memory leak, never '
+[2018-12-10 15:10:08,504: INFO/MainProcess] celery@flychensc-VirtualBox ready.
+```
+
+清除celery后台任务
+
+```
+~/source/orange$ celery -A navel purge
+WARNING: This will remove all tasks from queue: celery.
+         There is no undo for this operation!
+
+(to skip this prompt use the -f option)
+
+Are you sure you want to delete all tasks (yes/NO)? 
+```
+
 ## Test
 
 执行命令`python -m unittest -v`进行单元测试
