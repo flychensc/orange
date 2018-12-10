@@ -8,11 +8,11 @@ from stock import (get_stock_basics,
                     get_operation_data, get_growth_data,
                     get_debtpaying_data, get_cashflow_data)
 from stock.downloader import load_historys
-import numpy as np
+from navel.celery import app
 from .models import *
 
-
-def stock_basics():
+@app.task
+def update_stock_basics():
     stock_basics = get_stock_basics()
 
     stock_basics_list = [StockBasics(
@@ -39,7 +39,8 @@ def stock_basics():
     StockBasics.objects.bulk_create(stock_basics_list)
     
     
-def history():
+@app.task
+def update_history():
     start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
     historys = load_historys(start_date)
 
@@ -61,7 +62,8 @@ def history():
     History.objects.bulk_create(history_list)
 
 
-def report_data(year, quarter):
+@app.task
+def update_report_data(year, quarter):
     report_data = get_report_data(year, quarter)
 
     report_data_list = [ReportData(
@@ -83,7 +85,8 @@ def report_data(year, quarter):
     ReportData.objects.bulk_create(report_data_list)
 
 
-def profit_data(year, quarter):
+@app.task
+def update_profit_data(year, quarter):
     profit_data = get_profit_data(year, quarter)
 
     profit_data_list = [ProfitData(
@@ -103,7 +106,8 @@ def profit_data(year, quarter):
     ProfitData.objects.bulk_create(profit_data_list)
 
 
-def operation_data(year, quarter):
+@app.task
+def update_operation_data(year, quarter):
     operation_data = get_operation_data(year, quarter)
 
     operation_data_list = [OperationData(
@@ -122,7 +126,8 @@ def operation_data(year, quarter):
     OperationData.objects.bulk_create(operation_data_list)
 
 
-def growth_data(year, quarter):
+@app.task
+def update_growth_data(year, quarter):
     growth_data = get_growth_data(year, quarter)
 
     growth_data_list = [GrowthData(
@@ -141,7 +146,8 @@ def growth_data(year, quarter):
     GrowthData.objects.bulk_create(growth_data_list)
 
 
-def debtpaying_data(year, quarter):
+@app.task
+def update_debtpaying_data(year, quarter):
     debtpaying_data = get_debtpaying_data(year, quarter)
 
     debtpaying_data_list = [DebtpayingData(
@@ -160,7 +166,8 @@ def debtpaying_data(year, quarter):
     DebtpayingData.objects.bulk_create(debtpaying_data_list)
 
 
-def cashflow_data(year, quarter):
+@app.task
+def update_cashflow_data(year, quarter):
     cashflow_data = get_cashflow_data(year, quarter)
 
     cashflow_data_list = [CashflowData(

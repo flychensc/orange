@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from . import updater
+from . import tasks
 
 # Create your views here.
 
@@ -10,7 +10,7 @@ def update_stock_info(request):
     resp_dict = {}
     if request.method == 'POST' and request.is_ajax():
         resp_dict['status'] = '成功'
-        updater.stock_basics()
+        tasks.update_stock_basics.delay()
     else:
         resp_dict['status'] = '失败'
     return JsonResponse(resp_dict)
@@ -20,7 +20,7 @@ def update_history(request):
     resp_dict = {}
     if request.method == 'POST' and request.is_ajax():
         resp_dict['status'] = '成功'
-        updater.history()
+        tasks.update_history.delay()
     else:
         resp_dict['status'] = '失败'
     return JsonResponse(resp_dict)
@@ -28,12 +28,12 @@ def update_history(request):
 
 def update_fundamental(request):
     _updater_handle = {
-        'report_data': updater.report_data,
-        'profit_data': updater.profit_data,
-        'operation_data': updater.operation_data,
-        'growth_data': updater.growth_data,
-        'debtpaying_data': updater.debtpaying_data,
-        'cashflow_data': updater.cashflow_data,
+        'report_data': tasks.update_report_data.delay,
+        'profit_data': tasks.update_profit_data.delay,
+        'operation_data': tasks.update_operation_data.delay,
+        'growth_data': tasks.update_growth_data.delay,
+        'debtpaying_data': tasks.update_debtpaying_data.delay,
+        'cashflow_data': tasks.update_cashflow_data.delay,
     }
     _month_to_quarter = {
         1:1, 2:1, 3:1,
