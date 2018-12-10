@@ -129,7 +129,8 @@ WARNING: This will remove all tasks from queue: celery.
 
 (to skip this prompt use the -f option)
 
-Are you sure you want to delete all tasks (yes/NO)? 
+Are you sure you want to delete all tasks (yes/NO)? yes
+No messages purged from 1 queue
 ```
 
 ## Test
