@@ -14,7 +14,7 @@ from navel.celery import app
 from .models import *
 from .stock import get_stock_basics as get_local_stock_basics
 
-@app.task
+@app.task(ignore_result=True)
 def update_stock_basics():
     stock_basics = get_stock_basics()
 
@@ -42,7 +42,7 @@ def update_stock_basics():
     StockBasics.objects.bulk_create(stock_basics_list)
 
  
-@app.task
+@app.task(ignore_result=True)
 def update_history():
     start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
     historys = load_historys(start_date)
@@ -65,7 +65,7 @@ def update_history():
     History.objects.bulk_create(history_list)
 
  
-@app.task
+@app.task(ignore_result=True)
 def update_one_history(code, start):
     try:
         print("Get %(code)s history data" % locals())
@@ -94,7 +94,7 @@ def update_one_history(code, start):
         return
 
  
-@app.task
+@app.task(ignore_result=True)
 def update_all_history():
     start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
     # 先清空
@@ -104,7 +104,7 @@ def update_all_history():
         update_one_history.delay(code, start_date)
 
 
-@app.task
+@app.task(ignore_result=True)
 def update_report_data(year, quarter):
     report_data = get_report_data(year, quarter)
 
@@ -130,7 +130,7 @@ def update_report_data(year, quarter):
     ReportData.objects.bulk_create(report_data_list)
 
 
-@app.task
+@app.task(ignore_result=True)
 def update_profit_data(year, quarter):
     profit_data = get_profit_data(year, quarter)
 
@@ -154,7 +154,7 @@ def update_profit_data(year, quarter):
     ProfitData.objects.bulk_create(profit_data_list)
 
 
-@app.task
+@app.task(ignore_result=True)
 def update_operation_data(year, quarter):
     operation_data = get_operation_data(year, quarter)
 
@@ -177,7 +177,7 @@ def update_operation_data(year, quarter):
     OperationData.objects.bulk_create(operation_data_list)
 
 
-@app.task
+@app.task(ignore_result=True)
 def update_growth_data(year, quarter):
     growth_data = get_growth_data(year, quarter)
 
@@ -200,7 +200,7 @@ def update_growth_data(year, quarter):
     GrowthData.objects.bulk_create(growth_data_list)
 
 
-@app.task
+@app.task(ignore_result=True)
 def update_debtpaying_data(year, quarter):
     debtpaying_data = get_debtpaying_data(year, quarter)
 
@@ -223,7 +223,7 @@ def update_debtpaying_data(year, quarter):
     DebtpayingData.objects.bulk_create(debtpaying_data_list)
 
 
-@app.task
+@app.task(ignore_result=True)
 def update_cashflow_data(year, quarter):
     cashflow_data = get_cashflow_data(year, quarter)
 
