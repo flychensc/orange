@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
+from celery.schedules import crontab
 from navel import settings
 
 # set the default Django settings module for the 'celery' program.
@@ -19,3 +20,16 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
+
+app.conf.beat_schedule = {
+    'update-stock-list at 15:30': {
+        'task': 'navel.storage.tasks.update_stock_basics',
+        'schedule': crontab(hour=15, minute=30),
+        'args': ()
+    },
+    'update-history at 15:35': {
+        'task': 'navel.storage.tasks.update_all_history',
+        'schedule': crontab(hour=15, minute=35),
+        'args': ()
+    },
+}
