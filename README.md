@@ -33,8 +33,6 @@ Done
 orange>
 ```
 
-![basic](./sample/v1_01_basic.PNG)
-
 ### detail
 
 详细信息，仅能输入一支股票代码
@@ -45,8 +43,6 @@ Done
 
 orange>
 ```
-
-![detail](./sample/v1_02_detail.PNG)
 
 ## Navel
 
@@ -65,14 +61,6 @@ Django version 2.0, using settings 'navel.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CTRL-BREAK.
 ```
-
-![index](./sample/v2_01_index.PNG)
-
-![detail_overview](./sample/v2_04_detail_overview.PNG)
-
-![annual_report](./sample/v2_02_annual_report.PNG)
-
-![tick_data](./sample/v2_03_tick_data.PNG)
 
 ## Test
 
