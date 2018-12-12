@@ -6,35 +6,29 @@
 
 获取股票的简单信息，生成到一个excel里
 
-`python mandarin.py --help`
-
 ### basic
 
-基础信息，支持输入一组股票代码
+列出一组股票的基础信息
 
-`python mandarin.py basic 002271 002230`
+例如： `python mandarin.py basic 002271 002230`
 
 ### detail
 
-详细信息，仅能输入一支股票代码
+列出某支股票的详细信息
 
-`python mandarin.py detail 002271`
+例如： `python mandarin.py detail 002271`
 
 ## Navel
 
-股票信息查询
+一个WEB服务器，用于股票信息查询
 
-`python manage.py runserver`
+启动命令： `python manage.py runserver`
 
 ### celery
 
-启动celery后台任务
+采用celery管理后台任务
 
-`celery -A navel worker -l info --concurrency=15`
-
-清除celery后台任务
-
-`celery -A navel purge`
+启动命令： `celery -A navel worker -l info --concurrency=15`
 
 ## Test
 
