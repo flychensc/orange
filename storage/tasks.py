@@ -4,6 +4,7 @@
 
 import datetime
 import socket
+import pandas as pd
 from stock import (get_stock_basics, get_k_data,
                     get_report_data, get_profit_data,
                     get_operation_data, get_growth_data,
@@ -107,6 +108,9 @@ def update_all_history():
 def update_report_data(year, quarter):
     report_data = get_report_data(year, quarter)
 
+    # django.db.utils.OperationalError: (1054, "Unknown column 'nane0' in 'field list'")
+    report_data = report_data.astype(object).where(pd.notnull(report_data), None)
+
     report_data_list = [ReportData(
             code = data['code'],
             name = data['name'],
@@ -130,6 +134,9 @@ def update_report_data(year, quarter):
 def update_profit_data(year, quarter):
     profit_data = get_profit_data(year, quarter)
 
+    # django.db.utils.OperationalError: (1054, "Unknown column 'nane0' in 'field list'")
+    profit_data = profit_data.astype(object).where(pd.notnull(profit_data), None)
+
     profit_data_list = [ProfitData(
             code = data['code'],
             name = data['name'],
@@ -151,6 +158,9 @@ def update_profit_data(year, quarter):
 def update_operation_data(year, quarter):
     operation_data = get_operation_data(year, quarter)
 
+    # django.db.utils.OperationalError: (1054, "Unknown column 'nane0' in 'field list'")
+    operation_data = operation_data.astype(object).where(pd.notnull(operation_data), None)
+
     operation_data_list = [OperationData(
             code = data['code'],
             name = data['name'],
@@ -170,6 +180,9 @@ def update_operation_data(year, quarter):
 @app.task
 def update_growth_data(year, quarter):
     growth_data = get_growth_data(year, quarter)
+
+    # django.db.utils.OperationalError: (1054, "Unknown column 'nane0' in 'field list'")
+    growth_data = growth_data.astype(object).where(pd.notnull(growth_data), None)
 
     growth_data_list = [GrowthData(
             code = data['code'],
@@ -191,6 +204,9 @@ def update_growth_data(year, quarter):
 def update_debtpaying_data(year, quarter):
     debtpaying_data = get_debtpaying_data(year, quarter)
 
+    # django.db.utils.OperationalError: (1054, "Unknown column 'nane0' in 'field list'")
+    debtpaying_data = debtpaying_data.astype(object).where(pd.notnull(debtpaying_data), None)
+
     debtpaying_data_list = [DebtpayingData(
             code = data['code'],
             name = data['name'],
@@ -210,6 +226,9 @@ def update_debtpaying_data(year, quarter):
 @app.task
 def update_cashflow_data(year, quarter):
     cashflow_data = get_cashflow_data(year, quarter)
+
+    # django.db.utils.OperationalError: (1054, "Unknown column 'nane0' in 'field list'")
+    cashflow_data = cashflow_data.astype(object).where(pd.notnull(cashflow_data), None)
 
     cashflow_data_list = [CashflowData(
             code = data['code'],
