@@ -252,10 +252,9 @@ def update_one_tick(code, day):
         print("Get %(code)s tick data" % locals())
         # 获取分笔数据
         tick = get_tick_data(code, day)
-        tick.set_index(["date"], inplace=True)
     
         tick_list = [Tick(
-                code = data['code'],
+                code = code,
                 day = str(day),
                 sec1_buy = data['一区买入'],
                 sec1_sell = data['一区卖出'],
@@ -265,7 +264,7 @@ def update_one_tick(code, day):
                 sec3_sell = data['三区卖出'],
                 sec4_buy = data['四区买入'],
                 sec4_sell = data['四区卖出'],
-            ) for day, data in tick.iterrows()]
+            ) for index, data in tick.iterrows()]
         # 保存
         Tick.objects.bulk_create(tick_list)
     except socket.timeout:
