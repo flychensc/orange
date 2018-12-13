@@ -199,3 +199,32 @@ class CashflowData(models.Model):
     cf_nm = models.FloatField(null=True)
     cf_liabilities = models.FloatField(null=True)
     cashflowratio = models.FloatField(null=True)
+
+
+class Tick(models.Model):
+    """
+    分笔数据
+        code:代码
+        day:日期
+        close:收盘
+        high:最高价
+        low:最低价
+        vol:成交量
+    """
+    code = models.CharField(max_length=6)
+    day = models.DateField()
+    # section: 9:30-10:30
+    sec1_buy = models.FloatField()
+    sec1_sell = models.FloatField()
+    # section: 10:30-11:30
+    sec2_buy = models.FloatField()
+    sec2_sell = models.FloatField()
+    # section: 13:00-14:00
+    sec3_buy = models.FloatField()
+    sec3_sell = models.FloatField()
+    # section: 14:00-15:00
+    sec4_buy = models.FloatField()
+    sec4_sell = models.FloatField()
+
+    class Meta:
+        unique_together = ("code", "day") 

@@ -8,7 +8,8 @@ import pandas as pd
 from stock import (get_stock_basics, get_k_data,
                     get_report_data, get_profit_data,
                     get_operation_data, get_growth_data,
-                    get_debtpaying_data, get_cashflow_data)
+                    get_debtpaying_data, get_cashflow_data,
+                    get_tick_data)
 from stock.downloader import load_historys
 from navel.celery import app
 from .models import *
@@ -243,3 +244,44 @@ def update_cashflow_data(year, quarter):
     CashflowData.objects.all().delete()
     # 再保存
     CashflowData.objects.bulk_create(cashflow_data_list)
+
+
+@app.task(ignore_result=True)
+def update_one_tick(code, day):
+    try:
+        print("Get %(code)s tick data" % locals())
+        # 获取分笔数据
+        tick = get_tick_data(code, day)
+        tick.set_index(["date"], inplace=True)
+    
+        tick_list = [Tick(
+                code = data['code'],
+                day = str(day),
+                sec1_buy = data['一区买入'],
+                sec1_sell = data['一区卖出'],
+                sec2_buy = data['二区买入'],
+                sec2_sell = data['二区卖出'],
+                sec3_buy = data['三区买入'],
+                sec3_sell = data['三区卖出'],
+                sec4_buy = data['四区买入'],
+                sec4_sell = data['四区卖出'],
+            ) for day, data in tick.iterrows()]
+        # 保存
+        Tick.objects.bulk_create(tick_list)
+    except socket.timeout:
+        print("%(code)s as socket.timeout" % locals())
+        self.retry(countdown=5, max_retries=3, exc=e)
+    except Exception as e:
+        print("%(code)s exception as %(e)s" % locals())
+        return
+
+ 
+@app.task(ignore_result=True)
+def update_all_tick():
+    days = [(datetime.date.today()-datetime.timedelta(days=offset)).strftime("%Y-%m-%d") for offset in range(15)]
+    # 先清空
+    Tick.objects.all().delete()
+    # all stocks' code
+    for code in get_local_stock_basics().index:
+        for day in days:
+            update_one_tick.delay(code, day)

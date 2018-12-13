@@ -8,6 +8,7 @@ import pandas as pd
 MARGIN_COLUMNS = ['日期', '股票代码', '融资余额(元)', '融资买入额(元)', '融券余量', '融券卖出量']
 
 TICK_COLUMNS = ['时间', '成交价', '成交量', '买卖类型']
+TICK_COLUMNS1 = ['时间', '一区买入', '一区卖出', '二区买入', '二区卖出', '三区买入', '三区卖出', '四区买入', '四区卖出']
 
 
 def get_sh_margin_details(start, end):
@@ -54,6 +55,36 @@ def get_sz_margin_details(date):
     return details
 
 
+def _classifier_tick_data(tick_data):
+    day = tick_data['时间'][0][:10]
+    buy = tick_data[ tick_data['买卖类型'] == 0]
+    sell = tick_data[ tick_data['买卖类型'] == 1]
+    
+    sum = buy[ buy['时间'] <= f'{day} 10:30'].sum()
+    sec1_buy = sum['成交价']*sum['成交量']
+    sum = sell[ sell['时间'] <= f'{day} 10:30'].sum()
+    sec1_sell = sum['成交价']*sum['成交量']
+
+    sum = buy[ buy['时间'] <= f'{day} 11:30'].sum()
+    sec2_buy = sum['成交价']*sum['成交量']
+    sum = sell[ sell['时间'] <= f'{day} 11:30'].sum()
+    sec2_sell = sum['成交价']*sum['成交量']
+
+    sum = buy[ buy['时间'] <= f'{day} 14:00'].sum()
+    sec3_buy = sum['成交价']*sum['成交量']
+    sum = sell[ sell['时间'] <= f'{day} 14:00'].sum()
+    sec3_sell = sum['成交价']*sum['成交量']
+
+    sum = buy[ buy['时间'] <= f'{day} 15:00'].sum()
+    sec4_buy = sum['成交价']*sum['成交量']
+    sum = sell[ sell['时间'] <= f'{day} 15:00'].sum()
+    sec4_sell = sum['成交价']*sum['成交量']
+
+    return pd.DataFrame([[day, sec1_buy, sec1_sell, sec2_buy, sec2_sell,
+                            sec3_buy, sec3_sell, sec4_buy, sec4_sell]],
+                        columns=TICK_COLUMNS1)
+
+
 def get_tick_data(code, date):
     """
     获取某天的分笔数据
@@ -75,7 +106,7 @@ def get_tick_data(code, date):
     if tick_data is None:
         return pd.DataFrame(columns=TICK_COLUMNS)
     tick_data.columns = TICK_COLUMNS
-    return tick_data
+    return _classifier_tick_data(tick_data)
 
 
 def get_k_data(code, start=''):
