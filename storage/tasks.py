@@ -45,6 +45,10 @@ def update_stock_basics():
  
 @app.task(ignore_result=True)
 def update_history():
+    """
+    deprecated
+    耗时大约8分钟
+    """
     start_date = (datetime.date.today()-datetime.timedelta(days=30*6)).strftime("%Y-%m-%d")
     historys = load_historys(start_date)
 
@@ -277,6 +281,10 @@ def update_one_tick(code, day):
  
 @app.task(ignore_result=True)
 def update_all_tick():
+    """
+    deprecated
+    太费时间，1天的分笔大约13分钟，1天大概就要3～4小时
+    """
     days = [(datetime.date.today()-datetime.timedelta(days=offset)).strftime("%Y-%m-%d") for offset in range(15)]
     # 先清空
     Tick.objects.all().delete()
