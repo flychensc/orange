@@ -23,12 +23,12 @@ def debug_task(self):
 
 app.conf.beat_schedule = {
     'update-stock-list at 15:30': {
-        'task': '.storage.tasks.update_stock_basics',
+        'task': 'storage.tasks.update_stock_basics',
         'schedule': crontab(hour=15, minute=30),
         'args': ()
     },
     'update-history at 15:35': {
-        'task': '.storage.tasks.update_all_history',
+        'task': 'storage.tasks.update_all_history',
         'schedule': crontab(hour=15, minute=35),
         'args': ()
     },
