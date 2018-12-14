@@ -3,6 +3,7 @@ from django.http import JsonResponse
 
 import datetime
 import json
+import pandas as pd
 from stock import get_annual_report, get_tick_data, pct_change, get_level0_report
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
 from storage.stock import get_stock_basics, get_basic_info, get_level1_report
@@ -16,26 +17,28 @@ def annual_report(request, code):
 
     report = get_annual_report(code)
     if recent:
-        report = report[report.columns.tolist()[-int(recent):]]
+        report = report[report.columns.tolist()[-int(recent)-1:]]
 
     report.rename(columns=lambda x: str(x)[:10], inplace=True)
 
     year_yoy = pct_change(report, axis=1)
     year_yoy = (year_yoy * 100).round(2)
 
-    report.fillna(0, inplace=True)
-    year_yoy.fillna(0, inplace=True)
+    # replace numpy.NaN to '-'
+    report = report.astype(str).where(pd.notnull(report), "-")
+    year_yoy = year_yoy.astype(str).where(pd.notnull(year_yoy), "-")
 
     data_dict = dict()
-    data_dict['date'] = report.columns.tolist()
+    for year in report.columns[1:]:
+        data_dict[year] = {
+            'income': report[year].loc['销售额'],
+            'profit': report[year].loc['净利润'],
+            'liability': report[year].loc['所有债务'],
 
-    data_dict['income'] = report.loc['销售额'].values.tolist()
-    data_dict['profit'] = report.loc['净利润'].values.tolist()
-    data_dict['liability'] = report.loc['所有债务'].values.tolist()
-
-    data_dict['income_yoy'] = year_yoy.loc['销售额'].values.tolist()
-    data_dict['profit_yoy'] = year_yoy.loc['净利润'].values.tolist()
-    data_dict['liability_yoy'] = year_yoy.loc['所有债务'].values.tolist()
+            'income_yoy': year_yoy[year].loc['销售额'],
+            'profit_yoy': year_yoy[year].loc['净利润'],
+            'liability_yoy': year_yoy[year].loc['所有债务'],
+        }
 
     return JsonResponse(data_dict)
 
@@ -80,9 +83,7 @@ def basic_info(request, code):
     data_dict['pb'] = basic_info['市净率']
     data_dict['eps'] = basic_info['每股收益']
 
-    data_array = list()
-    data_array.append(data_dict)
-    return JsonResponse(data_array, safe=False)
+    return JsonResponse(data_dict, safe=False)
 
 
 def level_0(request, code):
@@ -97,24 +98,23 @@ def level_0(request, code):
     data_dict['ProNon'] = level_report['利润偿还非流动负债']
     data_dict['ProAll'] = level_report['利润偿还所有负债']
 
-    data_array = list()
-    data_array.append(data_dict)
-    return JsonResponse(data_array, safe=False)
+    return JsonResponse(data_dict, safe=False)
 
 
 def level_1(request, code):
     today = datetime.date.today()
     year = today.year if today.month > 4 else today.year - 1
     level_report = get_level1_report(code, year, 4)
+    # replace numpy.NaN to '-'
+    level_report = level_report.astype(str).where(pd.notnull(level_report), "-")
 
-    data_array = list()
+    data_dict = dict()
     for idx in LEVEL1_REPORT_INDEX:
-        data_dict = dict()
+        data_dict.setdefault(LEVEL_REPORT_DICT[idx], [])
 
-        data_dict['class'] = LEVEL_REPORT_DICT[idx]
-        data_dict['item'] = idx
-        data_dict['value'] = level_report[idx]
+        data_dict[LEVEL_REPORT_DICT[idx]].append({
+            'item': idx,
+            'value': level_report[idx],
+        })
 
-        data_array.append(data_dict)
-
-    return JsonResponse(data_array, safe=False)
+    return JsonResponse(data_dict, safe=False)

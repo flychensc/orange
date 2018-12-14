@@ -4,6 +4,7 @@
 
 import requests
 import pandas as pd
+import numpy as np
 
 from pandas.compat import StringIO
 
@@ -55,14 +56,14 @@ def get_balance_sheet(code, annual=True):
     balance_sheet = pd.read_csv(
         StringIO(response.text),
         index_col=0,
-        na_values="--",
+        na_values=np.NaN,
         skipinitialspace=True)
     # pylint: disable=E1101
     # drop unnamed column
     balance_sheet.drop(balance_sheet.columns[-1], axis=1, inplace=True)
     # convert type
     balance_sheet.columns = pd.to_datetime(balance_sheet.columns)
-    return balance_sheet.astype(float)
+    return balance_sheet.replace("--", np.NaN).astype(float)
 
 
 def get_profit_statement(code, annual=True):
@@ -96,11 +97,11 @@ def get_profit_statement(code, annual=True):
     profit_statement = pd.read_csv(
         StringIO(response.text),
         index_col=0,
-        na_values="--",
+        na_values=np.NaN,
         skipinitialspace=True)
     # pylint: disable=E1101
     # drop unnamed column
     profit_statement.drop(profit_statement.columns[-1], axis=1, inplace=True)
     # convert type
     profit_statement.columns = pd.to_datetime(profit_statement.columns)
-    return profit_statement.astype(float)
+    return profit_statement.replace("--", np.NaN).astype(float)
