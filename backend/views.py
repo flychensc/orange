@@ -28,9 +28,11 @@ def annual_report(request, code):
     report = report.astype(str).where(pd.notnull(report), "-")
     year_yoy = year_yoy.astype(str).where(pd.notnull(year_yoy), "-")
 
-    data_dict = dict()
+    data_list = list()
     for year in report.columns[1:]:
-        data_dict[year] = {
+        data_list.append({
+            'year': year,
+
             'income': report[year].loc['销售额'],
             'profit': report[year].loc['净利润'],
             'liability': report[year].loc['所有债务'],
@@ -38,9 +40,9 @@ def annual_report(request, code):
             'income_yoy': year_yoy[year].loc['销售额'],
             'profit_yoy': year_yoy[year].loc['净利润'],
             'liability_yoy': year_yoy[year].loc['所有债务'],
-        }
+        })
 
-    return JsonResponse(data_dict)
+    return JsonResponse({"annual_report": data_list})
 
 
 def stock_list(request):
@@ -56,18 +58,27 @@ def tick_data(request, code):
     start = request.GET.get('start')
     end = request.GET.get('end')
     tick_data = load_tick_data(code, start, end)
+    print(tick_data)
 
-    data_dict = dict()
-    data_dict['buy'] = [[
-        row[1]['时间'],
-        row[1]['成交量']*row[1]['成交价'],
-    ] for row in tick_data[tick_data['买卖类型'] == 0].iterrows()]
-    data_dict['sell'] = [[
-        row[1]['时间'],
-        row[1]['成交量']*row[1]['成交价'],
-    ] for row in tick_data[tick_data['买卖类型'] == 1].iterrows()]
+    data_list = list()
+    for index, data in tick_data.iterrows():
+        data_list.append({
+            'date': data['时间'],
 
-    return JsonResponse(data_dict)
+            'sec1_buy': data['一区买入'],
+            'sec1_sell': data['一区卖出'],
+
+            'sec2_buy': data['二区买入'],
+            'sec2_sell': data['二区卖出'],
+            
+            'sec3_buy': data['三区买入'],
+            'sec3_sell': data['三区卖出'],
+
+            'sec4_buy': data['四区买入'],
+            'sec4_sell': data['四区卖出'],
+        })
+
+    return JsonResponse({"tick_data": data_list})
 
 
 def basic_info(request, code):
@@ -83,7 +94,7 @@ def basic_info(request, code):
     data_dict['pb'] = basic_info['市净率']
     data_dict['eps'] = basic_info['每股收益']
 
-    return JsonResponse(data_dict, safe=False)
+    return JsonResponse(data_dict)
 
 
 def level_0(request, code):
@@ -98,7 +109,7 @@ def level_0(request, code):
     data_dict['ProNon'] = level_report['利润偿还非流动负债']
     data_dict['ProAll'] = level_report['利润偿还所有负债']
 
-    return JsonResponse(data_dict, safe=False)
+    return JsonResponse(data_dict)
 
 
 def level_1(request, code):
@@ -117,4 +128,4 @@ def level_1(request, code):
             'value': level_report[idx],
         })
 
-    return JsonResponse(data_dict, safe=False)
+    return JsonResponse(data_dict)
