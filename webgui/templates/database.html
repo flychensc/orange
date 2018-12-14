@@ -52,8 +52,8 @@
           <ul class="nav nav-sidebar">
             <li class="active"><a href="#basic_info">基础信息<span class="sr-only">(current)</span></a></li>
             <li><a href="#history">历史数据</a></li>
+            <li><a href="#tick_data">TICK数据</a></li>
             <li><a href="#fundamental">财务数据</a></li>
-            <li><a href="#">TICK数据</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -70,6 +70,13 @@
             <h2 class="sub-header">历史数据</h2>
             <p>
               <button class="btn btn-primary" type="button" id=history_update>更新数据</button>
+            </p>
+          </div>
+
+          <div class="bs-docs-section" id="tick_data">
+            <h2 class="sub-header">分笔数据</h2>
+            <p>
+              <button class="btn btn-primary" type="button" id=tickdata_update>更新数据</button>
             </p>
           </div>
 
@@ -218,6 +225,18 @@
           type: "POST",
           async: false,
           url: "/database/update/history",
+          success: function(resp){
+            alert("更新" + resp.status);
+          }
+        });
+      })
+
+      $("#tickdata_update").click(function() {
+        //Ajax调用处理
+        $.ajax({
+          type: "POST",
+          async: false,
+          url: "/database/update/tick_data",
           success: function(resp){
             alert("更新" + resp.status);
           }

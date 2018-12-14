@@ -284,3 +284,13 @@ def update_all_tick():
     for code in get_local_stock_basics().index:
         for day in days:
             update_one_tick.delay(code, day)
+
+ 
+@app.task(ignore_result=True)
+def update_tick():
+    day = datetime.date.today().strftime("%Y-%m-%d")
+    # 先清空
+    Tick.objects.all().delete()
+    # all stocks' code
+    for code in get_local_stock_basics().index:
+        update_one_tick.delay(code, day)

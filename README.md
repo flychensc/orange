@@ -28,7 +28,7 @@
 
 采用celery管理后台任务
 
-启动命令： `celery -A navel worker -l info --concurrency=15`
+启动命令： `celery -A navel worker -l info -c 15 -B`
 
 ## Test
 

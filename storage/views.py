@@ -26,6 +26,16 @@ def update_history(request):
     return JsonResponse(resp_dict)
 
 
+def update_tick_data(request):
+    resp_dict = {}
+    if request.method == 'POST' and request.is_ajax():
+        resp_dict['status'] = '成功'
+        tasks.update_tick.delay()
+    else:
+        resp_dict['status'] = '失败'
+    return JsonResponse(resp_dict)
+
+
 def update_fundamental(request):
     _updater_handle = {
         'report_data': tasks.update_report_data.delay,
