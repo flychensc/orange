@@ -213,11 +213,11 @@
 
           <h2 class="sub-header">财务情况</h2>
           <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-          <div id="chart_finance_income" style="width: 400px;height:300px;">
+          <div id="chart_finance_income" style="width: 480px;height:360px;">
           </div>
-          <div id="chart_finance_profit" style="width: 400px;height:300px;">
+          <div id="chart_finance_profit" style="width: 480px;height:360px;">
           </div>
-          <div id="chart_finance_liability" style="width: 400px;height:300px;">
+          <div id="chart_finance_liability" style="width: 480px;height:360px;">
           </div>
 
         </div>
@@ -428,13 +428,15 @@
                 {
                     name:'销售额',
                     type:'bar',
-                    data:[]
+                    data:[],
+                    itemStyle:{  normal:{color:'#1d953f'}}
                 },
                 {
                     name:'销售增速(%)',
                     type:'line',
                     yAxisIndex: 1,
-                    data:[]
+                    data:[],
+                    itemStyle:{  normal:{color:'#b2d235'}}
                 }
             ]
         };        
@@ -489,13 +491,15 @@
                 {
                     name:'净利润',
                     type:'bar',
-                    data:[]
+                    data:[],
+                    itemStyle:{  normal:{color:'#2b4490'}}
                 },
                 {
                     name:'利润增速(%)',
                     type:'line',
                     yAxisIndex: 1,
-                    data:[]
+                    data:[],
+                    itemStyle:{  normal:{color:'#426ab3'}}
                 }
             ]
         };        
@@ -550,13 +554,15 @@
                 {
                     name:'所有负债',
                     type:'bar',
-                    data:[]
+                    data:[],
+                    itemStyle:{  normal:{color:'#d71345'}}
                 },
                 {
                     name:'负债增速(%)',
                     type:'line',
                     yAxisIndex: 1,
-                    data:[]
+                    data:[],
+                    itemStyle:{  normal:{color:'#f58f98'}}
                 }
             ]
         };        
