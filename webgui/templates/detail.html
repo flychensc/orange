@@ -53,8 +53,8 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="active"><a href="#">概览<span class="sr-only">(current)</span></a></li>
-            <li><a href="/stock/{{code}}/annual_report?recent=3">基本面</a></li>
-            <li><a href="/stock/{{code}}/tick_data?start=2018-11-15&end=2018-11-29">技术面</a></li>
+            <li><a href="#">基本面</a></li>
+            <li><a href="/stock/{{code}}/tick_data?start=2018-12-12&end=2018-12-14">技术面</a></li>
             <li><a href="#">消息面</a></li>
           </ul>
         </div>
@@ -211,6 +211,15 @@
             </table>
           </div>
 
+          <h2 class="sub-header">财务情况</h2>
+          <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+          <div id="chart_finance_income" style="width: 400px;height:300px;">
+          </div>
+          <div id="chart_finance_profit" style="width: 400px;height:300px;">
+          </div>
+          <div id="chart_finance_liability" style="width: 400px;height:300px;">
+          </div>
+
         </div>
       </div>
     </div>
@@ -224,6 +233,8 @@
     <script src="/static/js/bootstrap-table.min.js"></script>
     <!-- put your locale files after bootstrap-table.js -->
     <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
+    <!-- 引入 echarts.js -->
+    <script src="/static/js/echarts.min.js"></script>
 
     <script type="text/javascript">
 
@@ -357,6 +368,286 @@
           rowspan: 4
       });
     });
+
+    </script>
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var incomeChart = echarts.init(document.getElementById('chart_finance_income'));
+        var profitChart = echarts.init(document.getElementById('chart_finance_profit'));
+        var liabilityChart = echarts.init(document.getElementById('chart_finance_liability'));
+
+        // 指定图表的配置项和数据
+        incomeOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data:['销售额', '销售增速(%)']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [],
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '金额',
+                    axisLabel: {
+                        formatter: '{value} 万元'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '同比增速',
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name:'销售额',
+                    type:'bar',
+                    data:[]
+                },
+                {
+                    name:'销售增速(%)',
+                    type:'line',
+                    yAxisIndex: 1,
+                    data:[]
+                }
+            ]
+        };        
+
+        profitOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data:['净利润', '利润增速(%)']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [],
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '金额',
+                    axisLabel: {
+                        formatter: '{value} 万元'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '同比增速',
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name:'净利润',
+                    type:'bar',
+                    data:[]
+                },
+                {
+                    name:'利润增速(%)',
+                    type:'line',
+                    yAxisIndex: 1,
+                    data:[]
+                }
+            ]
+        };        
+
+        liabilityOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data:['所有负债', '负债增速(%)']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [],
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '金额',
+                    axisLabel: {
+                        formatter: '{value} 万元'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '同比增速',
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name:'所有负债',
+                    type:'bar',
+                    data:[]
+                },
+                {
+                    name:'负债增速(%)',
+                    type:'line',
+                    yAxisIndex: 1,
+                    data:[]
+                }
+            ]
+        };        
+
+        // 使用刚指定的配置项和数据显示图表。
+        incomeChart.setOption(incomeOption);
+        profitChart.setOption(profitOption);
+        liabilityChart.setOption(liabilityOption);
+
+        incomeChart.showLoading();
+        profitChart.showLoading();
+        liabilityChart.showLoading();
+
+        // 异步加载数据
+        var json_url = '/data/{{code}}/annual_report?recent=3'
+        $.get(json_url).done(function (resp) {
+            data = {
+                "year": [],
+                "income": [],
+                "profit": [],
+                "liability": [],
+                "income_yoy": [],
+                "profit_yoy": [],
+                "liability_yoy": [],
+            }
+            resp.annual_report.forEach(element => {
+                data.year.push(element.year)
+                data.income.push(element.income)
+                data.profit.push(element.profit)
+                data.liability.push(element.liability)
+                data.income_yoy.push(element.income_yoy)
+                data.profit_yoy.push(element.profit_yoy)
+                data.liability_yoy.push(element.liability_yoy)
+            });
+            incomeChart.hideLoading();
+            // 填入数据
+            incomeChart.setOption({
+                xAxis: {
+                    data: data.year
+                },
+                series: [
+                {
+                    // 根据名字对应到相应的系列
+                    name: '销售额',
+                    data: data.income
+                },
+                {
+                    // 根据名字对应到相应的系列
+                    name: '销售增速(%)',
+                    data: data.income_yoy
+                }]
+            });
+
+            profitChart.hideLoading();
+            // 填入数据
+            profitChart.setOption({
+                xAxis: {
+                    data: data.year
+                },
+                series: [
+                {
+                    // 根据名字对应到相应的系列
+                    name: '净利润',
+                    data: data.profit
+                },
+                {
+                    // 根据名字对应到相应的系列
+                    name: '利润增速(%)',
+                    data: data.profit_yoy
+                }]
+            });
+
+            liabilityChart.hideLoading();
+            // 填入数据
+            liabilityChart.setOption({
+                xAxis: {
+                    data: data.year
+                },
+                series: [
+                {
+                    // 根据名字对应到相应的系列
+                    name: '所有负债',
+                    data: data.liability
+                },
+                {
+                    // 根据名字对应到相应的系列
+                    name: '负债增速(%)',
+                    data: data.liability_yoy
+                }]
+            });
+        });
 
     </script>
   </body>
