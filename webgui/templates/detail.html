@@ -52,13 +52,15 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">概览<span class="sr-only">(current)</span></a></li>
-            <li><a href="#">基本面</a></li>
+            <li class="active"><a href="#overview">概览<span class="sr-only">(current)</span></a></li>
+            <li><a href="#finance">基本面</a></li>
             <li><a href="/stock/{{code}}/tick_data?start=2018-12-12&end=2018-12-14">技术面</a></li>
             <li><a href="#">消息面</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+          <div id="overview"></div>
 
           <h2 class="sub-header">基本信息</h2>
           <div class="table-responsive">
@@ -210,6 +212,8 @@
               -->
             </table>
           </div>
+
+          <div id="finance"></div>
 
           <h2 class="sub-header">财务情况</h2>
           <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
