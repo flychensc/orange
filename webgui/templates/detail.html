@@ -235,6 +235,9 @@
 
     $('#table_basic_info').bootstrapTable({
       url: "/data/{{code}}/basic_info",
+      responseHandler: function(resp) {
+        return [resp]
+      },
       columns: [{
           field: 'code',
           title: '股票代码'
@@ -265,6 +268,9 @@
 
     $('#table_level_0').bootstrapTable({
       url: "/data/{{code}}/level_0",
+      responseHandler: function(resp) {
+        return [resp]
+      },
       columns: [{
           field: 'Inv',
           title: '存货大于收入'
@@ -290,6 +296,19 @@
     $('#table_level_1').bootstrapTable({
       showHeader: false,
       url: "/data/{{code}}/level_1",
+      responseHandler: function(resp) {
+          newResp = [];
+          for (key in resp) {
+            resp[key].forEach(function(e) {
+              newResp.push({
+                'class': key,
+                'item': e['item'],
+                'value': e['value'],
+              });
+            });
+          }
+        return newResp
+      },
       columns: [{
           field: 'class',
           title: '类别'
