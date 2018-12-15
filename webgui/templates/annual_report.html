@@ -110,12 +110,30 @@
         {% else %}
         var json_url = '/data/{{code}}/annual_report'
         {% endif %}
-        $.get(json_url).done(function (data) {
+        $.get(json_url).done(function (resp) {
+            data = {
+                "year": [],
+                "income": [],
+                "profit": [],
+                "liability": [],
+                "income_yoy": [],
+                "profit_yoy": [],
+                "liability_yoy": [],
+            }
+            resp.annual_report.forEach(element => {
+                data.year.push(element.year)
+                data.income.push(element.income)
+                data.profit.push(element.profit)
+                data.liability.push(element.liability)
+                data.income_yoy.push(element.income_yoy)
+                data.profit_yoy.push(element.profit_yoy)
+                data.liability_yoy.push(element.liability_yoy)
+            });
             myChart.hideLoading();
             // 填入数据
             myChart.setOption({
                 xAxis: {
-                    data: data.date
+                    data: data.year
                 },
                 series: [
                 {
