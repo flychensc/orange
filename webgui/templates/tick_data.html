@@ -44,11 +44,7 @@
                 },
                 axisPointer:{
                     show: true,
-                    type : 'cross',
-                    lineStyle: {
-                        type : 'dashed',
-                        width : 1
-                    }
+                    type : 'shadow'
                 }
             },
             toolbox: {
@@ -59,21 +55,16 @@
                     }
                 }
             },
-            brush: {
-            },
             legend: {
-                data: ['买盘','卖盘'],
+                data: ['资金流入','资金流出', '资金相对量'],
                 left: 'center'
             },
             xAxis : [
                 {
-                    type : 'time',
-                    scale:true,
+                    type : 'category',
+                    axisTick : {show: false},
                     axisLabel : {
                         formatter: '{value}'
-                    },
-                    splitLine: {
-                        show: false
                     }
                 }
             ],
@@ -82,91 +73,40 @@
                     type : 'value',
                     scale:true,
                     axisLabel : {
-                        formatter: '{value} 元'
-                    },
-                    splitLine: {
-                        show: false
+                        formatter: '{value} 万元'
                     }
                 }
             ],
             series : [
                 {
-                    name:'买盘',
-                    type:'scatter',
+                    name:'资金流入',
+                    type:'bar',
+                    stack: "总量",
+                    label: {
+                        normal: {
+                            show: true
+                        }
+                    },
                     data: [],
-                    markArea: {
-                        silent: true,
-                        itemStyle: {
-                            normal: {
-                                color: 'transparent',
-                                borderWidth: 1,
-                                borderType: 'dashed'
-                            }
-                        },
-                        data: [[{
-                            name: '买盘分布区间',
-                            xAxis: 'min',
-                            yAxis: 'min'
-                        }, {
-                            xAxis: 'max',
-                            yAxis: 'max'
-                        }]]
-                    },
-                    markPoint : {
-                        data : [
-                            {type : 'max', name: '最大值'},
-                            {type : 'min', name: '最小值'}
-                        ]
-                    },
-                    markLine : {
-                        lineStyle: {
-                            normal: {
-                                type: 'solid'
-                            }
-                        },
-                        data : [
-                            {type : 'average', name: '平均值'}
-                        ]
-                    }
+                    itemStyle:{  normal:{color:'#d71345'}}
                 },
                 {
-                    name:'卖盘',
-                    type:'scatter',
+                    name:'资金流出',
+                    type:'bar',
+                    stack: "总量",
+                    label: {
+                        normal: {
+                            show: true
+                        }
+                    },
                     data: [],
-                    markArea: {
-                        silent: true,
-                        itemStyle: {
-                            normal: {
-                                color: 'transparent',
-                                borderWidth: 1,
-                                borderType: 'dashed'
-                            }
-                        },
-                        data: [[{
-                            name: '卖盘分布区间',
-                            xAxis: 'min',
-                            yAxis: 'min'
-                        }, {
-                            xAxis: 'max',
-                            yAxis: 'max'
-                        }]]
-                    },
-                    markPoint : {
-                        data : [
-                            {type : 'max', name: '最大值'},
-                            {type : 'min', name: '最小值'}
-                        ]
-                    },
-                    markLine : {
-                        lineStyle: {
-                            normal: {
-                                type: 'solid'
-                            }
-                        },
-                        data : [
-                            {type : 'average', name: '平均值'}
-                        ]
-                    }
+                    itemStyle:{  normal:{color:'#1d953f'}}
+                },
+                {
+                    name:'资金相对量',
+                    type:'line',
+                    data: [],
+                    itemStyle:{  normal:{color:'#b2d235'}}
                 }
             ]
         };        
@@ -177,19 +117,58 @@
         myChart.showLoading();
 
         // 异步加载数据
-        $.get('/data/{{code}}/tick_data?start={{start}}&end={{end}}').done(function (data) {
+        $.get('/data/{{code}}/tick_data?start={{start}}&end={{end}}').done(function (resp) {
+            data = {
+                "timezone": [],
+                "buy": [],
+                "sell": [],
+                "total": [],
+            }
+            resp.tick_data.forEach(function(e) {
+                data.timezone.push(e.date + " 9:30-10:30")
+
+                data.buy.push(Math.round(e.sec1_buy/10000))
+                data.sell.push(Math.round(-e.sec1_sell/10000))
+                data.total.push(Math.round((e.sec1_buy-e.sec1_sell)/10000))
+
+                data.timezone.push(e.date + " 10:30-11:30")
+
+                data.buy.push(Math.round(e.sec2_buy/10000))
+                data.sell.push(Math.round(-e.sec2_sell/10000))
+                data.total.push(Math.round((e.sec2_buy-e.sec2_sell)/10000))
+
+                data.timezone.push(e.date + " 13:00-14:00")
+
+                data.buy.push(Math.round(e.sec3_buy/10000))
+                data.sell.push(Math.round(-e.sec3_sell/10000))
+                data.total.push(Math.round((e.sec3_buy-e.sec3_sell)/10000))
+
+                data.timezone.push(e.date + " 14:00-15:00")
+
+                data.buy.push(Math.round(e.sec4_buy/10000))
+                data.sell.push(Math.round(-e.sec4_sell/10000))
+                data.total.push(Math.round((e.sec4_buy-e.sec4_sell)/10000))
+            })
             myChart.hideLoading();
             // 填入数据
             myChart.setOption({
+                xAxis: {
+                    data: data.timezone
+                },
                 series: [{
                     // 根据名字对应到相应的系列
-                    name: '买盘',
+                    name: '资金流入',
                     data: data.buy
                 },
                 {
                     // 根据名字对应到相应的系列
-                    name: '卖盘',
+                    name: '资金流出',
                     data: data.sell
+                },
+                {
+                    // 根据名字对应到相应的系列
+                    name: '资金相对量',
+                    data: data.total
                 }]
             });
         });
