@@ -55,10 +55,13 @@ def stock_list(request):
 
 
 def tick_data(request, code):
-    start = request.GET.get('start')
-    end = request.GET.get('end')
+    recent = request.GET.get('recent')
+
+    start = (datetime.date.today()-datetime.timedelta(days=10)).strftime("%Y-%m-%d")
+    end = datetime.date.today().strftime("%Y-%m-%d")
     tick_data = load_tick_data(code, start, end)
-    print(tick_data)
+
+    tick_data = tick_data[-int(recent):] if len(tick_data) > int(recent) else tick_data
 
     data_list = list()
     for index, data in tick_data.iterrows():

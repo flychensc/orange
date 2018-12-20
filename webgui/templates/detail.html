@@ -772,7 +772,7 @@
         tickChart.showLoading();
 
         // 异步加载数据
-        $.get('/data/{{code}}/tick_data?start={{start}}&end={{end}}').done(function (resp) {
+        $.get('/data/{{code}}/tick_data?recent=5').done(function (resp) {
             data = {
                 "timezone": [],
                 "buy": [],
