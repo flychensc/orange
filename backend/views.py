@@ -57,7 +57,9 @@ def stock_list(request):
 def tick_data(request, code):
     recent = request.GET.get('recent')
 
-    start = (datetime.date.today()-datetime.timedelta(days=10)).strftime("%Y-%m-%d")
+    #todo: 节假日
+    deltaday = int(recent)+2 if datetime.date.today().isoweekday() in [6,7] else int(recent)
+    start = (datetime.date.today()-datetime.timedelta(days=deltaday)).strftime("%Y-%m-%d")
     end = datetime.date.today().strftime("%Y-%m-%d")
     tick_data = load_tick_data(code, start, end)
 
