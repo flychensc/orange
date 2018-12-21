@@ -55,7 +55,7 @@
             <li class="active"><a href="#overview">概览<span class="sr-only">(current)</span></a></li>
             <li><a href="#finance">基本面</a></li>
             <li><a href="#technical">技术面</a></li>
-            <li><a href="#">消息面</a></li>
+            <li><a href="#news">消息面</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -225,8 +225,32 @@
           </div>
 
           <div id="technical"></div>
+          <h2 class="sub-header">资金流向</h2>
           <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
           <div id="chart_technical_tickdata" style="width: 800px;height:600px;">
+          </div>
+
+          <div id="news"></div>
+          <h2 class="sub-header">公告消息</h2>
+          <div class="table-responsive">
+            <table class="table table-striped" id="table_notices">
+              <!--
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>类型</th>
+                  <th>标题</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2018-12-21</td>
+                  <td>临时公告</td>
+                  <td><a target=”_blank” href="http://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?CompanyCode=10000535&gather=1&id=4940829">佳都科技公开发行可转换公司债券网上中签结果公告</a></td>
+                </tr>
+              </tbody>
+              -->
+            </table>
           </div>
 
         </div>
@@ -376,6 +400,33 @@
           colspan: 1,
           rowspan: 4
       });
+    });
+
+    $('#table_notices').bootstrapTable({
+      url: "/data/{{code}}/notices?recent=5",
+      responseHandler: function(resp) {
+        data = []
+        resp.notices.forEach(function(e) {
+            data.push( {
+                "date": e.date,
+                "type": e.type,
+                "title": '<a target=”_blank” href="' + e.URL + '">' + e.title + "</a>",
+            } )
+        })
+        data.reverse()
+        return data
+      },
+      columns: [{
+          field: 'date',
+          title: '日期'
+      }, {
+          field: 'type',
+          title: '类型'
+      }, {
+          field: 'title',
+          title: '行标题业'
+      }, ]
+
     });
 
     </script>

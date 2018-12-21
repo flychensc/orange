@@ -152,7 +152,7 @@ def notices(request, code):
         data_list.append({
             'no': index+1,
             'date': data['日期'],
-            'tye': data['类型'],
+            'type': data['类型'],
             'title': data['标题'],
             'URL': data['URL'],
         })
