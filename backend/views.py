@@ -7,7 +7,7 @@ import pandas as pd
 from stock import get_annual_report, get_tick_data, pct_change, get_level0_report
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
 from storage.stock import get_stock_basics, get_basic_info, get_level1_report
-from stock.downloader import load_tick_data
+from stock.downloader import load_tick_data, load_notices
 
 # Create your views here.
 
@@ -134,3 +134,27 @@ def level_1(request, code):
         })
 
     return JsonResponse(data_dict)
+
+
+def notices(request, code):
+    recent = request.GET.get('recent')
+
+    #todo: 节假日
+    deltaday = int(recent)+2 if datetime.date.today().isoweekday() in [6,7] else int(recent)
+    start = (datetime.date.today()-datetime.timedelta(days=deltaday)).strftime("%Y-%m-%d")
+    end = datetime.date.today().strftime("%Y-%m-%d")
+    notices_info = load_notices(code, start, end)
+
+    notices_info = notices_info[-int(recent):] if len(notices_info) > int(recent) else notices_info
+
+    data_list = list()
+    for index, data in notices_info.iterrows():
+        data_list.append({
+            'no': index+1,
+            'date': data['日期'],
+            'tye': data['类型'],
+            'title': data['标题'],
+            'URL': data['URL'],
+        })
+
+    return JsonResponse({"notices": data_list})

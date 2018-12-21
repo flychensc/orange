@@ -14,6 +14,7 @@ import pandas as pd
 from stock.technical import (get_sh_margin_details, get_sz_margin_details, 
                             get_tick_data, get_k_data)
 from stock.fundamental import get_stock_basics
+from stock.news import get_notices
 
 
 def _load_sz_margin_details(date, output_list):
@@ -149,3 +150,49 @@ def load_historys(start_day):
     while not result_q.empty():
         his_list.append(result_q.get())
     return his_list
+
+
+def _load_day_notices(code, date, output_list):
+    """
+    获取某天的个股信息
+    Parameters
+    --------
+    code：string
+                股票代码, e.g.600728
+    date:string
+                日期 format：YYYY-MM-DD
+    output_list:list
+                存放结果
+    Return
+    ------
+    None
+    """
+    tick_data = get_notices(code=code, date=date)
+    output_list.append(tick_data)
+
+
+def load_notices(code, start, end):
+    """
+    获取个股信息
+    Parameters
+    --------
+    code：string
+                股票代码, e.g.600728
+    start:string
+                开始日期 format：YYYY-MM-DD
+    end:string
+                结束日期 format：YYYY-MM-DD
+    Return
+    ------
+    DataFrame
+    """
+    data_list = list()
+    group = Group()
+    for date in pd.date_range(start, end):
+        group.add(
+            gevent.spawn(_load_day_notices, code, str(date)[:10], data_list))
+    group.join()
+    tick_data = pd.concat(data_list)
+    tick_data.sort_values(['日期'], ascending=True, inplace=True)
+    tick_data.index = range(len(tick_data))
+    return tick_data

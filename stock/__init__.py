@@ -12,3 +12,4 @@ from stock.fundamental import (get_report_data, get_profit_data,
                                 get_debtpaying_data, get_cashflow_data)
 from stock.technical import get_sh_margin_details, get_sz_margin_details
 from stock.technical import get_tick_data, get_k_data
+from stock.news import get_notices

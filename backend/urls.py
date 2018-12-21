@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^(?P<code>[0-9]+)/basic_info$', views.basic_info, name='basic_info'),
     url(r'^(?P<code>[0-9]+)/level_0$', views.level_0, name='level_0'),
     url(r'^(?P<code>[0-9]+)/level_1$', views.level_1, name='level_1'),
+    url(r'^(?P<code>[0-9]+)/notices$', views.notices, name='notices'),
 ]
