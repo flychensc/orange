@@ -206,10 +206,14 @@ class Tick(models.Model):
     分笔数据
         code:代码
         day:日期
-        close:收盘
-        high:最高价
-        low:最低价
-        vol:成交量
+        sec1_buy:区间1资金流入
+        sec1_sell:区间1资金流出
+        sec2_buy:区间2资金流入
+        sec2_sell:区间2资金流出
+        sec3_buy:区间3资金流入
+        sec3_sell:区间3资金流出
+        sec4_buy:区间4资金流入
+        sec4_sell:区间4资金流出
     """
     code = models.CharField(max_length=6)
     day = models.DateField()

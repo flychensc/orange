@@ -6,7 +6,8 @@ import json
 import pandas as pd
 from stock import get_annual_report, get_tick_data, pct_change, get_level0_report
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
-from storage.stock import get_stock_basics, get_basic_info, get_level1_report
+from storage.stock import (get_stock_basics, get_basic_info, 
+                        get_level1_report, get_stock_money_flow)
 from stock.downloader import load_tick_data, load_notices
 
 # Create your views here.
@@ -158,3 +159,37 @@ def notices(request, code):
         })
 
     return JsonResponse({"notices": data_list})
+
+
+def money_flow(request):
+    top = request.GET.get('top')
+    stock_info = get_stock_basics()
+    money_flow = get_stock_money_flow()
+
+    buy_list = list()
+    no = 0
+    for index, data in money_flow[:int(top)].iterrows():
+        no+=1
+        buy_list.append({
+            'no': no,
+            'code': data.code,
+            'name': stock_info['name'][data.code],
+            'sum': data['sum'],
+        })
+
+    sell_list = list()
+    no = 0
+    for index, data in money_flow[-int(top):].iterrows():
+        no+=1
+        buy_list.append({
+            'no': no,
+            'code': data.code,
+            'name': stock_info['name'][data.code],
+            'sum': data['sum'],
+        })
+    sell_list.reverse()
+    return JsonResponse({
+            "date": money_flow.iloc[0].day,
+            "buy_top": buy_list,
+            "sell_top": sell_list,
+        })

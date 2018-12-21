@@ -355,3 +355,21 @@ def get_level1_report(code, year, quarter):
     return level1_report.loc[
         code] if code in level1_report.index else pd.Series(
             index=LEVEL1_REPORT_INDEX)
+
+
+def get_stock_money_flow():
+    datas = [[
+        data.code, data.day,
+        (data.sec1_buy + data.sec2_buy + data.sec3_buy + data.sec4_buy),
+        (data.sec1_sell + data.sec2_sell + data.sec3_sell + data.sec4_sell),
+        (data.sec1_buy + data.sec2_buy + data.sec3_buy + data.sec4_buy)
+        -(data.sec1_sell + data.sec2_sell + data.sec3_sell + data.sec4_sell),
+    ] for data in Tick.objects.all()]
+    tu_data = pd.DataFrame(
+        datas,
+        columns=[
+            'code', 'day',
+            'buy', 'sell',
+            'sum',
+        ])
+    return tu_data.sort_values(['sum'], ascending=False)
