@@ -105,7 +105,7 @@ def load_tick_data(code, start, end):
         group.add(
             gevent.spawn(_load_one_tick_data, code, str(date)[:10], data_list))
     group.join()
-    tick_data = pd.concat(data_list)
+    tick_data = pd.concat(data_list, sort=False)
     tick_data.sort_values(['时间'], ascending=True, inplace=True)
     tick_data.index = range(len(tick_data))
     return tick_data
@@ -167,8 +167,11 @@ def _load_day_notices(code, date, output_list):
     ------
     None
     """
-    tick_data = get_notices(code=code, date=date)
-    output_list.append(tick_data)
+    notices_info = get_notices(code=code, date=date)
+    if len(notices_info) > 0:
+        notices_info['index'] = range(len(notices_info), 0, -1)
+
+    output_list.append(notices_info)
 
 
 def load_notices(code, start, end):
@@ -192,7 +195,7 @@ def load_notices(code, start, end):
         group.add(
             gevent.spawn(_load_day_notices, code, str(date)[:10], data_list))
     group.join()
-    tick_data = pd.concat(data_list)
-    tick_data.sort_values(['日期'], ascending=True, inplace=True)
-    tick_data.index = range(len(tick_data))
-    return tick_data
+    notices_info = pd.concat(data_list, sort=False)
+    notices_info.sort_values(['日期', 'index'], ascending=True, inplace=True)
+    notices_info.index = range(len(notices_info))
+    return notices_info.drop(['index'], axis=1)
