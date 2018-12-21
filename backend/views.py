@@ -178,16 +178,16 @@ def money_flow(request):
         })
 
     sell_list = list()
-    no = 0
     for index, data in money_flow[-int(top):].iterrows():
-        no+=1
-        buy_list.append({
+        sell_list.append({
             'no': no,
             'code': data.code,
             'name': stock_info['name'][data.code],
             'sum': data['sum'],
         })
+        no-=1
     sell_list.reverse()
+
     return JsonResponse({
             "date": money_flow.iloc[0].day,
             "buy_top": buy_list,
