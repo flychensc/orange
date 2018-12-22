@@ -373,3 +373,23 @@ def get_stock_money_flow():
             'sum',
         ])
     return tu_data.sort_values(['sum'], ascending=False)
+
+
+def get_day_all(day):
+    datas = [[
+        data.code,
+        data.open,
+        data.high,
+        data.close,
+        data.low,
+        data.close - data.open,
+        (data.close - data.open)/data.open*100,
+    ] for data in History.objects.filter(day=day)]
+    tu_data = pd.DataFrame(
+        datas,
+        columns=[
+            'code', 
+            'open', 'high', 'close', 'low',
+            'change', 'p_change',
+        ])
+    return tu_data.sort_values(['code'], ascending=True)
