@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from . import tasks
+import storage.rcache as rcache
 
 # Create your views here.
 
@@ -62,3 +63,18 @@ def update_fundamental(request):
     else:
         resp_dict['status'] = '失败'
     return JsonResponse(resp_dict)
+
+
+def update_time(request):
+    return JsonResponse({
+            "basic_info": rcache.get_timestamp(rcache.KEY_TS_BASIC_INFO),
+            "history": rcache.get_timestamp(rcache.KEY_TS_HISTORY),
+            "tick_data": rcache.get_timestamp(rcache.KEY_TS_TICK_DATA),
+
+            "report_data": rcache.get_timestamp(rcache.KEY_TS_REPORT_DATA),
+            "profit_data": rcache.get_timestamp(rcache.KEY_TS_PROFIT_DATA),
+            "operation_data": rcache.get_timestamp(rcache.KEY_TS_OPERATION_DATA),
+            "growth_data": rcache.get_timestamp(rcache.KEY_TS_GROWTH_DATA),
+            "debtpaying_data": rcache.get_timestamp(rcache.KEY_TS_DEBTPAYING_DATA),
+            "cashflow_data": rcache.get_timestamp(rcache.KEY_TS_CASHFLOW_DATA),
+        })
