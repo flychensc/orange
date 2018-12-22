@@ -14,6 +14,7 @@ from stock.downloader import load_historys
 from navel.celery import app
 from .models import *
 from .stock import get_stock_basics as get_local_stock_basics
+import storage.rcache as rcache
 
 @app.task(ignore_result=True)
 def update_stock_basics():
@@ -41,6 +42,8 @@ def update_stock_basics():
     StockBasics.objects.all().delete()
     # 再保存
     StockBasics.objects.bulk_create(stock_basics_list)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_BASIC_INFO, str(datetime.date.today()))
 
  
 @app.task(ignore_result=True)
@@ -107,6 +110,8 @@ def update_all_history():
     # all stocks' code
     for code in get_local_stock_basics().index:
         update_one_history.delay(code, start_date)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_HISTORY, str(datetime.date.today()))
 
 
 @app.task(ignore_result=True)
@@ -133,6 +138,8 @@ def update_report_data(year, quarter):
     ReportData.objects.all().delete()
     # 再保存
     ReportData.objects.bulk_create(report_data_list)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_REPORT_DATA, str(datetime.date.today()))
 
 
 @app.task(ignore_result=True)
@@ -157,6 +164,8 @@ def update_profit_data(year, quarter):
     ProfitData.objects.all().delete()
     # 再保存
     ProfitData.objects.bulk_create(profit_data_list)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_PROFIT_DATA, str(datetime.date.today()))
 
 
 @app.task(ignore_result=True)
@@ -180,6 +189,8 @@ def update_operation_data(year, quarter):
     OperationData.objects.all().delete()
     # 再保存
     OperationData.objects.bulk_create(operation_data_list)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_OPERATION_DATA, str(datetime.date.today()))
 
 
 @app.task(ignore_result=True)
@@ -203,6 +214,8 @@ def update_growth_data(year, quarter):
     GrowthData.objects.all().delete()
     # 再保存
     GrowthData.objects.bulk_create(growth_data_list)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_GROWTH_DATA, str(datetime.date.today()))
 
 
 @app.task(ignore_result=True)
@@ -226,6 +239,8 @@ def update_debtpaying_data(year, quarter):
     DebtpayingData.objects.all().delete()
     # 再保存
     DebtpayingData.objects.bulk_create(debtpaying_data_list)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_DEBTPAYING_DATA, str(datetime.date.today()))
 
 
 @app.task(ignore_result=True)
@@ -248,6 +263,8 @@ def update_cashflow_data(year, quarter):
     CashflowData.objects.all().delete()
     # 再保存
     CashflowData.objects.bulk_create(cashflow_data_list)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_CASHFLOW_DATA, str(datetime.date.today()))
 
 
 @app.task(ignore_result=True)
@@ -302,3 +319,5 @@ def update_tick():
     # all stocks' code
     for code in get_local_stock_basics().index:
         update_one_tick.delay(code, day)
+    # record update time
+    rcache.set_timestamp(rcache.KEY_TS_TICK_DATA, str(datetime.date.today()))

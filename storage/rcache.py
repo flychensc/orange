@@ -35,7 +35,7 @@ def set_timestamp(key, date):
         KEY_TS_CASHFLOW_DATA,
     ]:
         return
-    r.hset(HASH_TIMESTAMP, "k1", "v1")
+    r.hset(HASH_TIMESTAMP, key, date)
 
 
 def get_timestamp(key):
