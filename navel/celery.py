@@ -34,7 +34,7 @@ app.conf.beat_schedule = {
     },
     'update-ticks at 16:00': {
         'task': 'storage.tasks.update_tick',
-        'schedule': crontab(hour=15, minute=35, day_of_week='mon-fri'),
+        'schedule': crontab(hour=16, minute=00, day_of_week='mon-fri'),
         'args': ()
     },
 }
