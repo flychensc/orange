@@ -61,23 +61,35 @@
 
           <div class="bs-docs-section" id="basic_info">
             <h2 class="sub-header">基础信息</h2>
-            <p>
-              <button class="btn btn-primary" type="button" id=basic_info_update>更新数据</button>
-            </p>
+            <div class="row">
+              <div class="col-md-2">数据时间</div>
+              <div class="col-md-2" id="timestamp_basic_info"></div>
+              <div class="col-md-2">
+                  <button class="btn btn-primary" type="button" id=basic_info_update>更新数据</button>
+              </div>
+            </div>
           </div>
 
           <div class="bs-docs-section" id="history">
             <h2 class="sub-header">历史数据</h2>
-            <p>
-              <button class="btn btn-primary" type="button" id=history_update>更新数据</button>
-            </p>
+            <div class="row">
+              <div class="col-md-2">数据时间</div>
+              <div class="col-md-2" id="timestamp_history"></div>
+              <div class="col-md-2">
+                  <button class="btn btn-primary" type="button" id=history_update>更新数据</button>
+              </div>
+            </div>
           </div>
 
           <div class="bs-docs-section" id="tick_data">
             <h2 class="sub-header">分笔数据</h2>
-            <p>
-              <button class="btn btn-primary" type="button" id=tickdata_update>更新数据</button>
-            </p>
+            <div class="row">
+              <div class="col-md-2">数据时间</div>
+              <div class="col-md-2" id="timestamp_tick"></div>
+              <div class="col-md-2">
+                  <button class="btn btn-primary" type="button" id=tickdata_update>更新数据</button>
+              </div>
+            </div>
           </div>
 
           <div class="bs-docs-section" id="fundamental">
@@ -95,6 +107,8 @@
                         </span>
                       </div>
                   </td>
+                  <td>数据时间</td>
+                  <td id="timestamp_report_data"></td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=report_data_update>更新数据</button>
                   </td>
@@ -110,6 +124,8 @@
                         </span>
                       </div>
                   </td>
+                  <td>数据时间</td>
+                  <td id="timestamp_profit_data"></td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=profit_data_update>更新数据</button>
                   </td>
@@ -125,6 +141,8 @@
                         </span>
                       </div>
                   </td>
+                  <td>数据时间</td>
+                  <td id="timestamp_operation_data"></td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=operation_data_update>更新数据</button>
                   </td>
@@ -140,6 +158,8 @@
                         </span>
                       </div>
                   </td>
+                  <td>数据时间</td>
+                  <td id="timestamp_growth_data"></td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=growth_data_update>更新数据</button>
                   </td>
@@ -155,6 +175,8 @@
                         </span>
                       </div>
                   </td>
+                  <td>数据时间</td>
+                  <td id="timestamp_debtpaying_data"></td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=debtpaying_data_update>更新数据</button>
                   </td>
@@ -170,6 +192,8 @@
                         </span>
                       </div>
                   </td>
+                  <td>数据时间</td>
+                  <td id="timestamp_cashflow_data"></td>
                   <td>
                     <button class="btn btn-sm btn-primary" type="button" id=cashflow_data_update>更新数据</button>
                   </td>
@@ -368,6 +392,22 @@
       $('#cashflow_data_datepicker').datetimepicker({
         pickTime: false
       });
+
+      $(document).ready(function() {
+        $.get("/database/info/update_time", function(data){
+
+          $('#timestamp_basic_info').text(data['basic_info'])
+          $('#timestamp_history').text(data['history'])
+          $('#timestamp_tick').text(data['tick_data'])
+
+          $('#timestamp_report_data').text(data['report_data'])
+          $('#timestamp_profit_data').text(data['profit_data'])
+          $('#timestamp_operation_data').text(data['operation_data'])
+          $('#timestamp_growth_data').text(data['growth_data'])
+          $('#timestamp_debtpaying_data').text(data['debtpaying_data'])
+          $('#timestamp_cashflow_data').text(data['cashflow_data'])
+        },'json');
+      })
       
       $(document).ready(function() {
         var today = new Date()
