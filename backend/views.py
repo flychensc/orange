@@ -4,10 +4,12 @@ from django.http import JsonResponse
 import datetime
 import json
 import pandas as pd
+import numpy as np
 from stock import get_annual_report, get_tick_data, pct_change, get_level0_report
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
 from storage.stock import (get_stock_basics, get_basic_info, 
-                        get_level1_report, get_stock_money_flow)
+                        get_level1_report, get_stock_money_flow,
+                        get_day_all)
 from stock.downloader import load_tick_data, load_notices
 
 # Create your views here.
@@ -190,6 +192,73 @@ def money_flow(request):
 
     return JsonResponse({
             "date": money_flow.iloc[0].day,
+            "buy_top": buy_list,
+            "sell_top": sell_list,
+        })
+
+
+def money_flow_percent(request):
+    """
+    感觉没什么用，可能是换手率的一个体现吧
+    """
+    top = request.GET.get('top')
+
+    stock_info = get_stock_basics()
+    money_flow = get_stock_money_flow()
+    day = money_flow.iloc[0].day
+    all_history = get_day_all(day)
+
+    # calc percent
+    money_list = list()
+    for index, data in money_flow.iterrows():
+        try:
+            total = all_history['close'][data.code] * stock_info['outstanding'][data.code]
+            # 亿元 -> 万元
+            total = total*10000
+            money_list.append(
+                [
+                    data.code,
+                    stock_info['name'][data.code],
+                    data['sum'],
+                    total,
+                    data['sum']/total*100,
+                ]
+            )
+        except KeyError as e:
+            # tick和history可能无法对齐
+            continue
+    money_flow = pd.DataFrame(money_list, columns=['code', 'name', 'sum', 'nmc', 'p_sum'])
+    money_flow.sort_values(['p_sum'], ascending=False, inplace=True)
+    money_flow.index=range(len(money_flow))
+
+    buy_list = list()
+    no = 0
+    for index, data in money_flow[:int(top)].iterrows():
+        no+=1
+        buy_list.append({
+            'no': index,
+            'code': data['code'],
+            'name': data['name'],
+            'sum': data['sum'],
+            'nmc': data.nmc,
+            'p_sum': data.p_sum,
+        })
+
+    sell_list = list()
+    for index, data in money_flow[-int(top):].iterrows():
+        sell_list.append({
+            'no': index,
+            'code': data['code'],
+            'name': data['name'],
+            'sum': data['sum'],
+            'nmc': data.nmc,
+            'p_sum': data.p_sum,
+        })
+        no-=1
+    sell_list.reverse()
+
+    return JsonResponse({
+            "date": day,
             "buy_top": buy_list,
             "sell_top": sell_list,
         })
