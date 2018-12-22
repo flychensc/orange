@@ -204,40 +204,24 @@ def money_flow_percent(request):
     top = request.GET.get('top')
 
     stock_info = get_stock_basics()
-    money_flow = get_stock_money_flow()
+    money_flow = get_stock_money_flow().set_index(['code'])
     day = money_flow.iloc[0].day
     all_history = get_day_all(day)
 
-    # calc percent
-    money_list = list()
-    for index, data in money_flow.iterrows():
-        try:
-            total = all_history['close'][data.code] * stock_info['outstanding'][data.code]
-            # 亿元 -> 万元
-            total = total*10000
-            money_list.append(
-                [
-                    data.code,
-                    stock_info['name'][data.code],
-                    data['sum'],
-                    total,
-                    data['sum']/total*100,
-                ]
-            )
-        except KeyError as e:
-            # tick和history可能无法对齐
-            continue
-    money_flow = pd.DataFrame(money_list, columns=['code', 'name', 'sum', 'nmc', 'p_sum'])
+    money_flow = money_flow.join(all_history, how='inner').join(stock_info, how='inner')
+    # 亿元 -> 万元
+    money_flow['nmc'] = money_flow['close'] * money_flow['outstanding'] * 10000
+    money_flow['p_sum'] = money_flow['sum'] / money_flow['nmc'] * 100
+
     money_flow.sort_values(['p_sum'], ascending=False, inplace=True)
-    money_flow.index=range(len(money_flow))
 
     buy_list = list()
     no = 0
-    for index, data in money_flow[:int(top)].iterrows():
+    for code, data in money_flow[:int(top)].iterrows():
         no+=1
         buy_list.append({
-            'no': index,
-            'code': data['code'],
+            'no': no,
+            'code': code,
             'name': data['name'],
             'sum': data['sum'],
             'nmc': data.nmc,
@@ -245,10 +229,10 @@ def money_flow_percent(request):
         })
 
     sell_list = list()
-    for index, data in money_flow[-int(top):].iterrows():
+    for code, data in money_flow[-int(top):].iterrows():
         sell_list.append({
-            'no': index,
-            'code': data['code'],
+            'no': no,
+            'code': code,
             'name': data['name'],
             'sum': data['sum'],
             'nmc': data.nmc,
