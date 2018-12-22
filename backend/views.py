@@ -262,3 +262,29 @@ def money_flow_percent(request):
             "buy_top": buy_list,
             "sell_top": sell_list,
         })
+
+
+def rise_fail_stats(request):
+    recent = request.GET.get('recent')
+    recent = int(recent) if recent else 5
+
+    stats_list = []
+    delta = 0
+    while recent > 0:
+        day = (datetime.date.today()-datetime.timedelta(days=delta)).strftime("%Y-%m-%d")
+        delta += 1
+        all_history = get_day_all(day)
+        if len(all_history) == 0:
+            continue
+
+        recent -= 1
+
+        stats_list.append({
+            'date': day,
+            'rise': len(all_history[ all_history.open < all_history.close]),
+            'fail': len(all_history[ all_history.open > all_history.close]),
+            'nochange': len(all_history[ all_history.open == all_history.close]),
+        })
+    stats_list.reverse()
+
+    return JsonResponse({"data": stats_list})    
