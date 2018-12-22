@@ -372,7 +372,13 @@ def get_stock_money_flow():
             'buy', 'sell',
             'sum',
         ])
-    return tu_data.sort_values(['sum'], ascending=False)
+    tu_data.sort_values(['sum'], ascending=False, inplace=True)
+
+    # 元 -> 万元
+    tu_data['buy'] = tu_data['buy'].map(lambda x:x/10000)
+    tu_data['sell'] = tu_data['sell'].map(lambda x:x/10000)
+    tu_data['sum'] = tu_data['sum'].map(lambda x:x/10000)
+    return tu_data
 
 
 def get_day_all(day):
@@ -392,4 +398,5 @@ def get_day_all(day):
             'open', 'high', 'close', 'low',
             'change', 'p_change',
         ])
-    return tu_data.sort_values(['code'], ascending=True)
+    tu_data.sort_values(['code'], ascending=True, inplace=True)
+    return tu_data.set_index(['code'])
