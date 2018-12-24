@@ -30,6 +30,10 @@
 
 启动命令： `celery -A navel worker -l info -c 15 -B`
 
+#### web管理界面
+
+命令: `celery -A navel flower`
+
 ## Test
 
 执行命令`python -m unittest -v`进行单元测试
