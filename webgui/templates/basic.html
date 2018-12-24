@@ -176,10 +176,10 @@
         var riseCharts = new Array(5)
 
         // 指定图表的配置项和数据
-        riseOption = {
+        var riseOption = {
             tooltip : {
                 trigger: 'item',
-                formatter: "{b} ({c}%)"
+                formatter: "{b}: {c} ({d}%)"
             },
             color:['#d71345','#007947','#121a2a'],
             series : [
@@ -198,9 +198,11 @@
                 }
             ]
         };
+
         // 使用刚指定的配置项和数据显示图表。
         for (i=0; i<riseCharts.length; i++) {
             riseCharts[i] = echarts.init(document.getElementById('chart_rise_stats_' + i));
+
             riseCharts[i].setOption(riseOption);
             riseCharts[i].showLoading();
         }
@@ -208,7 +210,7 @@
         // 异步加载数据
         $.get('/data/rise_fail_stats?recent=5').done(function (resp) {
             for (i=0; i<riseCharts.length; i++) {
-                data = resp.data[riseCharts.length-(i+1)]
+                var data = resp.data[riseCharts.length-(i+1)]
 
                 riseCharts[i].hideLoading();
                 // 填入数据
