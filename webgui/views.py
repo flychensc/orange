@@ -10,6 +10,10 @@ def home(request):
     return render(request, 'home.html', locals())
 
 
+def basic(request):
+    return render(request, 'basic.html', locals())
+
+
 def detail(request):
     code = request.GET.get('code')
     if code and len(code) > 6:

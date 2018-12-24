@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
+    url(r'^basic$', views.basic, name='basic'),
     url(r'^detail$', views.detail, name='detail'),
     url(r'^database$', views.database, name='database'),
     url(r'^(?P<code>[0-9]+)/annual_report$', views.annual_report, name='annual_report'),

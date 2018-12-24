@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="Navel Orange">
+    <meta name="author" content="Shawn Chen">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>大盘概览</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">小橙子基金</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">基本<span class="sr-only">(current)</span></a></li>
+            <li><a href="#">其他</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+            <h2 class="sub-header">涨跌比例</h2>
+            <div class="row">
+                <div class="col-md-2">
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="chart_rise_stats_4" style="width: 320px;height:240px;">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div id="chart_rise_stats_3" style="width: 320px;height:240px;">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div id="chart_rise_stats_2" style="width: 320px;height:240px;">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div id="chart_rise_stats_1" style="width: 320px;height:240px;">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div id="chart_rise_stats_0" style="width: 320px;height:240px;">
+                    </div>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col-md-6">
+                <h3 class="sub-header">资金流入前十</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped" id="money_in_top10">
+                    </table>
+                </div>
+                </div>
+                <div class="col-md-6">
+                <h3 class="sub-header">资金流出前十</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped" id="money_out_top10">
+                    </table>
+                </div>               
+                </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap3-typeahead.min.js"></script>
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <!-- put your locale files after bootstrap-table.js -->
+    <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
+    <!-- 引入 echarts.js -->
+    <script src="/static/js/echarts.min.js"></script>
+
+    <script type="text/javascript">
+
+    $('#money_in_top10').bootstrapTable({
+      url: "/data/money_flow?top=10",
+      responseHandler: function(resp) {        
+        newResp = [];
+        resp.buy_top.forEach(function(e) {
+            //alert(e.name)
+            newResp.push({
+                'index': e.no,
+                'code': e.code,
+                'name': e.name,
+                'sum': Math.round(e.sum),
+            });
+        })
+        return newResp;
+      },
+      columns: [{
+          field: 'index',
+          title: '排名'
+      }, {
+          field: 'code',
+          title: '股票代码'
+      }, {
+          field: 'name',
+          title: '股票名称'
+      }, {
+          field: 'sum',
+          title: '资金流入(万元)'
+      }, ]
+
+    });
+
+
+    $('#money_out_top10').bootstrapTable({
+      url: "/data/money_flow?top=10",
+      responseHandler: function(resp) {        
+        newResp = [];
+        resp.sell_top.forEach(function(e) {
+            //alert(e.name)
+            newResp.push({
+                'index': e.no,
+                'code': e.code,
+                'name': e.name,
+                'sum': Math.abs(Math.round(e.sum)),
+            });
+        })
+        return newResp;
+      },
+      columns: [{
+          field: 'index',
+          title: '排名'
+      }, {
+          field: 'code',
+          title: '股票代码'
+      }, {
+          field: 'name',
+          title: '股票名称'
+      }, {
+          field: 'sum',
+          title: '资金流出(万元)'
+      }, ]
+
+    });
+
+    </script>
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var riseCharts = new Array(5)
+
+        // 指定图表的配置项和数据
+        riseOption = {
+            tooltip : {
+                trigger: 'item',
+                formatter: "{b} ({c}%)"
+            },
+            color:['#d71345','#007947','#121a2a'],
+            series : [
+                {
+                    type: 'pie',
+                    radius : '55%',
+                    center: ['50%', '60%'],
+                    selectedMode: 'single',
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        for (i=0; i<riseCharts.length; i++) {
+            riseCharts[i] = echarts.init(document.getElementById('chart_rise_stats_' + i));
+            riseCharts[i].setOption(riseOption);
+            riseCharts[i].showLoading();
+        }
+
+        // 异步加载数据
+        $.get('/data/rise_fail_stats?recent=5').done(function (resp) {
+            for (i=0; i<riseCharts.length; i++) {
+                data = resp.data[riseCharts.length-(i+1)]
+
+                riseCharts[i].hideLoading();
+                // 填入数据
+                riseCharts[i].setOption({
+                    title: {
+                        text: data.date,
+                        left: 'center'
+                    },
+                    series : [{
+                        name: data.date,
+                        data: [{
+                            // 根据名字对应到相应的系列
+                            name: '涨',
+                            value: data.rise,
+                        },
+                        {
+                            // 根据名字对应到相应的系列
+                            name: '跌',
+                            value: data.fail,
+                        },
+                        {
+                            // 根据名字对应到相应的系列
+                            name: '平',
+                            value: data.nochange,
+                        }]
+                    }],
+                });
+                }
+        });
+    </script>
+  </body>
+</html>
