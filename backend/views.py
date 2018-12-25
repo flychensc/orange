@@ -5,7 +5,7 @@ import datetime
 import json
 import pandas as pd
 import numpy as np
-from stock import get_annual_report, get_tick_data, pct_change, get_level0_report
+from stock import get_annual_report, get_tick_data, pct_change, get_level0_report, get_szzs
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
 from storage.stock import (get_stock_basics, get_basic_info, 
                         get_level1_report, get_stock_money_flow,
@@ -271,4 +271,25 @@ def rise_fail_stats(request):
         })
     stats_list.reverse()
 
-    return JsonResponse({"data": stats_list})    
+    return JsonResponse({"data": stats_list})
+
+
+def szzs(request):
+    recent = request.GET.get('recent')
+    recent = int(recent) if recent else 22*6
+
+    start = (datetime.date.today()-datetime.timedelta(days=recent)).strftime("%Y-%m-%d")
+    historys = get_szzs(start)
+    historys.set_index('date', inplace=True)
+
+    his_list = []
+    for date, data in historys.iterrows():
+        his_list.append({
+            'date': date,
+            'open': data['open'],
+            'high': data['high'],
+            'close': data['close'],
+            'low': data['low'],
+        })
+
+    return JsonResponse({"data": his_list})

@@ -128,3 +128,7 @@ def bar(code, start=''):
     #释放，否则python无法正常退出
     ts.close_apis(cons)
     return his_data
+
+
+def get_szzs(start):
+    return ts.get_k_data('000001', start=start, index=True)
