@@ -110,6 +110,21 @@ def get_tick_data(code, date):
 
 
 def get_k_data(code, start=''):
+    """
+    相对于bar，这个API可以无法取出当天的数据，但速度很快
+    """
     # ts.bar(code, conn=cons, adj='qfq', start_date=start)
     his_data = ts.get_k_data(code, start=start)
+    return his_data
+
+
+def bar(code, start=''):
+    """
+    相对于get_k_data，这个API可以取出完整的数据，但速度太慢，30多分钟都没取完
+    """
+    #获取连接备用
+    cons = ts.get_apis()
+    his_data = ts.bar(code, conn=cons, adj='qfq', start_date=start)
+    #释放，否则python无法正常退出
+    ts.close_apis(cons)
     return his_data
