@@ -33,6 +33,14 @@
           </button>
           <a class="navbar-brand" href="/">小橙子基金</a>
         </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="database">数据库</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
       </div>
     </nav>
 
@@ -115,7 +123,7 @@
             newResp.push({
                 'index': e.no,
                 'code': e.code,
-                'name': e.name,
+                'name': '<a target="_blank" href="/stock/detail?code=' + e.code + '">' + e.name + '</a>',
                 'sum': Math.round(e.sum),
             });
         })
@@ -147,7 +155,7 @@
             newResp.push({
                 'index': e.no,
                 'code': e.code,
-                'name': e.name,
+                'name': '<a target="_blank" href="/stock/detail?code=' + e.code + '">' + e.name + '</a>',
                 'sum': Math.abs(Math.round(e.sum)),
             });
         })
