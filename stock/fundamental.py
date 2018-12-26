@@ -321,3 +321,19 @@ def get_cashflow_data(year, quarter):
     cashflow_data = ts.get_cashflow_data(year, quarter)
     cashflow_data.drop_duplicates(inplace=True)
     return cashflow_data
+
+
+def get_bdi():
+    """
+    波罗的海干货指数
+        - 世界经济总量增长率
+        - 全球铁矿石和煤炭运输需求量
+        - 全球粮食（谷物）运输需求量
+        - 全球船吨数供给量
+        - 国际船用燃油平均油价、战争及自然灾害
+    """
+    return ts.bdi('D')
+
+
+def get_shibor():
+    return ts.shibor_data()
