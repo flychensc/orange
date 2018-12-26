@@ -3,6 +3,8 @@ website API
 """
 
 from stock.website.netease import get_balance_sheet, get_profit_statement
+from stock.website.cnss import get_bdi_index
+from stock.website.shibor import get_shibor
 
 BALANCE_SHEET_INDEX = [
     '货币资金(万元)', '结算备付金(万元)', '拆出资金(万元)', '交易性金融资产(万元)', '衍生金融资产(万元)',

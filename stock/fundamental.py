@@ -9,6 +9,8 @@ import pandas as pd
 import tushare as ts
 
 from stock.website import get_balance_sheet, get_profit_statement
+from stock.website import get_bdi_index
+from stock.website import get_shibor as _get_shibor
 from stock.technical import get_k_data
 
 logger = logging.getLogger("orange.stock")
@@ -332,8 +334,12 @@ def get_bdi():
         - 全球船吨数供给量
         - 国际船用燃油平均油价、战争及自然灾害
     """
-    return ts.bdi('D')
+    # ts.bdi('D')
+    return get_bdi_index()
 
 
-def get_shibor():
-    return ts.shibor_data()
+def get_shibor(year=''):
+    # ts.shibor_data()
+    if year is "":
+        year = str(datetime.date.today().year)
+    return _get_shibor(year)
