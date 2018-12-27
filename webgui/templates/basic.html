@@ -86,14 +86,18 @@
         
             <div class="row">
                 <div class="col-md-6">
-                <h3 class="sub-header">资金流入前十</h3>
+                <h3 class="sub-header">资金流入前十
+                    <small id="title_money_in"></small>
+                </h3>
                 <div class="table-responsive">
                     <table class="table table-striped" id="money_in_top10">
                     </table>
                 </div>
                 </div>
                 <div class="col-md-6">
-                <h3 class="sub-header">资金流出前十</h3>
+                <h3 class="sub-header">资金流出前十
+                    <small id="title_money_out"></small>
+                </h3>
                 <div class="table-responsive">
                     <table class="table table-striped" id="money_out_top10">
                     </table>
@@ -361,7 +365,8 @@
 
     $('#money_in_top10').bootstrapTable({
       url: "/data/money_flow?top=10",
-      responseHandler: function(resp) {        
+      responseHandler: function(resp) {
+        $('#title_money_in').text("(" + resp.date + ")")
         newResp = [];
         resp.buy_top.forEach(function(e) {
             //alert(e.name)
@@ -393,7 +398,8 @@
 
     $('#money_out_top10').bootstrapTable({
       url: "/data/money_flow?top=10",
-      responseHandler: function(resp) {        
+      responseHandler: function(resp) {
+        $('#title_money_out').text("(" + resp.date + ")")
         newResp = [];
         resp.sell_top.forEach(function(e) {
             //alert(e.name)
