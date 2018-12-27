@@ -2,11 +2,12 @@
 上海银行间拆放利率
 """
 
+import datetime
 import requests
 import pandas as pd
 import numpy as np
 
-from pandas.compat import StringIO
+from pandas.compat import BytesIO
 
 HEADERS = {
     'Host': 'www.shibor.org',
@@ -34,18 +35,9 @@ def get_shibor(year):
     response.encoding = "gbk"
     session.close()
     shibor = pd.read_excel(
-        StringIO(response.text),
-        index_col=0,
+        BytesIO(response.content),
         na_values=np.NaN,
-        dtype={
-            '日期': 'string',
-            'O/N': 'float64',
-            '1W': 'float64',
-            '2W': 'float64',
-            '1M': 'float64',
-            '3M': 'float64',
-            '6M': 'float64',
-            '9M': 'float64',
-            '1Y': 'float64',
-            })
-    return shibor
+        converters={
+            '日期': lambda x: x.date()
+        })
+    return shibor.set_index(['日期'])
