@@ -18,32 +18,39 @@ import storage.rcache as rcache
 
 @app.task(ignore_result=True)
 def update_stock_basics():
-    stock_basics = get_stock_basics()
+    try:
+        stock_basics = get_stock_basics()
 
-    stock_basics_list = [StockBasics(
-            code = code,
-            name = data['name'],
-            industry = data['industry'],
-            area = data['area'],
-            pe = data['pe'],
-            outstanding = data['outstanding'],
-            totals = data['totals'],
-            totalAssets = data['totalAssets'],
-            liquidAssets = data['liquidAssets'],
-            fixedAssets = data['fixedAssets'],
-            reserved = data['reserved'],
-            reservedPerShare = data['reservedPerShare'],
-            eps = data['eps'],
-            bvps = data['bvps'],
-            pb = data['pb'],
-            timeToMarket = str(data['timeToMarket']),
-        ) for code, data in stock_basics.iterrows()]
-    # 先清空
-    StockBasics.objects.all().delete()
-    # 再保存
-    StockBasics.objects.bulk_create(stock_basics_list)
-    # record update time
-    rcache.set_timestamp(rcache.KEY_TS_BASIC_INFO, str(datetime.date.today()))
+        stock_basics_list = [StockBasics(
+                code = code,
+                name = data['name'],
+                industry = data['industry'],
+                area = data['area'],
+                pe = data['pe'],
+                outstanding = data['outstanding'],
+                totals = data['totals'],
+                totalAssets = data['totalAssets'],
+                liquidAssets = data['liquidAssets'],
+                fixedAssets = data['fixedAssets'],
+                reserved = data['reserved'],
+                reservedPerShare = data['reservedPerShare'],
+                eps = data['eps'],
+                bvps = data['bvps'],
+                pb = data['pb'],
+                timeToMarket = str(data['timeToMarket']),
+            ) for code, data in stock_basics.iterrows()]
+        # 先清空
+        StockBasics.objects.all().delete()
+        # 再保存
+        StockBasics.objects.bulk_create(stock_basics_list)
+        # record update time
+        rcache.set_timestamp(rcache.KEY_TS_BASIC_INFO, str(datetime.date.today()))
+    except socket.timeout:
+        print("update_stock_basics as socket.timeout")
+        self.retry(countdown=5, max_retries=3, exc=e)
+    except Exception as e:
+        print("update_stock_basics exception as %(e)s" % locals())
+        return
 
  
 @app.task(ignore_result=True)
