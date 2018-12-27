@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^money_flow_percent$', views.money_flow_percent, name='money_flow_percent'),
     url(r'^rise_fail_stats$', views.rise_fail_stats, name='rise_fail_stats'),
     url(r'^szzs$', views.szzs, name='szzs'),
+    url(r'^bdi$', views.bdi, name='bdi'),
 ]

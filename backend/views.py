@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from stock import get_annual_report, get_tick_data, pct_change, get_level0_report, get_szzs
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
+from stock import get_bdi
 from storage.stock import (get_stock_basics, get_basic_info, 
                         get_level1_report, get_stock_money_flow,
                         get_day_all)
@@ -293,3 +294,16 @@ def szzs(request):
         })
 
     return JsonResponse({"data": his_list})
+
+
+def bdi(request):
+    history = get_bdi()
+
+    his_list = []
+    for date, data in history.iterrows():
+        his_list.append({
+            'date': date.date(),
+            'value': int(data['index']),
+        })
+
+    return JsonResponse({"bdi": his_list})

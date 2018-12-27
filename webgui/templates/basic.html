@@ -48,11 +48,13 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">基本<span class="sr-only">(current)</span></a></li>
-            <li><a href="#">其他</a></li>
+            <li class="active"><a href="#basic">基本情况<span class="sr-only">(current)</span></a></li>
+            <li><a href="#other">其他参考</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+            <div id="basic"></div>
 
             <h2 class="sub-header">上证指数</h2>
             <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
@@ -104,6 +106,10 @@
                 </div>               
                 </div>
             </div>
+
+            <div id="other"></div>
+            <h2 class="sub-header">BDI指数</h2>
+            <div id="chart_bdi" style="width: 800px;height:600px;"></div>
 
         </div>
       </div>
@@ -500,5 +506,54 @@
                 }
         });
     </script>
+
+    <script type="text/javascript">
+        var bdiChart = echarts.init(document.getElementById('chart_bdi'));
+
+        bdiChart.setOption({
+                title: {
+                    text: 'BDI指数',
+                    left: 0
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    }
+                },
+            })
+        bdiChart.showLoading();
+
+        // 异步加载数据
+        $.get('/data/bdi').done(function (resp) {
+            bdiChart.hideLoading();
+
+            days = []
+            indexs = []
+            resp.bdi.forEach(function(e) {
+                days.push(e.date)
+                indexs.push(e.value)
+            })
+
+            bdiChart.setOption({
+                xAxis: {
+                    type: 'category',
+                    data: days
+                },
+                yAxis: {
+                    type: 'value',
+                    scale: true,/*按比例显示*/
+                },
+                series: [{
+                    data: indexs,
+                    type: 'line',
+                    smooth: true
+                }]
+            });
+        });
+
+
+    </script>
+
   </body>
 </html>
