@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 from stock import get_annual_report, get_tick_data, pct_change, get_level0_report, get_szzs
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
-from stock import get_bdi
+from stock import get_bdi, get_shibor
 from storage.stock import (get_stock_basics, get_basic_info, 
                         get_level1_report, get_stock_money_flow,
                         get_day_all)
@@ -307,3 +307,23 @@ def bdi(request):
         })
 
     return JsonResponse({"bdi": his_list})
+
+
+def shibor(request):
+    history = get_shibor()
+
+    his_list = []
+    for date, data in history.iterrows():
+        his_list.append({
+            'date': date,
+            'O/N': float(data['O/N']),
+            '1W': float(data['1W']),
+            '2W': float(data['2W']),
+            '1M': float(data['1M']),
+            '3M': float(data['3M']),
+            '6M': float(data['6M']),
+            '9M': float(data['9M']),
+            '1Y': float(data['1Y']),
+        })
+
+    return JsonResponse({"shibor": his_list})

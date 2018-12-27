@@ -108,8 +108,12 @@
             </div>
 
             <div id="other"></div>
+
             <h2 class="sub-header">BDI指数</h2>
             <div id="chart_bdi" style="width: 800px;height:600px;"></div>
+
+            <h2 class="sub-header">Shibor走势</h2>
+            <div id="chart_shibor" style="width: 800px;height:600px;"></div>
 
         </div>
       </div>
@@ -549,6 +553,97 @@
                     type: 'line',
                     smooth: true
                 }]
+            });
+        });
+
+
+    </script>
+
+    <script type="text/javascript">
+        var shiborChart = echarts.init(document.getElementById('chart_shibor'));
+
+        shiborChart.setOption({
+            title: {
+                text: 'Shibor走势'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['O/N','1W','2W','1M','3M']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+        })
+        shiborChart.showLoading();
+
+        // 异步加载数据
+        $.get('/data/shibor').done(function (resp) {
+            shiborChart.hideLoading();
+
+            datas = {
+                'date': [],
+                'O/N': [],
+                '1W': [],
+                '2W': [],
+                '1M': [],
+                '3M': [],
+            }
+            resp.shibor.forEach(function(e) {
+                datas['date'].push(e.date)
+                datas['O/N'].push(e['O/N'])
+                datas['1W'].push(e['1W'])
+                datas['2W'].push(e['2W'])
+                datas['1M'].push(e['1M'])
+                datas['3M'].push(e['3M'])
+            })
+
+            shiborChart.setOption({
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: datas.date,
+                },
+                yAxis: {
+                    type: 'value',
+                    scale: true,/*按比例显示*/
+                },
+                series: [
+                    {
+                        name:'O/N',
+                        type:'line',
+                        data:datas['O/N'],
+                    },
+                    {
+                        name:'1W',
+                        type:'line',
+                        data:datas['1W'],
+                    },
+                    {
+                        name:'2W',
+                        type:'line',
+                        data:datas['2W'],
+                    },
+                    {
+                        name:'1M',
+                        type:'line',
+                        data:datas['1M'],
+                    },
+                    {
+                        name:'3M',
+                        type:'line',
+                        data:datas['3M'],
+                    }
+                ]
             });
         });
 
