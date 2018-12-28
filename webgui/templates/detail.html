@@ -337,6 +337,60 @@
 
     });
 
+    function setColor(value, level) {
+        if (level == "good") {
+            return '<font color="blue">' + value + '</font>'  
+        } else if (level == "bad") {
+            return '<font color="red">' + value + '</font>'  
+        } else {
+            return value  
+        } 
+    }
+
+    function chkLevel(item, value) {
+        value = parseFloat(value)
+        if (item == "净资产收益率(%)") {
+            if (value > 15) {
+                return "good"
+            } else if (value < 10) {
+                return "bad"
+            } 
+        } else if (item == "现金流量比率") {
+            // ?TBD: 经营现金流(OFC)
+            if (value > 25) {
+                return "good"
+            } else if (value < 10) {
+                return "bad"
+            } 
+        } else if (item == "主营业务收入增长率(%)") {
+            if (value > 25) {
+                return "good"
+            }
+        } else if (item == "净利润增长率(%)") {
+            if ((value > 25) && (value < 30)) {
+                return "good"
+            }
+            // 如果净利润上涨了20%, 每股收益却只上涨了5%, 这样的公司就算了
+        } else if (item == "每股收益增长率") {
+            if (value > 25) {
+                return "good"
+            }
+            // 如果市盈率(PE) < 收益增长率，那么你可能为自己找到了一直被低估的好股票。
+        } else if (item == "流动比率") {
+            if (value > 2) {
+                return "good"
+            } else if (value < 1) {
+                return "bad"
+            }
+        } else if (item == "速动比率") {
+            if (value > 1) {
+                return "good"
+            } else if (value < 0.5) {
+                return "bad"
+            }
+        }
+    }
+
     $('#table_level_1').bootstrapTable({
       showHeader: false,
       url: "/data/{{code}}/level_1",
@@ -347,7 +401,7 @@
               newResp.push({
                 'class': key,
                 'item': e['item'],
-                'value': e['value'],
+                'value': setColor(e['value'], chkLevel(e['item'], e['value'])),
               });
             });
           }
