@@ -93,6 +93,10 @@
               -->
             </table>
           </div>
+          <h6>
+              如果净利润上涨了20%, 每股收益却只上涨了5%, 这样的公司就算了<br/>
+              如果市盈率(PE) < 收益增长率，那么你可能为自己找到了一直被低估的好股票
+          </h6>
 
           <h2 class="sub-header">Level 0 报告</h2>
           <div class="table-responsive">
@@ -271,6 +275,10 @@
 
     <script type="text/javascript">
 
+    var PE = undefined
+    var EPS_growth = undefined
+    var Net_Profit_Growth_Rate = undefined
+
     $(document).ready(function() {
       $.get("/data/stock_list", function(data){
         $("#textsearch").typeahead({ source:data['stocks'] });
@@ -280,6 +288,7 @@
     $('#table_basic_info').bootstrapTable({
       url: "/data/{{code}}/basic_info",
       responseHandler: function(resp) {
+        PE = resp.pe
         return [resp]
       },
       columns: [{
@@ -367,11 +376,13 @@
                 return "good"
             }
         } else if (item == "净利润增长率(%)") {
+            Net_Profit_Growth_Rate = value
             if ((value > 25) && (value < 30)) {
                 return "good"
             }
             // 如果净利润上涨了20%, 每股收益却只上涨了5%, 这样的公司就算了
         } else if (item == "每股收益增长率") {
+            EPS_growth = value
             if (value > 25) {
                 return "good"
             }
