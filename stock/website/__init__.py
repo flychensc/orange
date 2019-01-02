@@ -2,7 +2,7 @@
 website API
 """
 
-from stock.website.netease import get_balance_sheet, get_profit_statement
+from stock.website.netease import get_balance_sheet, get_profit_statement, get_k_data
 from stock.website.cnss import get_bdi_index
 from stock.website.shibor import get_shibor
 
