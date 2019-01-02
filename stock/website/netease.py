@@ -108,10 +108,10 @@ def get_profit_statement(code, annual=True):
     return profit_statement.replace("--", np.NaN).astype(float)
 
 def get_k_data(code, start=''):
-    if start == '':
+    if start is None or start == '':
         start_day = (datetime.date.today()-datetime.timedelta(days=30*6))
     else:
-        start_day = datetime.datetime.strptime(start, "%Y-%m-%d")
+        start_day = datetime.datetime.strptime(str(start)[:10], "%Y-%m-%d")
 
     params = {
         "code": "0" + code if code.startswith('6') else '1' + code,
@@ -131,7 +131,7 @@ def get_k_data(code, start=''):
     url = r"http://quotes.money.163.com/service/chddata.html"
 
     session = requests.Session()
-    session.headers.update(HEADERS)
+    session.headers.update(headers)
 
     response = session.get(url, params=params, timeout=5)
 
