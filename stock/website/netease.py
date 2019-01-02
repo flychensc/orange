@@ -140,19 +140,18 @@ def get_k_data(code, start=''):
 
     historys = pd.read_csv(
         StringIO(response.text),
-        index_col=0,
         na_values=np.NaN,
         converters={
             '股票代码': lambda x:x[1:]
         })
 
-    historys.rename(columns={
+    return historys.rename(columns={
+            '日期': 'date',
             "股票代码": "code",
             "名称": "name",
             "开盘价": "open",
             "收盘价": "close",
             "最高价": "high",
             "最低价": "low",
-            "成交量": "vol"
-        }, inplace=True)
-    return historys.rename_axis('date')
+            "成交量": "volume"
+        })
