@@ -232,3 +232,37 @@ class Tick(models.Model):
 
     class Meta:
         unique_together = ("code", "day") 
+
+
+class Interest(models.Model):
+    """
+    自选股
+        code:代码
+        name:名称
+        industry:行业
+        policy:策略,[卖出，中性，关注，买入，持有]
+        priceToBuy:买入价
+        priceToSell:预期价格
+        预期涨幅
+        reasonToInterest:关注理由
+        reasonToBuy:买入理由
+        reasonToHold:持有理由
+        reasonToSell:卖出理由
+        createDay:创建日期
+        updateDay:更新日期
+    """
+    code = models.CharField(max_length=6, primary_key=True, db_index=True)
+    name = models.CharField(max_length=8)
+    industry = models.CharField(max_length=8)
+
+    policy = models.CharField(max_length=4)
+    priceToBuy = models.FloatField()
+    priceToSell = models.FloatField()
+
+    reasonToInterest = models.TextField()
+    reasonToBuy = models.TextField()
+    reasonToHold = models.TextField()
+    reasonToSell = models.TextField()
+
+    createDay = models.DateField()
+    updateDay = models.DateField()
