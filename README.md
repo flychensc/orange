@@ -38,6 +38,10 @@
 
 执行命令`python -m unittest -v`进行单元测试
 
+## Home Page
+
+![主页](https://github.com/flychensc/orange/blob/master/sample/home.PNG)
+
 ## wiki
 
 更多详情可移步[wiki](https://github.com/flychensc/orange/wiki)页面
