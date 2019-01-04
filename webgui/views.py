@@ -25,17 +25,13 @@ def database(request):
     return render(request, 'database.html', locals())
 
 
-def annual_report(request, code):
-    recent = request.GET.get('recent')
-    basic = get_basic_info(code)
-    name = basic['名称']
-    return render(request, 'annual_report.html', locals())
+def pool(request):
+    return render(request, 'pool.html', locals())
 
 
-def tick_data(request, code):
-    start = request.GET.get('start')
-    end = request.GET.get('end')
-    basic = get_basic_info(code)
-    name = basic['名称']
-    outstanding = basic['市值(亿)']
-    return render(request, 'tick_data.html', locals())
+def screener(request):
+    return render(request, 'screener.html', locals())
+
+
+def backtest(request):
+    return render(request, 'backtest.html', locals())
