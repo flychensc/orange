@@ -62,10 +62,24 @@ body {
   .nav-sidebar > .active > a,
   .nav-sidebar > .active > a:hover,
   .nav-sidebar > .active > a:focus {
-    color: #fff;
-    background-color: #428bca;
+    color: #e44d26;
+  }
+
+  a {
+    color: #e44d26;
+  }
+
+  .navbar-inverse {
+    background-color: #e44d26;
+  }
+
+  .navbar-inverse .navbar-brand {
+    color:rgba(255,255,255,.85);
   }
   
+  .navbar-inverse .navbar-nav>li>a {
+    color:rgba(255,255,255,.85);
+  }
   
   /*
    * Main content
