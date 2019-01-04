@@ -22,7 +22,7 @@
 
 一个WEB服务器，用于股票信息查询
 
-启动命令： `python manage.py runserver`
+启动命令： `python manage.py runserver 0.0.0.0:8000`
 
 ### celery
 
