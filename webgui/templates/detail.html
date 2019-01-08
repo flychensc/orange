@@ -63,27 +63,20 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
           <div class="pull-right">
-              <div hidden="hidden">
-                <select class="selectpicker">
-                    <option>关注</option>
-                    <option>买入</option>
-                    <option>持有</option>
-                    <option>卖出</option>
-                    <option>中性</option>
-                </select>
-                <button type="button" class="btn btn-primary">加入自选</button>
-              </div>
-              <div>
-                <select class="selectpicker">
-                    <option>关注</option>
-                    <option>买入</option>
-                    <option>持有</option>
-                    <option>卖出</option>
-                    <option>中性</option>
-                </select>
-                <button type="button" class="btn btn-info">更新自选</button>
-                <button type="button" class="btn btn-danger">移除自选</button>
-              </div>
+            {% if stock_interest %}
+                <form action="/data/leave_interest" method="POST"> {% csrf_token %}
+                    <input type="text" name="stock" value={{code}} hidden="hidden"/>
+                    <button type="submit" class="btn btn-danger">移除自选</button>
+                </form>
+            {% else %}
+                <!--
+                    https://docs.djangoproject.com/en/2.0/ref/csrf/
+                -->
+                <form action="/data/join_interest" method="POST"> {% csrf_token %}
+                    <input type="text" name="stock" value={{code}} hidden="hidden"/>
+                    <button type="submit" class="btn btn-primary">加入自选</button>
+                </form>
+            {% endif %}
           </div>
 
           <div id="overview"></div>
