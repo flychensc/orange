@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 
 import datetime
@@ -12,6 +12,7 @@ from storage.stock import (get_stock_basics, get_basic_info,
                         get_level1_report, get_stock_money_flow,
                         get_day_all)
 from stock.downloader import load_tick_data, load_notices
+from storage.models import Interest
 
 # Create your views here.
 
@@ -327,3 +328,16 @@ def shibor(request):
         })
 
     return JsonResponse({"shibor": his_list})
+
+
+def join_interest(request):
+    stock = request.POST.get('stock')
+    item = Interest(code=stock, createDay=datetime.datetime.today())
+    item.save()
+    return redirect(request.META['HTTP_REFERER'], locals())
+
+
+def leave_interest(request):
+    stock = request.POST.get('stock')
+    Interest.objects.filter(code=stock).delete()
+    return redirect(request.META['HTTP_REFERER'], locals())
