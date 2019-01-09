@@ -264,12 +264,14 @@ class Position(models.Model):
     """
     持仓股
         code:代码
+        codePrice:成本价格
         priceToSell:预期价格
         priceToStop:止损价格
         createDay:创建日期
     """
     code = models.CharField(max_length=6, primary_key=True, db_index=True)
 
+    codePrice = models.FloatField()
     priceToSell = models.FloatField()
     priceToStop = models.FloatField()
 
