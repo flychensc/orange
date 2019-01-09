@@ -134,7 +134,7 @@
               priceToSell = '<font color="red">' + e.priceToSell + " (" + growth + "%)" + '</font>'
 
               growth = Math.round((e.priceToStop/e.costprice-1)*10000)/100
-              priceToSell = '<font color="green">' + e.priceToStop + " (" + growth + "%)" + '</font>'
+              priceToStop = '<font color="green">' + e.priceToStop + " (" + growth + "%)" + '</font>'
 
               growth = Math.round((e.price/e.costprice-1)*10000)/100
               if (growth > 0) {
@@ -151,8 +151,8 @@
                   'price': e.price,
                   'growth': growth,
                   'costprice': e.costprice,
-                  'priceToSell': e.priceToSell,
-                  'priceToStop': e.priceToStop,
+                  'priceToSell': priceToSell,
+                  'priceToStop': priceToStop,
                   'createDay': e.created,
               });
           })

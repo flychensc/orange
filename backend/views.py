@@ -12,7 +12,7 @@ from storage.stock import (get_stock_basics, get_basic_info, get_k_data,
                         get_level1_report, get_stock_money_flow,
                         get_day_all)
 from stock.downloader import load_tick_data, load_notices
-from storage.models import Interest
+from storage.models import Interest, Position
 
 # Create your views here.
 
@@ -388,7 +388,7 @@ def position_list(request):
             'industry': basic.loc['industry'],
             'price': history['close'][0],
             'growth': round(growth/history['open'][0]*100, 2),
-            'costprice': history['close'][item.createDay],
+            'costprice': item.codePrice,
             'priceToSell': item.priceToSell,
             'priceToStop': item.priceToStop,
             'created': item.createDay,
