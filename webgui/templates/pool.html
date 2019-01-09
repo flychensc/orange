@@ -60,6 +60,12 @@
           </table>
         </div>
 
+        <h3 class="sub-header">持仓股票</h3>
+        <div class="table-responsive">
+          <table class="table table-striped" id="hold_list">
+          </table>
+        </div>
+
         </div>
       </div>
     </div>
@@ -117,6 +123,70 @@
             title: '关注时间'
         }, ]
   
+      });
+
+      $('#hold_list').bootstrapTable({
+        url: "/data/position_list",
+        responseHandler: function(resp) {
+          newResp = [];
+          resp.holds.forEach(function(e) {
+              growth = Math.round((e.priceToSell/e.costprice-1)*10000)/100
+              priceToSell = '<font color="red">' + e.priceToSell + " (" + growth + "%)" + '</font>'
+
+              growth = Math.round((e.priceToStop/e.costprice-1)*10000)/100
+              priceToSell = '<font color="green">' + e.priceToStop + " (" + growth + "%)" + '</font>'
+
+              growth = Math.round((e.price/e.costprice-1)*10000)/100
+              if (growth > 0) {
+                growth = '<font color="red">' + growth + '%</font>'
+              } else if (growth < 0) {
+                growth = '<font color="green">' + growth + '%</font>'
+              } else {
+                growth = growth + '%'
+              }
+              newResp.push({
+                  'code': e.code,
+                  'name': '<a target="_blank" href="/stock/detail?code=' + e.code + '">' + e.name + '</a>',
+                  'industry': e.industry,
+                  'price': e.price,
+                  'growth': growth,
+                  'costprice': e.costprice,
+                  'priceToSell': e.priceToSell,
+                  'priceToStop': e.priceToStop,
+                  'createDay': e.created,
+              });
+          })
+          return newResp;
+        },
+        columns: [{
+            field: 'code',
+            title: '股票代码'
+        }, {
+            field: 'name',
+            title: '股票名称'
+        }, {
+            field: 'industry',
+            title: '行业'
+        }, {
+            field: 'price',
+            title: '最新价'
+        }, {
+            field: 'growth',
+            title: '最新涨幅'
+        }, {
+            field: 'costprice',
+            title: '成本价',
+        }, {
+            field: 'priceToSell',
+            title: '止盈价'
+        }, {
+            field: 'priceToStop',
+            title: '止损价'
+        }, {
+            field: 'createDay',
+            title: '持仓日期'
+        }, ]
+
       });
   
       </script>

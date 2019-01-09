@@ -17,6 +17,10 @@ urlpatterns = [
     url(r'^leave_interest$', views.leave_interest, name='leave_interest'),
     url(r'^interest_list$', views.interest_list, name='interest_list'),
 
+    url(r'^join_position$', views.join_position, name='join_position'),
+    url(r'^leave_position$', views.leave_position, name='leave_position'),
+    url(r'^position_list$', views.position_list, name='position_list'),
+
     url(r'^rise_fail_stats$', views.rise_fail_stats, name='rise_fail_stats'),
     url(r'^szzs$', views.szzs, name='szzs'),
     url(r'^bdi$', views.bdi, name='bdi'),

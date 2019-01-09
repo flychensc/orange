@@ -359,3 +359,39 @@ def interest_list(request):
         })
 
     return JsonResponse({"interests": interests})
+
+
+def join_position(request):
+    stock = request.POST.get('stock')
+    priceToSell = request.POST.get('priceToSell')
+    priceToStop = request.POST.get('priceToStop')
+    item = Position(code=stock, priceToSell=priceToSell, priceToStop=priceToStop, createDay=datetime.datetime.today())
+    item.save()
+    return redirect(request.META['HTTP_REFERER'], locals())
+
+
+def leave_position(request):
+    stock = request.POST.get('stock')
+    Position.objects.filter(code=stock).delete()
+    return redirect(request.META['HTTP_REFERER'], locals())
+
+
+def position_list(request):
+    holds = []
+    for item in Position.objects.all():
+        basic = get_stock_basics().loc[item.code]
+        history = get_k_data(item.code)
+        growth = history['close'][0] - history['open'][0]
+        holds.append({
+            'code': item.code,
+            'name': basic.loc['name'],
+            'industry': basic.loc['industry'],
+            'price': history['close'][0],
+            'growth': round(growth/history['open'][0]*100, 2),
+            'costprice': history['close'][item.createDay],
+            'priceToSell': item.priceToSell,
+            'priceToStop': item.priceToStop,
+            'created': item.createDay,
+        })
+
+    return JsonResponse({"holds": holds})
