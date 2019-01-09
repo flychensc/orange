@@ -8,7 +8,7 @@ import numpy as np
 from stock import get_annual_report, get_tick_data, pct_change, get_level0_report, get_szzs
 from stock.fundamental import LEVEL1_REPORT_INDEX, LEVEL_REPORT_DICT
 from stock import get_bdi, get_shibor
-from storage.stock import (get_stock_basics, get_basic_info, 
+from storage.stock import (get_stock_basics, get_basic_info, get_k_data,
                         get_level1_report, get_stock_money_flow,
                         get_day_all)
 from stock.downloader import load_tick_data, load_notices
@@ -341,3 +341,19 @@ def leave_interest(request):
     stock = request.POST.get('stock')
     Interest.objects.filter(code=stock).delete()
     return redirect(request.META['HTTP_REFERER'], locals())
+
+
+def interest_list(request):
+    interests = []
+    for item in Interest.objects.all():
+        basic = get_stock_basics().loc[item.code]
+        history = get_k_data(item.code)
+        interests.append({
+            'code': item.code,
+            'name': basic.loc['name'],
+            'industry': basic.loc['industry'],
+            'price': history['close'][0],
+            'created': item.createDay,
+        })
+
+    return JsonResponse({"interests": interests})

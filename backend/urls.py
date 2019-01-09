@@ -15,6 +15,7 @@ urlpatterns = [
 
     url(r'^join_interest$', views.join_interest, name='join_interest'),
     url(r'^leave_interest$', views.leave_interest, name='leave_interest'),
+    url(r'^interest_list$', views.interest_list, name='interest_list'),
 
     url(r'^rise_fail_stats$', views.rise_fail_stats, name='rise_fail_stats'),
     url(r'^szzs$', views.szzs, name='szzs'),
