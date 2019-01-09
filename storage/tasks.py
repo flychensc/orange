@@ -46,8 +46,8 @@ def _update_stock_basics():
     rcache.set_timestamp(rcache.KEY_TS_BASIC_INFO, str(datetime.date.today()))
 
 
-@app.task(ignore_result=True)
-def update_all():
+@app.task(bind=True, ignore_result=True)
+def update_all(self):
     try:
         # step 1, update basic info
         _update_stock_basics()
@@ -63,8 +63,8 @@ def update_all():
         return
 
 
-@app.task(ignore_result=True)
-def update_stock_basics():
+@app.task(bind=True, ignore_result=True)
+def update_stock_basics(self):
     try:
         _update_stock_basics()
     except socket.timeout:
@@ -102,8 +102,8 @@ def update_history():
     History.objects.bulk_create(history_list)
 
  
-@app.task(ignore_result=True)
-def update_one_history(code, start):
+@app.task(bind=True, ignore_result=True)
+def update_one_history(self, code, start):
     try:
         print("Get %(code)s history data" % locals())
         # 获取历史数据
@@ -296,8 +296,8 @@ def update_cashflow_data(year, quarter):
     rcache.set_timestamp(rcache.KEY_TS_CASHFLOW_DATA, str(datetime.date.today()))
 
 
-@app.task(ignore_result=True)
-def update_one_tick(code, day):
+@app.task(bind=True, ignore_result=True)
+def update_one_tick(self, code, day):
     try:
         print("Get %(code)s tick data" % locals())
         # 获取分笔数据
