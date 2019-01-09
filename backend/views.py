@@ -348,11 +348,13 @@ def interest_list(request):
     for item in Interest.objects.all():
         basic = get_stock_basics().loc[item.code]
         history = get_k_data(item.code)
+        growth = history['close'][0] - history['open'][0]
         interests.append({
             'code': item.code,
             'name': basic.loc['name'],
             'industry': basic.loc['industry'],
             'price': history['close'][0],
+            'growth': round(growth/history['open'][0]*100, 2),
             'created': item.createDay,
         })
 

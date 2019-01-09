@@ -53,7 +53,12 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
-            <div>建设中...</div>
+        <h3 class="sub-header">股票池
+        </h3>
+        <div class="table-responsive">
+          <table class="table table-striped" id="interest_pool">
+          </table>
+        </div>
 
         </div>
       </div>
@@ -70,6 +75,51 @@
     <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
     <!-- 引入 echarts.js -->
     <script src="/static/js/echarts.min.js"></script>
+
+    <script type="text/javascript">
+
+      $('#interest_pool').bootstrapTable({
+        url: "/data/interest_list",
+        responseHandler: function(resp) {
+          newResp = [];
+          resp.interests.forEach(function(e) {
+              if (e.growth > 0) {
+                price = '<font color="red">' + e.price + " (" + e.growth + "%)" + '</font>'
+              } else if (e.growth < 0) {
+                price = '<font color="green">' + e.price + " (" + e.growth + "%)" + '</font>'
+              } else {
+                price = e.price + " (" + e.growth + "%)"
+              }
+              newResp.push({
+                  'code': e.code,
+                  'name': '<a target="_blank" href="/stock/detail?code=' + e.code + '">' + e.name + '</a>',
+                  'industry': e.industry,
+                  'price': price,
+                  'createDay': e.created,
+              });
+          })
+          return newResp;
+        },
+        columns: [{
+            field: 'code',
+            title: '股票代码'
+        }, {
+            field: 'name',
+            title: '股票名称'
+        }, {
+            field: 'industry',
+            title: '行业'
+        }, {
+            field: 'price',
+            title: '最新价'
+        }, {
+            field: 'createDay',
+            title: '关注时间'
+        }, ]
+  
+      });
+  
+      </script>
 
   </body>
 </html>
