@@ -248,16 +248,18 @@ class Comments(models.Model):
     """
     股评
         code:代码
+        day:日期
         policy:策略,[卖出，中性，关注，买入，持有]
         comments:策略评价
-        createDay:创建日期
     """
-    code = models.CharField(max_length=6, primary_key=True, db_index=True)
+    code = models.CharField(max_length=6)
+    day = models.DateField()
 
     policy = models.CharField(max_length=4)
     comments = models.TextField()
 
-    createDay = models.DateField()
+    class Meta:
+        unique_together = ("code", "day") 
 
 
 class Position(models.Model):

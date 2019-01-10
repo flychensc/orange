@@ -395,3 +395,45 @@ def position_list(request):
         })
 
     return JsonResponse({"holds": holds})
+
+
+def add_comments(request):
+    stock = request.POST.get('stock')
+    day = request.POST.get('day')
+    policy = request.POST.get('policy')
+    comments = request.POST.get('comments')
+    item = Comments(code=stock, day=day, policy=policy, comments=comments)
+    item.save()
+    return redirect(request.META['HTTP_REFERER'], locals())
+
+
+def update_comments(request):
+    stock = request.POST.get('stock')
+    day = request.POST.get('day')
+    policy = request.POST.get('policy')
+    comments = request.POST.get('comments')
+    item = Comments.objects.get(code=stock, day=day)
+    item.policy = policy
+    item.comments = comments
+    item.save()
+    return redirect(request.META['HTTP_REFERER'], locals())
+
+
+def del_comments(request):
+    stock = request.POST.get('stock')
+    day = request.POST.get('day')
+    Comments.objects.filter(code=stock, day=day).delete()
+    return redirect(request.META['HTTP_REFERER'], locals())
+
+
+def comments_list(request):
+    holds = []
+    for item in Comments.objects.all():
+        holds.append({
+            'code': item.code,
+            'day': item.day,
+            'policy': item.policy,
+            'comments': item.comments,
+        })
+
+    return JsonResponse({"comments": holds})
