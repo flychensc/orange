@@ -55,7 +55,7 @@ def update_all(self):
         # step 2, update history and tick after basic info
         update_all_history()
         update_tick()
-    except socket.timeout:
+    except socket.timeout as e:
         print("update_stock_basics as socket.timeout")
         self.retry(countdown=5, max_retries=3, exc=e)
     except Exception as e:
@@ -67,7 +67,7 @@ def update_all(self):
 def update_stock_basics(self):
     try:
         _update_stock_basics()
-    except socket.timeout:
+    except socket.timeout as e:
         print("update_stock_basics as socket.timeout")
         self.retry(countdown=5, max_retries=3, exc=e)
     except Exception as e:
@@ -123,7 +123,7 @@ def update_one_history(self, code, start):
         # History.objects.filter(code=code).delete()
         # 再保存
         History.objects.bulk_create(history_list)
-    except socket.timeout:
+    except socket.timeout as e:
         print("%(code)s as socket.timeout" % locals())
         self.retry(countdown=5, max_retries=3, exc=e)
     except Exception as e:
@@ -317,7 +317,7 @@ def update_one_tick(self, code, day):
             ) for index, data in tick.iterrows()]
         # 保存
         Tick.objects.bulk_create(tick_list)
-    except socket.timeout:
+    except socket.timeout as e:
         print("%(code)s as socket.timeout" % locals())
         self.retry(countdown=5, max_retries=3, exc=e)
     except Exception as e:
