@@ -276,6 +276,12 @@
             </table>
           </div>
 
+          <div id="policy"></div>
+          <h2 class="sub-header">股评策略</h2>
+          <div class="table-responsive">
+              <table class="table table-striped" id="table_policy"></table>
+          </div>
+
         </div>
       </div>
     </div>
@@ -514,6 +520,43 @@
 
     });
 
+    </script>
+
+    <script type="text/javascript">
+        var policyColor = new Array()
+        policyColor['买入'] = "red"
+        policyColor['卖出'] = "green"
+        policyColor['中性'] = "black"
+        policyColor['关注'] = "blue"
+        policyColor['持有'] = "pink"
+
+        $('#table_policy').bootstrapTable({
+          url: "/data/comments_list",
+          responseHandler: function(resp) {
+            newResp = [];
+            resp.comments.forEach(function(e) {
+                newResp.push({
+                    'day': e.day,
+                    'policy': '<font color="' + policyColor[e.policy] + '">' + e.policy + '</font>',
+                    'comments': e.comments,
+                });
+            })
+            return newResp;
+          },
+          columns: [{
+              field: 'policy',
+              title: '评级',
+              width: '100',
+          }, {
+              field: 'comments',
+              title: '评价'
+          }, {
+              field: 'day',
+              title: '时间',
+              width: '150',
+          }, ]
+    
+        });
     </script>
 
     <script type="text/javascript">
