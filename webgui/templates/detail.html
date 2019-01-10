@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
     <!-- Bootstrap Select CSS -->
     <link rel="stylesheet" href="/static/css/bootstrap-select.min.css">
+    <!-- Bootstrap Datetime Picker-->
+    <link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css">
 
     <!-- Custom styles for this template -->
     <link href="/static/css/dashboard.css" rel="stylesheet">
@@ -281,6 +283,26 @@
           <div class="table-responsive">
               <table class="table table-striped" id="table_policy"></table>
           </div>
+          <hr/>
+          <form>
+            <input type="text" name="code" value={{code}} hidden="hidden"></input>
+            <div>
+              <input type="radio" name="colors" checked>关注</input>
+              <input type="radio" name="colors">买入</input>
+              <input type="radio" name="colors">持有</input>
+              <input type="radio" name="colors">卖出</input>
+              <input type="radio" name="colors">中性</input>
+            </div>
+            <textarea name='comments' cols="80" rows="5"></textarea>
+            <div id="comments_datepicker" class="input-append">
+                <input data-format="yyyy-MM-dd" type="text"></input>
+                <span class="add-on">
+                    <span class="glyphicon glyphicon-calendar">
+                    </span>
+                </span>
+            </div>
+            <button type="submit" class="btn btn-info">提交</button>
+          </form>
 
         </div>
       </div>
@@ -296,6 +318,7 @@
     <!-- put your locale files after bootstrap-table.js -->
     <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
     <script src="/static/js/bootstrap-select.min.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
     <!-- 引入 echarts.js -->
     <script src="/static/js/echarts.min.js"></script>
 
@@ -556,6 +579,15 @@
               width: '150',
           }, ]
     
+        });
+
+        $('#comments_datepicker').datetimepicker({
+            pickTime: false
+        });
+
+        $(document).ready(function() {
+            var today = new Date()
+            $("#comments_datepicker").data('datetimepicker').setLocalDate(today);
         });
     </script>
 
