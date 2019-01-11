@@ -102,6 +102,10 @@
                   'industry': e.industry,
                   'price': price,
                   'createDay': e.created,
+                  'buttons': '<form action="/data/leave_interest" method="POST">  {% csrf_token %}'
+                      + '<input type="text" name="stock" value="' + e.code + '" hidden="hidden"></input>'
+                      + '<button type="submit" class="btn btn-danger">删除</button>'
+                      + '</form>',
               });
           })
           return newResp;
@@ -121,6 +125,9 @@
         }, {
             field: 'createDay',
             title: '关注时间'
+        }, {
+            field: 'buttons',
+              width: '80',
         }, ]
   
       });
@@ -154,6 +161,10 @@
                   'priceToSell': priceToSell,
                   'priceToStop': priceToStop,
                   'createDay': e.created,
+                  'buttons': '<form action="/data/leave_position" method="POST">  {% csrf_token %}'
+                      + '<input type="text" name="stock" value="' + e.code + '" hidden="hidden"></input>'
+                      + '<button type="submit" class="btn btn-danger">删除</button>'
+                      + '</form>',
               });
           })
           return newResp;
@@ -185,6 +196,9 @@
         }, {
             field: 'createDay',
             title: '持仓日期'
+        }, {
+            field: 'buttons',
+              width: '80',
         }, ]
 
       });
