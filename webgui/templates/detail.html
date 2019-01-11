@@ -284,18 +284,18 @@
               <table class="table table-striped" id="table_policy"></table>
           </div>
           <hr/>
-          <form>
-            <input type="text" name="code" value={{code}} hidden="hidden"></input>
+          <form action="/data/add_comments" method="POST"> {% csrf_token %}
+            <input type="text" name="stock" value={{code}} hidden="hidden"></input>
             <div>
-              <input type="radio" name="colors" checked>关注</input>
-              <input type="radio" name="colors">买入</input>
-              <input type="radio" name="colors">持有</input>
-              <input type="radio" name="colors">卖出</input>
-              <input type="radio" name="colors">中性</input>
+              <input type="radio" name="policy" value="关注" checked>关注</input>
+              <input type="radio" name="policy" value="买入">买入</input>
+              <input type="radio" name="policy" value="持有">持有</input>
+              <input type="radio" name="policy" value="卖出">卖出</input>
+              <input type="radio" name="policy" value="中性">中性</input>
             </div>
             <textarea name='comments' cols="80" rows="5"></textarea>
             <div id="comments_datepicker" class="input-append">
-                <input data-format="yyyy-MM-dd" type="text"></input>
+                <input data-format="yyyy-MM-dd" type="text" name="day"></input>
                 <span class="add-on">
                     <span class="glyphicon glyphicon-calendar">
                     </span>
@@ -551,7 +551,7 @@
         policyColor['卖出'] = "green"
         policyColor['中性'] = "black"
         policyColor['关注'] = "blue"
-        policyColor['持有'] = "pink"
+        policyColor['持有'] = "orange"
 
         $('#table_policy').bootstrapTable({
           url: "/data/comments_list",

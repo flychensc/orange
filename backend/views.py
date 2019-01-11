@@ -12,7 +12,7 @@ from storage.stock import (get_stock_basics, get_basic_info, get_k_data,
                         get_level1_report, get_stock_money_flow,
                         get_day_all)
 from stock.downloader import load_tick_data, load_notices
-from storage.models import Interest, Position
+from storage.models import Interest, Position, Comments
 
 # Create your views here.
 
