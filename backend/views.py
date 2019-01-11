@@ -428,7 +428,7 @@ def del_comments(request):
 
 def comments_list(request):
     holds = []
-    for item in Comments.objects.all():
+    for item in Comments.objects.order_by('day').all():
         holds.append({
             'code': item.code,
             'day': item.day,
