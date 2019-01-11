@@ -562,6 +562,11 @@
                     'day': e.day,
                     'policy': '<font color="' + policyColor[e.policy] + '">' + e.policy + '</font>',
                     'comments': e.comments,
+                    'buttons': '<form action="/data/del_comments" method="POST">  {% csrf_token %}'
+                        + '<input type="text" name="stock" value="' + e.code + '" hidden="hidden"></input>'
+                        + '<input type="text" name="day" value="' + e.day + '" hidden="hidden"></input>'
+                        + '<button type="submit" class="btn btn-danger">删除</button>'
+                        + '</form>',
                 });
             })
             return newResp;
@@ -577,6 +582,9 @@
               field: 'day',
               title: '时间',
               width: '150',
+          }, {
+              field: 'buttons',
+              width: '80',
           }, ]
     
         });
