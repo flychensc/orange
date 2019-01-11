@@ -554,7 +554,7 @@
         policyColor['持有'] = "orange"
 
         $('#table_policy').bootstrapTable({
-          url: "/data/comments_list",
+          url: "/data/comments_list?stock={{code}}",
           responseHandler: function(resp) {
             newResp = [];
             resp.comments.forEach(function(e) {

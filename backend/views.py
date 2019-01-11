@@ -427,8 +427,9 @@ def del_comments(request):
 
 
 def comments_list(request):
+    stock = request.GET.get('stock')
     holds = []
-    for item in Comments.objects.order_by('day').all():
+    for item in Comments.objects.order_by('day').filter(code=stock):
         holds.append({
             'code': item.code,
             'day': item.day,
