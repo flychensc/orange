@@ -15,6 +15,8 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Table CSS -->
     <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <!-- Bootstrap Datetime Picker-->
+    <link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css">
 
     <!-- Custom styles for this template -->
     <link href="/static/css/dashboard.css" rel="stylesheet">
@@ -66,6 +68,64 @@
           </table>
         </div>
 
+        <hr/>
+        <div class="row">
+            <div class="col-md-5">
+                <form action="/data/join_position" method="POST"> {% csrf_token %}
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <td>股票代码</td>
+                        <td>
+                            <input type="text" class="form-control" placeholder="Search..." name="stock" id="textsearch" autocomplete="off" data-provide="typeahead"/>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>持仓成本</td>
+                        <td>
+                            <input type="text" name="codePrice"/>
+                        </td>
+                        <td>元</td>
+                      </tr>
+                      <tr>
+                        <td>预期价格</td>
+                        <td>
+                            <input type="text" name="priceToSell"/>
+                        </td>
+                        <td>元</td>
+                      </tr>
+                      <tr>
+                        <td>止损价格</td>
+                        <td>
+                            <input type="text" name="priceToStop"/>
+                        </td>
+                        <td>元</td>
+                      </tr>
+                      <tr>
+                        <td>买入日期</td>
+                        <td>
+                          <div id="position_datepicker" class="input-append">
+                              <input data-format="yyyy-MM-dd" type="text" name="day"></input>
+                              <span class="add-on">
+                                  <span class="glyphicon glyphicon-calendar">
+                                  </span>
+                              </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                          <button type="submit" class="btn btn-info">提交</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
+              </div>
+        </div>
+
         </div>
       </div>
     </div>
@@ -79,10 +139,26 @@
     <script src="/static/js/bootstrap-table.min.js"></script>
     <!-- put your locale files after bootstrap-table.js -->
     <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
     <!-- 引入 echarts.js -->
     <script src="/static/js/echarts.min.js"></script>
 
     <script type="text/javascript">
+
+      $(document).ready(function() {
+        $.get("/data/stock_list", function(data){
+          $("#textsearch").typeahead({ source:data['stocks'] });
+        },'json');
+      })
+
+      $('#position_datepicker').datetimepicker({
+          pickTime: false
+      });
+
+      $(document).ready(function() {
+          var today = new Date()
+          $("#position_datepicker").data('datetimepicker').setLocalDate(today);
+      });
 
       $('#interest_pool').bootstrapTable({
         url: "/data/interest_list",
@@ -127,7 +203,7 @@
             title: '关注时间'
         }, {
             field: 'buttons',
-              width: '80',
+            width: '80',
         }, ]
   
       });
@@ -198,7 +274,7 @@
             title: '持仓日期'
         }, {
             field: 'buttons',
-              width: '80',
+            width: '80',
         }, ]
 
       });

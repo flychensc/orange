@@ -363,9 +363,15 @@ def interest_list(request):
 
 def join_position(request):
     stock = request.POST.get('stock')
+    codePrice = request.POST.get('codePrice')
     priceToSell = request.POST.get('priceToSell')
     priceToStop = request.POST.get('priceToStop')
-    item = Position(code=stock, priceToSell=priceToSell, priceToStop=priceToStop, createDay=datetime.datetime.today())
+    day = request.POST.get('day')
+    item = Position(code=stock[:6],
+            codePrice=float(codePrice), 
+            priceToSell=float(priceToSell), 
+            priceToStop=float(priceToStop), 
+            createDay=day)
     item.save()
     return redirect(request.META['HTTP_REFERER'], locals())
 

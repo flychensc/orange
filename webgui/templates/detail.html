@@ -15,8 +15,6 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Table CSS -->
     <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
-    <!-- Bootstrap Select CSS -->
-    <link rel="stylesheet" href="/static/css/bootstrap-select.min.css">
     <!-- Bootstrap Datetime Picker-->
     <link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css">
 
@@ -317,7 +315,6 @@
     <script src="/static/js/bootstrap-table.min.js"></script>
     <!-- put your locale files after bootstrap-table.js -->
     <script src="/static/js/locale/bootstrap-table-zh-CN.min.js"></script>
-    <script src="/static/js/bootstrap-select.min.js"></script>
     <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
     <!-- 引入 echarts.js -->
     <script src="/static/js/echarts.min.js"></script>
@@ -561,7 +558,7 @@
                 newResp.push({
                     'day': e.day,
                     'policy': '<font color="' + policyColor[e.policy] + '">' + e.policy + '</font>',
-                    'comments': e.comments,
+                    'comments': e.comments.replace(/\n/g, "</br>"),
                     'buttons': '<form action="/data/del_comments" method="POST">  {% csrf_token %}'
                         + '<input type="text" name="stock" value="' + e.code + '" hidden="hidden"></input>'
                         + '<input type="text" name="day" value="' + e.day + '" hidden="hidden"></input>'
