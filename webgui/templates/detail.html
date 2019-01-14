@@ -248,6 +248,11 @@
           </div>
 
           <div id="technical"></div>
+          <h2 class="sub-header">历史走势</h2>
+          <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+          <div id="chart_technical_history" style="width: 800px;height:600px;">
+          </div>
+
           <h2 class="sub-header">资金流向</h2>
           <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
           <div id="chart_technical_tickdata" style="width: 800px;height:600px;">
@@ -1040,6 +1045,53 @@
                     // 根据名字对应到相应的系列
                     name: '资金相对量',
                     data: data.total
+                }]
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var historyChart = echarts.init(document.getElementById('chart_technical_history'));
+
+        // 指定图表的配置项和数据
+        var historyOption = {
+            xAxis: {
+                type: 'category',
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                type: 'line',
+                smooth: true
+            }]
+        };        
+
+        // 使用刚指定的配置项和数据显示图表。
+        historyChart.setOption(historyOption);
+
+        historyChart.showLoading();
+
+        // 异步加载数据
+        $.get('/data/{{code}}/history?comments').done(function (resp) {
+            data = {
+                "date": [],
+                "price": [],
+            }
+            resp.data.forEach(function(e) {
+                data.date.push(e.date)
+
+                data.price.push(e.close)
+            })
+            historyChart.hideLoading();
+            // 填入数据
+            historyChart.setOption({
+                xAxis: {
+                    data: data.date
+                },
+                series: [{
+                    data: data.price
                 }]
             });
         });

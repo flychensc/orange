@@ -444,3 +444,33 @@ def comments_list(request):
         })
 
     return JsonResponse({"comments": holds})
+
+
+def history(request, code):
+    with_comments = request.GET.get('comments')
+    if with_comments:
+        comments = Comments.objects.order_by('day').filter(code=code)
+    else:
+        comments = []
+
+    if len(comments):
+        # get history range with comments
+        historys = []
+    else:
+        # get history from local db
+        historys = get_k_data(code)
+
+    data_list = list()
+    for date, data in historys.iterrows():
+        data_list.append({
+            'date': date,
+
+            'open': data['open'],
+            'close': data['close'],
+            'high': data['high'],
+            'low': data['low'],
+            
+            'vol': data['vol'],
+        })
+
+    return JsonResponse({"data": data_list})
