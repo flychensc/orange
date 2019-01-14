@@ -13,6 +13,7 @@ from storage.stock import (get_stock_basics, get_basic_info, get_k_data,
                         get_day_all)
 from stock.downloader import load_tick_data, load_notices
 from storage.models import Interest, Position, Comments
+from stock import get_k_data as get_his_data
 
 # Create your views here.
 
@@ -454,23 +455,23 @@ def history(request, code):
         comments = []
 
     if len(comments):
-        # get history range with comments
-        historys = []
+        start = (comments[0].day-datetime.timedelta(days=30*3)).strftime("%Y-%m-%d")
     else:
-        # get history from local db
-        historys = get_k_data(code)
+        start = (datetime.date.today()-datetime.timedelta(days=365*2)).strftime("%Y-%m-%d")
+
+    historys = get_his_data(code, start)
 
     data_list = list()
-    for date, data in historys.iterrows():
+    for i, data in historys.iterrows():
         data_list.append({
-            'date': date,
+            'date': data['date'],
 
             'open': data['open'],
             'close': data['close'],
             'high': data['high'],
             'low': data['low'],
             
-            'vol': data['vol'],
+            'vol': data['volume'],
         })
 
     return JsonResponse({"data": data_list})

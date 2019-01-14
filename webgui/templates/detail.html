@@ -1074,7 +1074,7 @@
         historyChart.showLoading();
 
         // 异步加载数据
-        $.get('/data/{{code}}/history?comments').done(function (resp) {
+        $.get('/data/{{code}}/history?comments=true').done(function (resp) {
             data = {
                 "date": [],
                 "price": [],
