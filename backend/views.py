@@ -449,22 +449,41 @@ def comments_list(request):
 
 def history(request, code):
     with_comments = request.GET.get('comments')
+    respData = dict()
 
     start = (datetime.date.today()-datetime.timedelta(days=365*2)).strftime("%Y-%m-%d")
 
     if with_comments:
         comments = Comments.objects.order_by('day').filter(code=code)
+
+        # 计算新的起始时间
         if len(comments):
             comments_start = (comments[0].day-datetime.timedelta(days=30*3)).strftime("%Y-%m-%d")
             if comments_start < start:
                 start = comments_start
 
-    historys = get_his_data(code, start)
+    historys = get_his_data(code, start).set_index("date")
+    if with_comments:
+        respData['comments'] = list()
+        for item in comments:
+            if item.day.weekday() is 5:
+                date = (item.day-datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+            elif item.day.weekday() is 6:
+                date = (item.day-datetime.timedelta(days=2)).strftime("%Y-%m-%d")
+            else:
+                date = item.day.strftime("%Y-%m-%d")
 
-    data_list = list()
-    for i, data in historys.iterrows():
-        data_list.append({
-            'date': data['date'],
+            respData['comments'].append({
+                'date': item.day,
+                'policy': item.policy,
+                'price': historys.loc[date].close,
+                'comments': item.comments,
+            })
+
+    respData['history'] = list()
+    for date, data in historys.iterrows():
+        respData['history'].append({
+            'date': date,
 
             'open': data['open'],
             'close': data['close'],
@@ -474,4 +493,4 @@ def history(request, code):
             'vol': data['volume'],
         })
 
-    return JsonResponse({"data": data_list})
+    return JsonResponse(respData)
