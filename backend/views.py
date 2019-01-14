@@ -449,15 +449,15 @@ def comments_list(request):
 
 def history(request, code):
     with_comments = request.GET.get('comments')
+
+    start = (datetime.date.today()-datetime.timedelta(days=365*2)).strftime("%Y-%m-%d")
+
     if with_comments:
         comments = Comments.objects.order_by('day').filter(code=code)
-    else:
-        comments = []
-
-    if len(comments):
-        start = (comments[0].day-datetime.timedelta(days=30*3)).strftime("%Y-%m-%d")
-    else:
-        start = (datetime.date.today()-datetime.timedelta(days=365*2)).strftime("%Y-%m-%d")
+        if len(comments):
+            comments_start = (comments[0].day-datetime.timedelta(days=30*3)).strftime("%Y-%m-%d")
+            if comments_start < start:
+                start = comments_start
 
     historys = get_his_data(code, start)
 
