@@ -466,17 +466,13 @@ def history(request, code):
     if with_comments:
         respData['comments'] = list()
         for item in comments:
-            if item.day.weekday() is 5:
-                date = (item.day-datetime.timedelta(days=1)).strftime("%Y-%m-%d")
-            elif item.day.weekday() is 6:
-                date = (item.day-datetime.timedelta(days=2)).strftime("%Y-%m-%d")
-            else:
-                date = item.day.strftime("%Y-%m-%d")
+            # 最近那天的交易
+            price = historys.loc[:item.day.strftime("%Y-%m-%d")].iloc[-1].close
 
             respData['comments'].append({
                 'date': item.day,
                 'policy': item.policy,
-                'price': historys.loc[date].close,
+                'price': price,
                 'comments': item.comments,
             })
 

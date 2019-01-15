@@ -1073,17 +1073,30 @@
             },
             yAxis: {
                 type: 'value',
-                name: "价格",
                 axisLabel: {
                     formatter: '{value} 元',
                 }
             },
             series: [{
-                name: "价格",
                 type: 'line',
                 smooth: true,
                 itemStyle:{  normal:{color:'#d71345'}},
-            }]
+            }, {
+                type: 'line',
+                data:[],
+            } , {
+                type: 'line',
+                data:[],
+            } , {
+                type: 'line',
+                data:[],
+            } , {
+                type: 'line',
+                data:[],
+            } , {
+                type: 'line',
+                data:[],
+            } ]
         };        
 
         // 使用刚指定的配置项和数据显示图表。
@@ -1102,9 +1115,15 @@
                 his_data.price.push(e.close)
             })
 
-            marks = []
+            marks = {
+                '关注':[],
+                '买入':[],
+                '持有':[],
+                '卖出':[],
+                '中性':[],
+            }
             resp.comments.forEach(function(e) {
-                marks.push({
+                marks[e.policy].push({
                     xAxis: e.date,
                     yAxis: e.price,
                     value: e.policy,
@@ -1118,10 +1137,31 @@
                     data: his_data.date
                 },
                 series: [{
-                    name: "价格",
-                    data: his_data.price,
+                    data: his_data.price
+                }, {
+                    itemStyle:{  normal:{color:'blue'}},
                     markPoint: {
-                        data: marks
+                        data: marks['关注'],
+                    }
+                }, {
+                    itemStyle:{  normal:{color:'red'}},
+                    markPoint: {
+                        data: marks['买入'],
+                    }
+                }, {
+                    itemStyle:{  normal:{color:'orange'}},
+                    markPoint: {
+                        data: marks['持有'],
+                    }
+                }, {
+                    itemStyle:{  normal:{color:'green'}},
+                    markPoint: {
+                        data: marks['卖出'],
+                    }
+                }, {
+                    itemStyle:{  normal:{color:'black'}},
+                    markPoint: {
+                        data: marks['中性'],
                     }
                 }]
             });
