@@ -1056,15 +1056,33 @@
 
         // 指定图表的配置项和数据
         var historyOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
             xAxis: {
                 type: 'category',
+                axisPointer: {
+                    type: 'shadow',
+                }
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
+                name: "价格",
+                axisLabel: {
+                    formatter: '{value} 元',
+                }
             },
             series: [{
+                name: "价格",
                 type: 'line',
-                smooth: true
+                smooth: true,
+                itemStyle:{  normal:{color:'#d71345'}},
             }]
         };        
 
@@ -1075,23 +1093,36 @@
 
         // 异步加载数据
         $.get('/data/{{code}}/history?comments=true').done(function (resp) {
-            data = {
+            his_data = {
                 "date": [],
                 "price": [],
             }
-            resp.data.forEach(function(e) {
-                data.date.push(e.date)
-
-                data.price.push(e.close)
+            resp.history.forEach(function(e) {
+                his_data.date.push(e.date)
+                his_data.price.push(e.close)
             })
+
+            marks = []
+            resp.comments.forEach(function(e) {
+                marks.push({
+                    xAxis: e.date,
+                    yAxis: e.price,
+                    value: e.policy,
+                })
+            })
+
             historyChart.hideLoading();
             // 填入数据
             historyChart.setOption({
                 xAxis: {
-                    data: data.date
+                    data: his_data.date
                 },
                 series: [{
-                    data: data.price
+                    name: "价格",
+                    data: his_data.price,
+                    markPoint: {
+                        data: marks
+                    }
                 }]
             });
         });
