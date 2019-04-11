@@ -290,7 +290,8 @@ def pct_change(data_report, periods=1, axis=0):
 
 def get_report_data(year, quarter):
     report_data = ts.get_report_data(year, quarter)
-    report_data.drop_duplicates(inplace=True)
+    # fix bug: django.db.utils.IntegrityError: (1062, "Duplicate entry '300673' for key 'PRIMARY'")
+    report_data.drop_duplicates(subset=['code'], inplace=True)
     return report_data
 
 
