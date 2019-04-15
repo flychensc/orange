@@ -297,32 +297,33 @@ def get_report_data(year, quarter):
 
 def get_profit_data(year, quarter):
     profit_data = ts.get_profit_data(year, quarter)
-    profit_data.drop_duplicates(inplace=True)
+    profit_data.drop_duplicates(subset=['code'], inplace=True)
     return profit_data
 
 
 def get_operation_data(year, quarter):
     operation_data = ts.get_operation_data(year, quarter)
-    operation_data.drop_duplicates(inplace=True)
+    operation_data.drop_duplicates(subset=['code'], inplace=True)
     return operation_data
 
 
 def get_growth_data(year, quarter):
     growth_data = ts.get_growth_data(year, quarter)
-    growth_data.drop_duplicates(inplace=True)
+    growth_data.drop_duplicates(subset=['code'], inplace=True)
     return growth_data
 
 
 def get_debtpaying_data(year, quarter):
     debtpaying_data = ts.get_debtpaying_data(year, quarter)
-    debtpaying_data.drop_duplicates(inplace=True)
+    # fix bug: django.db.utils.IntegrityError: (1062, "Duplicate entry '603339' for key 'PRIMARY'")
+    debtpaying_data.drop_duplicates(subset=['code'], inplace=True)
     debtpaying_data.replace({"--":np.NAN}, inplace=True)
     return debtpaying_data
 
 
 def get_cashflow_data(year, quarter):
     cashflow_data = ts.get_cashflow_data(year, quarter)
-    cashflow_data.drop_duplicates(inplace=True)
+    cashflow_data.drop_duplicates(subset=['code'], inplace=True)
     return cashflow_data
 
 
