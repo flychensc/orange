@@ -82,7 +82,8 @@ DATABASES = {
         'NAME': 'stock2',
         'USER': 'python',
         'PASSWORD': 'python',
-        'HOST': 'localhost',
+        # fix bug: django.db.utils.OperationalError: (2006, "Can't connect to local MySQL server through socket '/tmp/mysql.sock' (2)")
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
