@@ -45,3 +45,13 @@
 ## wiki
 
 更多详情可移步[wiki](https://github.com/flychensc/orange/wiki)页面
+
+## WSL
+
+手动开启服务
+1. MySQl
+    `sudo service mysql start`
+2. Redis
+    `sudo redis-server /etc/redis/redis.conf`
+3. 启动Server
+    `python manage.py runserver`
