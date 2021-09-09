@@ -1,26 +1,26 @@
 # Orange
 
-小橙子基金主要用于股票投资，从基本面，技术面，消息面对A股市场进行筛选。
+管理自选或者持仓数据，绘制图表。
 
 ## Mandarin
 
-获取股票的简单信息，生成到一个excel里
+获取的简单信息，生成到一个excel里
 
 ### basic
 
-列出一组股票的基础信息
+列出一组基础信息
 
 例如： `python mandarin.py basic 002271 002230`
 
 ### detail
 
-列出某支股票的详细信息
+列出某支的详细信息
 
 例如： `python mandarin.py detail 002271`
 
 ## Navel
 
-一个WEB服务器，用于股票信息查询
+一个WEB服务器，用于信息查询
 
 启动命令： `python manage.py runserver 0.0.0.0:8000`
 
