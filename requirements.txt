@@ -2,7 +2,7 @@ numpy==1.16.2
 tushare==1.2.34
 Click==7.0
 pandas==0.24.2
-requests==2.21.0
+requests==2.31.0
 gevent==1.4.0
 Django>=2.2.3
 redis==3.2.1
